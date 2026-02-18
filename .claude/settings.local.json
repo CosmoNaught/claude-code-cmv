@@ -44,7 +44,10 @@
       "Bash(\"C:/Program Files/nodejs/npm.cmd\" install --prefix d:/VMC -D @types/react@^18.0.0)",
       "Bash(\"C:/Program Files/nodejs/npx.cmd\" --prefix d:/VMC tsc --project d:/VMC/tsconfig.json --noEmit)",
       "Bash(node:*)",
-      "Bash(npm unlink:*)"
+      "Bash(npm unlink:*)",
+      "Bash(file:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(git -C /home/cosmo/Documents/Repos/claude-code-cmv log --oneline -10)"
     ],
     "additionalDirectories": [
       "C:\\Users\\yasin\\.claude\\projects\\d--hiddenstate"

@@ -10,21 +10,85 @@ CMV fixes this. Snapshot a session, branch from it unlimited times, each branch 
 
 ## Install
 
-**Requirements:** Node.js 18+ and Claude Code CLI
+**Requirements:** Node.js 18+ and [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code)
+
+### Windows
+
+Install Node.js (if not already installed):
+
+```powershell
+winget install OpenJS.NodeJS.LTS
+```
+
+If PowerShell blocks scripts, run this once:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Install CMV:
+
+```powershell
+git clone https://github.com/CosmoNaught/cmv.git
+cd cmv
+npm install
+npm run build
+npm link
+```
+
+Verify:
+
+```powershell
+cmv --help
+cmv sessions
+```
+
+> **`cmv` not found?** Close and reopen your terminal so it picks up the new PATH. If it still doesn't work, check that `%APPDATA%\npm` is on your PATH.
+
+### Linux
+
+Install Node.js 18+ using your package manager:
+
+<details>
+<summary><strong>Ubuntu / Debian</strong></summary>
 
 ```bash
-# Windows (PowerShell as admin)
-winget install OpenJS.NodeJS.LTS
-
-# macOS
-brew install node
-
-# Linux (Ubuntu/Debian)
 curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
 sudo apt install -y nodejs
 ```
 
-Then install CMV:
+</details>
+
+<details>
+<summary><strong>Fedora / RHEL</strong></summary>
+
+```bash
+sudo dnf install -y nodejs
+```
+
+</details>
+
+<details>
+<summary><strong>Arch</strong></summary>
+
+```bash
+sudo pacman -S nodejs npm
+```
+
+</details>
+
+<details>
+<summary><strong>Any distro (nvm)</strong></summary>
+
+```bash
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
+source ~/.bashrc
+nvm install --lts
+```
+
+</details>
+
+Install CMV:
 
 ```bash
 git clone https://github.com/CosmoNaught/cmv.git
@@ -34,14 +98,38 @@ npm run build
 npm link
 ```
 
-**Windows note:** If PowerShell blocks scripts, run once:
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+Verify:
+
+```bash
+cmv --help
+cmv sessions
 ```
 
-If `cmv` isn't found after install, close and reopen your terminal so it picks up the new PATH.
+> **Permission error on `npm link`?** Either use `sudo npm link`, or install Node via nvm (which doesn't need sudo for global packages).
+>
+> **`cmv` not found?** Make sure `/usr/local/bin` is on your PATH. If you used nvm, run `source ~/.bashrc` first.
 
-Verify it works:
+### macOS
+
+Install Node.js (if not already installed):
+
+```bash
+brew install node
+```
+
+Or use [nvm](https://github.com/nvm-sh/nvm) if you prefer to manage Node versions.
+
+Install CMV:
+
+```bash
+git clone https://github.com/CosmoNaught/cmv.git
+cd cmv
+npm install
+npm run build
+npm link
+```
+
+Verify:
 
 ```bash
 cmv --help
@@ -365,7 +453,7 @@ CMV reads session data from `~/.claude/` for discovery. When branching, it copie
 
 **`cmv branch` fails to launch**
 - Check that `claude` is in your PATH: `claude --version`
-- Or set the path explicitly: `cmv config claude_cli_path "C:\Users\you\.local\bin\claude.exe"`
+- Or set the path explicitly: `cmv config claude_cli_path /usr/local/bin/claude` (Linux/macOS) or `cmv config claude_cli_path "C:\Users\you\.local\bin\claude.exe"` (Windows)
 
 **Snapshot warns "session appears active"**
 - You're snapshotting a session that's currently in use. The snapshot may be incomplete. Best to exit the Claude session first, then snapshot.
@@ -373,6 +461,18 @@ CMV reads session data from `~/.claude/` for discovery. When branching, it copie
 **Windows: `cmv` not recognized**
 - Close and reopen your terminal after installing Node.js
 - If using PowerShell, run: `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
+
+**Linux: `EACCES` permission error on `npm link`**
+- Use `sudo npm link`, or switch to nvm which doesn't require root for global installs.
+
+**Linux: `cmv` not found after install**
+- If you used nvm, open a new terminal or run `source ~/.bashrc`.
+- If you used a system package manager, check that `/usr/local/bin` is on your PATH: `echo $PATH`
+- You can also run CMV directly: `node /path/to/cmv/dist/index.js`
+
+**Linux: TUI dashboard looks garbled**
+- Make sure your terminal supports 256 colors. Most modern terminals (GNOME Terminal, Konsole, Alacritty, kitty) work fine.
+- If over SSH, ensure `TERM` is set correctly: `echo $TERM` should show something like `xterm-256color`.
 
 ## Debug
 

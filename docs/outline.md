@@ -257,9 +257,9 @@ Linux:    ~/.claude/projects/
 Each project directory under `projects/` is named using an encoding of the project path:
 ```
 ~/.claude/projects/
-├── D--idleking/              # D:\idleking
-├── D--TLI/                   # D:\TLI
-├── d--S-G/                   # d:\S&G (special chars stripped)
+├── D--myproject/              # D:\myproject  (Windows)
+├── home--user--repos--app/    # /home/user/repos/app  (Linux)
+├── d--S-G/                    # d:\S&G (special chars stripped)
 └── ...
 ```
 
@@ -283,7 +283,7 @@ Each project directory has a `sessions-index.json` with rich metadata — **CMV 
   "entries": [
     {
       "sessionId": "30334ea2-f3d4-4071-9eda-4fd3c9b85c59",
-      "fullPath": "C:\\Users\\yasin\\.claude\\projects\\D--idleking\\30334ea2-...jsonl",
+      "fullPath": "C:\\Users\\you\\.claude\\projects\\D--myproject\\30334ea2-...jsonl",
       "fileMtime": 1769451328152,
       "firstPrompt": "analyze this entire codebase...",
       "summary": "Full codebase analysis with architecture discussion",
@@ -291,11 +291,11 @@ Each project directory has a `sessions-index.json` with rich metadata — **CMV 
       "created": "2026-01-26T17:30:12.656Z",
       "modified": "2026-01-26T18:14:29.034Z",
       "gitBranch": "",
-      "projectPath": "D:\\idleking",
+      "projectPath": "D:\\myproject",
       "isSidechain": false
     }
   ],
-  "originalPath": "D:\\idleking"
+  "originalPath": "D:\\myproject"
 }
 ```
 
