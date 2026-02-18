@@ -1,38 +1,54 @@
-import React from 'react';
-import { render } from 'ink';
-import { Dashboard } from './Dashboard.js';
+import { fork } from 'node:child_process';
+import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { DashboardResult } from './Dashboard.js';
 
 export type { DashboardResult };
 
+/**
+ * Launch the interactive TUI dashboard in a forked child process.
+ *
+ * Running Ink in a separate process avoids a Windows-specific problem:
+ * Ink puts stdin into raw mode and starts a background libuv reader thread.
+ * In the same process, there is no reliable way to fully stop that thread
+ * AND keep the console input handle valid for a subsequent child spawn
+ * (destroy() stops the thread but closes the handle; pause() keeps the
+ * handle but the thread keeps consuming keystrokes).
+ *
+ * By forking, the worker owns its own stdin handle.  When the worker
+ * exits, the OS frees everything.  The parent's stdin is never touched,
+ * so spawning Claude with stdio:'inherit' works correctly.
+ */
 export async function launchDashboard(): Promise<DashboardResult> {
-  let dashboardResult: DashboardResult = { action: 'quit' };
+  const __dirname = path.dirname(fileURLToPath(import.meta.url));
+  const workerPath = path.join(__dirname, 'tui-worker.js');
 
-  const { unmount, waitUntilExit } = render(
-    <Dashboard onExit={(result) => { dashboardResult = result; }} />
-  );
+  return new Promise<DashboardResult>((resolve) => {
+    let resolved = false;
 
-  // Wait for Ink to fully unmount and restore the terminal before returning.
-  await waitUntilExit().catch(() => {});
+    const child = fork(workerPath, [], {
+      stdio: ['inherit', 'inherit', 'inherit', 'ipc'],
+    });
 
-  // Explicitly unmount in case app.exit() didn't fully tear down Ink internals.
-  try { unmount(); } catch { /* already unmounted */ }
+    child.on('message', (msg) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(msg as DashboardResult);
+      }
+    });
 
-  // Restore terminal after Ink — Ink puts stdin in raw mode and uses a
-  // background libuv thread (on Windows) to read from the console input
-  // handle. pause() alone does NOT stop that thread, so it keeps consuming
-  // keyboard input from the OS buffer, starving any child process spawned
-  // with stdio: 'inherit'. destroy() fully tears down the readable stream
-  // and stops the reader thread, but does NOT close the underlying OS file
-  // descriptor (fd 0), so the child can still inherit it.
-  if (process.stdin.isTTY && process.stdin.setRawMode) {
-    process.stdin.setRawMode(false);
-  }
-  process.stdin.removeAllListeners();
-  process.stdin.destroy();
+    child.on('error', () => {
+      if (!resolved) {
+        resolved = true;
+        resolve({ action: 'quit' });
+      }
+    });
 
-  // Give the event loop a tick so libuv flushes any pending cleanup.
-  await new Promise(resolve => setTimeout(resolve, 50));
-
-  return dashboardResult;
+    child.on('exit', () => {
+      if (!resolved) {
+        resolved = true;
+        resolve({ action: 'quit' });
+      }
+    });
+  });
 }

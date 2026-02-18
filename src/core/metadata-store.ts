@@ -95,6 +95,24 @@ export async function addBranch(
 }
 
 /**
+ * Remove a branch from a snapshot.
+ * Returns the removed branch, or null if not found.
+ */
+export async function removeBranch(
+  snapshotName: string,
+  branchName: string
+): Promise<{ name: string; forked_session_id: string; created_at: string } | null> {
+  const index = await readIndex();
+  const snapshot = index.snapshots[snapshotName];
+  if (!snapshot) return null;
+  const idx = snapshot.branches.findIndex(b => b.name === branchName);
+  if (idx === -1) return null;
+  const [removed] = snapshot.branches.splice(idx, 1);
+  await writeIndex(index);
+  return removed!;
+}
+
+/**
  * Validate a snapshot name: must be unique, filesystem-safe.
  * Allowed: alphanumeric, hyphens, underscores.
  */

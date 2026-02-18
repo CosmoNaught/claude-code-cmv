@@ -42,6 +42,7 @@ export function ActionBar({ selectedNode }: ActionBarProps) {
         <>
           <KeyHint keyChar="Enter" label="Open" />
           <KeyHint keyChar="s" label="Snapshot" />
+          <KeyHint keyChar="d" label="Delete" />
           <KeyHint keyChar="Tab" label="Switch" />
           <KeyHint keyChar="q" label="Quit" />
         </>

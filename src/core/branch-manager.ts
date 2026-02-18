@@ -1,6 +1,6 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { getSnapshot, addBranch, readConfig } from './metadata-store.js';
+import { getSnapshot, addBranch, removeBranch, readConfig } from './metadata-store.js';
 import { generateUUID } from '../utils/id.js';
 import { spawnClaudeInteractive, getClaudeCliPath } from '../utils/process.js';
 import { getClaudeProjectsDir, getVmcSnapshotsDir } from '../utils/paths.js';
@@ -159,6 +159,60 @@ export async function createBranch(params: BranchParams): Promise<BranchResult> 
     launched: true,
     projectDir,
   };
+}
+
+/**
+ * Delete a branch: remove its session file from the Claude project
+ * directory, remove its sessions-index.json entry, and remove the
+ * branch record from the VMC index.
+ */
+export async function deleteBranch(snapshotName: string, branchName: string): Promise<void> {
+  const snapshot = await getSnapshot(snapshotName);
+  if (!snapshot) {
+    throw new Error(`Snapshot "${snapshotName}" not found.`);
+  }
+
+  const branch = snapshot.branches.find(b => b.name === branchName);
+  if (!branch) {
+    throw new Error(`Branch "${branchName}" not found in snapshot "${snapshotName}".`);
+  }
+
+  // Find the Claude project directory that contains the branch session file
+  const projectDir = await findProjectDir(
+    branch.forked_session_id,
+    snapshot.source_project_path
+  );
+
+  if (projectDir) {
+    // Delete the session JSONL file
+    const jsonlPath = path.join(projectDir, `${branch.forked_session_id}.jsonl`);
+    try {
+      await fs.unlink(jsonlPath);
+    } catch {
+      // File may already be gone
+    }
+
+    // Remove from sessions-index.json
+    await removeFromSessionsIndex(projectDir, branch.forked_session_id);
+  }
+
+  // Remove from VMC index
+  await removeBranch(snapshotName, branchName);
+}
+
+/**
+ * Remove a session entry from sessions-index.json in a Claude project directory.
+ */
+async function removeFromSessionsIndex(projectDir: string, sessionId: string): Promise<void> {
+  const indexPath = path.join(projectDir, 'sessions-index.json');
+  try {
+    const raw = await fs.readFile(indexPath, 'utf-8');
+    const index = JSON.parse(raw) as { version: number; entries: Array<{ sessionId: string }>; originalPath?: string };
+    index.entries = index.entries.filter(e => e.sessionId !== sessionId);
+    await fs.writeFile(indexPath, JSON.stringify(index, null, 2), 'utf-8');
+  } catch {
+    // sessions-index.json may not exist or be malformed
+  }
 }
 
 /**

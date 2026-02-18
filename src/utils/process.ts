@@ -1,4 +1,5 @@
 import { spawn, execFileSync } from 'node:child_process';
+import { openSync, closeSync } from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 
@@ -44,13 +45,37 @@ export function getClaudeCliPath(configPath?: string): string {
 export function spawnClaudeInteractive(args: string[], cliPath?: string, cwd?: string): Promise<number | null> {
   return new Promise((resolve, reject) => {
     const cmd = getClaudeCliPath(cliPath);
+
+    // On Windows, if stdin has been destroyed (e.g. after Ink TUI teardown),
+    // stdio: 'inherit' fails because the underlying console handle was closed.
+    // Open a fresh handle to CONIN$ (the Windows console input buffer) so the
+    // child gets a valid stdin.  stdout/stderr are unaffected.
+    let stdinFd: number | undefined;
+    let stdio: 'inherit' | [number, 'inherit', 'inherit'] = 'inherit';
+
+    if (process.platform === 'win32' && process.stdin.destroyed) {
+      try {
+        stdinFd = openSync('CONIN$', 'r+');
+        stdio = [stdinFd, 'inherit', 'inherit'];
+      } catch {
+        // CONIN$ unavailable (no console attached) — fall back to inherit
+      }
+    }
+
     const child = spawn(cmd, args, {
-      stdio: 'inherit',
+      stdio,
       ...(cwd ? { cwd } : {}),
     });
 
-    child.on('error', reject);
-    child.on('close', (code) => resolve(code));
+    const cleanup = () => {
+      if (stdinFd !== undefined) {
+        try { closeSync(stdinFd); } catch { /* already closed */ }
+        stdinFd = undefined;
+      }
+    };
+
+    child.on('error', (err) => { cleanup(); reject(err); });
+    child.on('close', (code) => { cleanup(); resolve(code); });
   });
 }
 

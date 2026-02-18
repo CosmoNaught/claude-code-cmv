@@ -12,7 +12,7 @@ import { SnapshotPrompt } from './SnapshotPrompt.js';
 import { ConfirmDelete } from './ConfirmDelete.js';
 import { ImportPrompt } from './ImportPrompt.js';
 import { createSnapshot } from '../core/snapshot-manager.js';
-import { createBranch } from '../core/branch-manager.js';
+import { createBranch, deleteBranch } from '../core/branch-manager.js';
 import { deleteSnapshot } from '../core/snapshot-manager.js';
 import { exportSnapshot } from '../core/exporter.js';
 import { importSnapshot } from '../core/importer.js';
@@ -33,7 +33,7 @@ interface DashboardProps {
   onExit: (result: DashboardResult) => void;
 }
 
-type Mode = 'navigate' | 'branch-prompt' | 'branch-launch-prompt' | 'snapshot-prompt' | 'confirm-delete' | 'import-prompt';
+type Mode = 'navigate' | 'branch-prompt' | 'branch-launch-prompt' | 'snapshot-prompt' | 'confirm-delete' | 'confirm-delete-branch' | 'import-prompt';
 type FocusPane = 'projects' | 'tree';
 
 interface StatusMessage {
@@ -158,9 +158,13 @@ export function Dashboard({ onExit }: DashboardProps) {
       return;
     }
 
-    // Delete selected snapshot
+    // Delete selected snapshot or branch
     if (input === 'd' && nav.selectedNode?.type === 'snapshot') {
       setMode('confirm-delete');
+      return;
+    }
+    if (input === 'd' && nav.selectedNode?.type === 'branch') {
+      setMode('confirm-delete-branch');
       return;
     }
 
@@ -262,6 +266,49 @@ export function Dashboard({ onExit }: DashboardProps) {
       setStatus({ text: `Delete failed: ${(err as Error).message}`, type: 'error' });
     }
   }, [nav.selectedNode, refresh]);
+
+  // Find the parent snapshot name for a branch node by searching the tree
+  const findParentSnapshotName = useCallback((branchNode: TreeNode): string | null => {
+    for (const root of combinedRoots) {
+      if (root.type === 'snapshot') {
+        for (const child of root.children) {
+          if (child.type === 'branch' && child.name === branchNode.name) {
+            return root.name;
+          }
+        }
+        // Check nested snapshots
+        const stack = [...root.children.filter(c => c.type === 'snapshot')];
+        while (stack.length > 0) {
+          const node = stack.pop()!;
+          for (const child of node.children) {
+            if (child.type === 'branch' && child.name === branchNode.name) {
+              return node.name;
+            }
+            if (child.type === 'snapshot') stack.push(child);
+          }
+        }
+      }
+    }
+    return null;
+  }, [combinedRoots]);
+
+  const handleDeleteBranch = useCallback(async () => {
+    setMode('navigate');
+    if (!nav.selectedNode?.branch) return;
+    const branchName = nav.selectedNode.name;
+    const snapshotName = findParentSnapshotName(nav.selectedNode);
+    if (!snapshotName) {
+      setStatus({ text: `Cannot find parent snapshot for branch "${branchName}"`, type: 'error' });
+      return;
+    }
+    try {
+      await deleteBranch(snapshotName, branchName);
+      setStatus({ text: `Branch "${branchName}" deleted`, type: 'success' });
+      refresh();
+    } catch (err) {
+      setStatus({ text: `Delete failed: ${(err as Error).message}`, type: 'error' });
+    }
+  }, [nav.selectedNode, findParentSnapshotName, refresh]);
 
   const handleExport = useCallback(async () => {
     if (!nav.selectedNode?.snapshot) return;
@@ -373,6 +420,14 @@ export function Dashboard({ onExit }: DashboardProps) {
           name={nav.selectedNode.name}
           branchCount={nav.selectedNode.snapshot.branches.length}
           onConfirm={handleDelete}
+          onCancel={cancelPrompt}
+        />
+      )}
+      {mode === 'confirm-delete-branch' && nav.selectedNode?.branch && (
+        <ConfirmDelete
+          name={nav.selectedNode.name}
+          branchCount={0}
+          onConfirm={handleDeleteBranch}
           onCancel={cancelPrompt}
         />
       )}
