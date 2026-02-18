@@ -1,4 +1,4 @@
-# VMC — Virtual Memory Contextualization
+# VMC — Contextual Memory Virtualisation
 
 Save, name, and branch from Claude Code sessions. Stop re-explaining your codebase.
 
@@ -51,6 +51,11 @@ vmc sessions
 ## Quick Start
 
 ```bash
+# Fastest way: launch the interactive dashboard
+vmc
+
+# Or use individual commands:
+
 # 1. See all your Claude Code sessions
 vmc sessions
 
@@ -67,7 +72,56 @@ vmc branch "my-analysis" --name "try-rewrite"
 vmc tree
 ```
 
+## Dashboard
+
+Run `vmc` with no arguments (or `vmc dashboard`) to launch the interactive TUI:
+
+```bash
+vmc
+```
+
+Three-column Ranger-style layout — projects, snapshots/sessions, and details:
+
+```
+┌─ Projects ────┬─ Snapshots / Sessions ─────┬─ Details ──────────────┐
+│ ▸ d:\VMC      │ ● codebase-analyzed    82m  │ Name: codebase-analyzed│
+│   d:\myproj   │   ├── implement-auth  (br)  │ Created:     2d ago    │
+│   ~/other     │   └── auth-designed    95m  │ Source:  7e616107…     │
+│               │ ── Sessions ──────────────  │ Messages:    82        │
+│               │   7e616107…  42m    3h ago  │ Size:        2.4 MB    │
+│               │   a1b2c3d4…  18m    1d ago  │ Tags:   architecture   │
+│               │                             │ Branches:    3         │
+├───────────────┴─────────────────────────────┴────────────────────────┤
+│ [b] Branch  [s] Snapshot  [d] Delete  [e] Export  [Tab] Switch [q] Q │
+└──────────────────────────────────────────────────────────────────────┘
+```
+
+**Key bindings:**
+
+| Key | Action |
+|-----|--------|
+| `↑/↓` or `j/k` | Navigate within the focused pane |
+| `←/→` | Collapse/expand tree nodes |
+| `Tab` | Switch focus between Projects and Snapshots/Sessions |
+| `b` | Branch from selected snapshot (prompts for name) |
+| `s` | Snapshot selected session or latest (prompts for name) |
+| `d` | Delete selected snapshot (asks confirmation) |
+| `e` | Export selected snapshot to `.vmc` file |
+| `i` | Import a `.vmc` file (prompts for path) |
+| `Enter` | Branch from selected snapshot and launch Claude |
+| `q` | Quit |
+
+The left column lists all Claude Code projects. The middle column shows snapshots and active sessions for the selected project. The right column shows details for the selected item. Selecting a session and pressing `s` snapshots that specific session. All actions use the same core functions as the CLI commands.
+
 ## Commands
+
+### `vmc dashboard`
+
+Launch the interactive TUI dashboard. Same as running `vmc` with no arguments.
+
+```bash
+vmc dashboard
+```
 
 ### `vmc sessions`
 

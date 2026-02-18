@@ -12,6 +12,7 @@ import { registerConfigCommand } from './commands/config.js';
 import { registerExportCommand } from './commands/export.js';
 import { registerImportCommand } from './commands/import.js';
 import { registerCompletionsCommand } from './commands/completions.js';
+import { registerDashboardCommand } from './commands/dashboard.js';
 
 const program = new Command();
 
@@ -32,5 +33,29 @@ registerConfigCommand(program);
 registerExportCommand(program);
 registerImportCommand(program);
 registerCompletionsCommand(program);
+registerDashboardCommand(program);
+
+// Default action: launch dashboard when no subcommand is provided
+program.action(async () => {
+  try {
+    const { launchDashboard } = await import('./tui/index.js');
+    const result = await launchDashboard();
+
+    if (result.action === 'branch-launch' && result.snapshotName) {
+      const { createBranch } = await import('./core/branch-manager.js');
+      await createBranch({
+        snapshotName: result.snapshotName,
+        branchName: result.branchName,
+        noLaunch: false,
+      });
+    } else if (result.action === 'resume' && result.sessionId) {
+      const { spawnClaudeInteractive } = await import('./utils/process.js');
+      await spawnClaudeInteractive(['--resume', result.sessionId], undefined, result.cwd);
+    }
+  } catch (err) {
+    const { handleError } = await import('./utils/errors.js');
+    handleError(err);
+  }
+});
 
 program.parse();

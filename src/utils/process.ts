@@ -36,8 +36,10 @@ export function getClaudeCliPath(configPath?: string): string {
 }
 
 /**
- * Spawn the claude CLI with given arguments in interactive mode (stdio: inherit).
- * Returns a promise that resolves with the exit code when the process exits.
+ * Spawn the claude CLI with given arguments in interactive mode.
+ * Uses async spawn so the event loop keeps running — critical on Windows
+ * after the Ink TUI, where spawnSync inherits a console handle whose input
+ * mode hasn't fully settled yet (keyboard input never reaches the child).
  */
 export function spawnClaudeInteractive(args: string[], cliPath?: string, cwd?: string): Promise<number | null> {
   return new Promise((resolve, reject) => {

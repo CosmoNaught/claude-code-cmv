@@ -1,15 +1,7 @@
 import { readIndex } from './metadata-store.js';
-import type { VmcSnapshot, VmcBranch } from '../types/index.js';
+import type { VmcSnapshot, VmcBranch, TreeNode } from '../types/index.js';
 import chalk from 'chalk';
 import { formatRelativeTime } from '../utils/display.js';
-
-interface TreeNode {
-  type: 'snapshot' | 'branch';
-  name: string;
-  snapshot?: VmcSnapshot;
-  branch?: VmcBranch;
-  children: TreeNode[];
-}
 
 /**
  * Build a tree structure from snapshots and their branches.

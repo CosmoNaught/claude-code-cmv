@@ -141,6 +141,25 @@ export async function writeConfig(config: VmcConfig): Promise<void> {
 }
 
 /**
+ * Get the total size of a snapshot's session files in bytes.
+ */
+export async function getSnapshotSize(snapshot: VmcSnapshot): Promise<number> {
+  const snapshotDir = path.join(getVmcSnapshotsDir(), snapshot.snapshot_dir);
+  let totalSize = 0;
+  try {
+    const sessionDir = path.join(snapshotDir, 'session');
+    const files = await fs.readdir(sessionDir);
+    for (const file of files) {
+      const stat = await fs.stat(path.join(sessionDir, file));
+      totalSize += stat.size;
+    }
+  } catch {
+    // Directory may not exist
+  }
+  return totalSize;
+}
+
+/**
  * Atomic file write: write to temp file, then rename.
  */
 async function atomicWrite(filePath: string, content: string): Promise<void> {

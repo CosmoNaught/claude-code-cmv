@@ -72,6 +72,15 @@ export interface VmcConfig {
   default_project?: string;
 }
 
+export interface TreeNode {
+  type: 'snapshot' | 'branch' | 'session' | 'separator';
+  name: string;
+  snapshot?: VmcSnapshot;
+  branch?: VmcBranch;
+  session?: ClaudeSessionEntry;
+  children: TreeNode[];
+}
+
 // ============================================================
 // Command Option Types
 // ============================================================

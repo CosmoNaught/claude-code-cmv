@@ -1,8 +1,5 @@
 import { Command } from 'commander';
-import * as path from 'node:path';
-import * as fs from 'node:fs/promises';
-import { getSnapshot, readIndex } from '../core/metadata-store.js';
-import { getVmcSnapshotsDir } from '../utils/paths.js';
+import { getSnapshot, readIndex, getSnapshotSize } from '../core/metadata-store.js';
 import { error, bold, dim, formatDate } from '../utils/display.js';
 import { handleError } from '../utils/errors.js';
 import chalk from 'chalk';
@@ -20,18 +17,7 @@ export function registerInfoCommand(program: Command): void {
         }
 
         // Get snapshot directory size
-        const snapshotDir = path.join(getVmcSnapshotsDir(), snapshot.snapshot_dir);
-        let totalSize = 0;
-        try {
-          const sessionDir = path.join(snapshotDir, 'session');
-          const files = await fs.readdir(sessionDir);
-          for (const file of files) {
-            const stat = await fs.stat(path.join(sessionDir, file));
-            totalSize += stat.size;
-          }
-        } catch {
-          // Directory may not exist
-        }
+        const totalSize = await getSnapshotSize(snapshot);
 
         // Build parent chain
         const parentChain: string[] = [];

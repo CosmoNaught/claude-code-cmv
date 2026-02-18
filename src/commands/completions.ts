@@ -10,7 +10,8 @@ Register-ArgumentCompleter -CommandName vmc -Native -ScriptBlock {
 
     $commands = @(
         'snapshot', 'branch', 'list', 'sessions', 'tree',
-        'info', 'delete', 'export', 'import', 'config', 'help'
+        'info', 'delete', 'export', 'import', 'config',
+        'dashboard', 'completions', 'help'
     )
 
     $tokens = $commandAst.ToString().Split(' ')
@@ -73,7 +74,7 @@ _vmc_completions() {
     COMPREPLY=()
     cur="\${COMP_WORDS[COMP_CWORD]}"
     prev="\${COMP_WORDS[COMP_CWORD-1]}"
-    commands="snapshot branch list sessions tree info delete export import config help"
+    commands="snapshot branch list sessions tree info delete export import config dashboard completions help"
 
     if [ $COMP_CWORD -eq 1 ]; then
         COMPREPLY=( $(compgen -W "$commands" -- "$cur") )

@@ -12,8 +12,9 @@ import type { ClaudeSessionsIndex, ClaudeSessionEntry } from '../types/index.js'
 /**
  * Read sessions-index.json from a project directory.
  * Falls back to scanning .jsonl files directly if the index doesn't exist.
- * When the index exists but has entries with messageCount=0, re-scans those
- * JSONL files to get accurate conversation message counts.
+ *
+ * Parallelizes all I/O: stats every JSONL for fresh mtime, only parses
+ * JSONL content for sessions with messageCount=0 (small/new sessions).
  */
 async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsIndex | null> {
   const indexPath = path.join(projectDir, 'sessions-index.json');
@@ -21,58 +22,31 @@ async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsInde
     const raw = await fs.readFile(indexPath, 'utf-8');
     const index = JSON.parse(raw) as ClaudeSessionsIndex;
 
-    // Track which session IDs are in the index
     const indexedIds = new Set(index.entries.map(e => e.sessionId));
 
-    // Supplement entries: fix stale modified times and missing message counts
-    for (const entry of index.entries) {
+    // Parallel: stat all JSONL files + selectively count messages
+    await Promise.all(index.entries.map(async (entry) => {
       const jsonlPath = path.join(projectDir, `${entry.sessionId}.jsonl`);
 
-      // Stat the actual JSONL file for real mtime (index may be stale for active sessions)
-      let fileIsNewer = false;
+      // Stat for fresh mtime
       try {
         const stat = await fs.stat(jsonlPath);
         const fileMtime = stat.mtime.toISOString();
-        // Use the more recent of index modified vs actual file mtime
         if (!entry.modified || new Date(fileMtime) > new Date(entry.modified)) {
-          fileIsNewer = true;
           entry.modified = fileMtime;
           entry.fileMtime = stat.mtimeMs;
+        }
+
+        // Only parse JSONL for sessions missing message count (small/new)
+        if (!entry.messageCount || entry.messageCount === 0) {
+          const counts = await countConversationMessages(jsonlPath);
+          if (counts.messageCount > 0) entry.messageCount = counts.messageCount;
+          if (!entry.firstPrompt && counts.firstPrompt) entry.firstPrompt = counts.firstPrompt;
         }
       } catch {
         // JSONL file might not exist (orphaned index entry)
       }
-
-      // Only re-scan JSONL if messageCount is missing/zero.
-      // For sessions where file is newer but we already have a count,
-      // use file size as a fast heuristic to detect significant growth.
-      if (!entry.messageCount || entry.messageCount === 0) {
-        const counts = await countConversationMessages(jsonlPath);
-        if (counts.messageCount > 0) {
-          entry.messageCount = counts.messageCount;
-        }
-        if (!entry.firstPrompt && counts.firstPrompt) {
-          entry.firstPrompt = counts.firstPrompt;
-        }
-      } else if (fileIsNewer) {
-        // Fast path: use file size to estimate if count is very stale
-        // Only do the expensive full scan if the file has grown significantly
-        try {
-          const stat = await fs.stat(jsonlPath);
-          const avgBytesPerMessage = 500; // rough estimate
-          const estimatedMessages = Math.floor(stat.size / avgBytesPerMessage);
-          // If estimated is >2x the index count, the count is very stale — rescan
-          if (estimatedMessages > entry.messageCount * 2) {
-            const counts = await countConversationMessages(jsonlPath);
-            if (counts.messageCount > 0) {
-              entry.messageCount = counts.messageCount;
-            }
-          }
-        } catch {
-          // ignore
-        }
-      }
-    }
+    }));
 
     // Discover JSONL files not yet in the index (new/active sessions)
     try {
@@ -80,27 +54,26 @@ async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsInde
       const dirName = path.basename(projectDir);
       const projectPath = index.originalPath || decodeDirName(dirName);
 
-      for (const item of items) {
-        if (!item.isFile() || !item.name.endsWith('.jsonl')) continue;
-        const sessionId = item.name.replace('.jsonl', '');
-        if (indexedIds.has(sessionId)) continue;
+      await Promise.all(items
+        .filter(item => item.isFile() && item.name.endsWith('.jsonl'))
+        .filter(item => !indexedIds.has(item.name.replace('.jsonl', '')))
+        .map(async (item) => {
+          const sessionId = item.name.replace('.jsonl', '');
+          const filePath = path.join(projectDir, item.name);
+          const stat = await fs.stat(filePath);
+          const counts = await countConversationMessages(filePath);
 
-        // Found a JSONL file not in the index — add it
-        const filePath = path.join(projectDir, item.name);
-        const stat = await fs.stat(filePath);
-        const counts = await countConversationMessages(filePath);
-
-        index.entries.push({
-          sessionId,
-          fullPath: filePath,
-          fileMtime: stat.mtimeMs,
-          firstPrompt: counts.firstPrompt,
-          messageCount: counts.messageCount || undefined,
-          created: stat.birthtime.toISOString(),
-          modified: stat.mtime.toISOString(),
-          projectPath,
-        });
-      }
+          index.entries.push({
+            sessionId,
+            fullPath: filePath,
+            fileMtime: stat.mtimeMs,
+            firstPrompt: counts.firstPrompt,
+            messageCount: counts.messageCount || undefined,
+            created: stat.birthtime.toISOString(),
+            modified: stat.mtime.toISOString(),
+            projectPath,
+          });
+        }));
     } catch {
       // Can't read directory
     }
