@@ -1,0 +1,37 @@
+{
+  "name": "vmc",
+  "version": "0.1.0",
+  "description": "Virtual Memory Contextualization — git-like snapshot and branching for Claude Code sessions",
+  "type": "module",
+  "bin": {
+    "vmc": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "link": "npm run build && npm link",
+    "prepublishOnly": "npm run build && npm test"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "session",
+    "snapshot",
+    "branch",
+    "context"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "chalk": "^5.0.0",
+    "commander": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^25.2.3",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}

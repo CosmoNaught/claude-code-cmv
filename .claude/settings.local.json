@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Read(//c/Users/yasin/**)",
+      "Bash(claude.exe:*)",
+      "Bash(claude:*)",
+      "Bash(npm install:*)",
+      "Bash(where:*)",
+      "Bash(cmd.exe /c \"where node\")",
+      "Bash(cmd.exe /c \"where npm\")",
+      "Bash(powershell.exe -Command \"Get-Command node -ErrorAction SilentlyContinue | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''PATH'', ''User''\\)\")",
+      "Bash(tr:*)",
+      "Bash(powershell.exe -Command \"[System.Environment]::GetEnvironmentVariable\\(''PATH'', ''Machine''\\)\")",
+      "Bash(npx tsc:*)",
+      "Bash(node dist/index.js:*)",
+      "Bash(npm link:*)",
+      "Bash(vmc:*)",
+      "Bash(npm root:*)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:/c/Users/yasin/AppData/Roaming/npm:$PATH\")",
+      "Read(//c/Program Files/nodejs/**)",
+      "Bash(\"$HOME/.local/bin/claude.exe\" --help)",
+      "Bash(npm run build:*)",
+      "Bash(node -e:*)",
+      "Bash(for f in 374a618a-d873-49ef-bb4c-1258bd203241 d1bfa960-d64a-4156-8d05-9918fd792858 59243d61-ea32-4ef8-9f2f-4d9e04605a48 ecf13de5-4fdf-4941-a314-252be2591fed 0b5e373b-6dd8-475c-a8aa-683e5f7a9a7e)",
+      "Bash(do)",
+      "Bash(p=\"C:/Users/yasin/.claude/projects/d--hiddenstate/$f.jsonl\")",
+      "Bash(if [ -f \"$p\" ])",
+      "Bash(then echo \"EXISTS: $f\")",
+      "Bash(else echo \"MISSING: $f\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(test:*)",
+      "Bash(ls:*)",
+      "Bash(powershell -Command:*)",
+      "Bash(cmd //c \"npm run build\")",
+      "Read(//c/Program Files/**)",
+      "Bash(export PATH=\"/c/Program Files/nodejs:$PATH\")"
+    ],
+    "additionalDirectories": [
+      "C:\\Users\\yasin\\.claude\\projects\\d--hiddenstate"
+    ]
+  }
+}
