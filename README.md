@@ -48,7 +48,7 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 nvm install --lts
 
 # CMV
-git clone https://github.com/CosmoNaught/cmv.git
+git clone https://github.com/CosmoNaught/claude-code-cmv.git
 cd cmv
 npm install && npm run build
 npm link
@@ -63,7 +63,7 @@ npm link
 winget install OpenJS.NodeJS.LTS
 
 # CMV (reopen terminal after installing Node)
-git clone https://github.com/CosmoNaught/cmv.git
+git clone https://github.com/CosmoNaught/claude-code-cmv.git
 cd cmv
 npm install && npm run build
 npm link
@@ -78,7 +78,7 @@ npm link
 brew install node
 
 # CMV
-git clone https://github.com/CosmoNaught/cmv.git
+git clone https://github.com/CosmoNaught/claude-code-cmv.git
 cd cmv
 npm install && npm run build
 npm link
