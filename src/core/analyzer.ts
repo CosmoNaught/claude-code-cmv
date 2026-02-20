@@ -22,8 +22,8 @@ function contentTextLength(content: any): number {
   for (const block of content) {
     if (block.type === 'text' && typeof block.text === 'string') {
       total += block.text.length;
-    } else if (block.type === 'thinking' && typeof block.text === 'string') {
-      total += block.text.length;
+    } else if (block.type === 'thinking' && typeof block.thinking === 'string') {
+      total += block.thinking.length;
     } else if (block.type === 'tool_use' && block.input) {
       total += JSON.stringify(block.input).length;
     } else if (block.type === 'tool_result') {
@@ -184,8 +184,8 @@ export async function analyzeSession(jsonlPath: string): Promise<SessionAnalysis
             breakdown.thinkingSignatures.count++;
           }
           // Thinking text counts toward content tokens
-          if (typeof block.text === 'string') {
-            contentChars += block.text.length;
+          if (typeof block.thinking === 'string') {
+            contentChars += block.thinking.length;
           }
         }
         if (block.type === 'tool_use') {

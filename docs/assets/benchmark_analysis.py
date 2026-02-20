@@ -225,8 +225,8 @@ def analyze_session(jsonl_path: str) -> SessionAnalysis | None:
                                     json.dumps(block["signature"]).encode("utf-8")
                                 )
                                 thinking_count += 1
-                            if isinstance(block.get("text"), str):
-                                content_chars += len(block["text"])
+                            if isinstance(block.get("thinking"), str):
+                                content_chars += len(block["thinking"])
 
                         elif btype == "tool_use":
                             tu_b += len(json.dumps(block).encode("utf-8"))
