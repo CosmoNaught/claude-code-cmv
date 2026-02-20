@@ -210,6 +210,8 @@ Claude's synthesis — the part with the actual understanding — stays. The 847
 
 Typical reduction is 50-70%, with near-zero information loss. Compare that to `/compact`, which gets you ~98% reduction but wipes out the entire conversation in the process.
 
+For a detailed analysis of how trimming interacts with Anthropic's prompt caching and what it costs, see the [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
+
 ## Workflows
 
 ### Analyse once, branch for every task
