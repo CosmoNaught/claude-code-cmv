@@ -37,11 +37,18 @@ async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsInde
           entry.fileMtime = stat.mtimeMs;
         }
 
-        // Only parse JSONL for sessions missing message count (small/new)
-        if (!entry.messageCount || entry.messageCount === 0) {
+        // Parse JSONL for sessions missing message count (small/new) or missing/encoded projectPath
+        const needsCount = !entry.messageCount || entry.messageCount === 0;
+        const needsPath = !entry.projectPath || entry.projectPath.startsWith('-');
+
+        if (needsCount || needsPath) {
           const counts = await countConversationMessages(jsonlPath);
           if (counts.messageCount > 0) entry.messageCount = counts.messageCount;
           if (!entry.firstPrompt && counts.firstPrompt) entry.firstPrompt = counts.firstPrompt;
+          // Update projectPath if we extracted a cwd and the current path looks encoded
+          if (counts.cwd && needsPath) {
+            entry.projectPath = counts.cwd;
+          }
         }
       } catch {
         // JSONL file might not exist (orphaned index entry)
@@ -52,7 +59,7 @@ async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsInde
     try {
       const items = await fs.readdir(projectDir, { withFileTypes: true });
       const dirName = path.basename(projectDir);
-      const projectPath = index.originalPath || decodeDirName(dirName);
+      const fallbackProjectPath = index.originalPath || decodeDirName(dirName);
 
       await Promise.all(items
         .filter(item => item.isFile() && item.name.endsWith('.jsonl'))
@@ -62,6 +69,9 @@ async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsInde
           const filePath = path.join(projectDir, item.name);
           const stat = await fs.stat(filePath);
           const counts = await countConversationMessages(filePath);
+
+          // Prefer cwd from JSONL over decoded directory name
+          const projectPath = counts.cwd || fallbackProjectPath;
 
           index.entries.push({
             sessionId,
@@ -87,13 +97,14 @@ async function readSessionsIndex(projectDir: string): Promise<ClaudeSessionsInde
 
 /**
  * Count actual conversation messages (user/assistant) in a JSONL file.
- * Returns the count and the first user prompt (best-effort).
+ * Returns the count, the first user prompt (best-effort), and the cwd from the session.
  */
 async function countConversationMessages(
   jsonlPath: string
-): Promise<{ messageCount: number; firstPrompt?: string }> {
+): Promise<{ messageCount: number; firstPrompt?: string; cwd?: string }> {
   let messageCount = 0;
   let firstPrompt: string | undefined;
+  let cwd: string | undefined;
 
   try {
     const fileStream = createReadStream(jsonlPath, { encoding: 'utf-8' });
@@ -117,6 +128,10 @@ async function countConversationMessages(
             }
           }
         }
+        // Extract cwd from the first record that has it
+        if (!cwd && parsed.cwd) {
+          cwd = parsed.cwd;
+        }
       } catch {
         // Skip unparseable lines
       }
@@ -126,7 +141,7 @@ async function countConversationMessages(
     // Can't read file
   }
 
-  return { messageCount, firstPrompt };
+  return { messageCount, firstPrompt, cwd };
 }
 
 /**
@@ -139,9 +154,9 @@ async function scanJsonlFiles(projectDir: string): Promise<ClaudeSessionsIndex |
 
     if (jsonlFiles.length === 0) return null;
 
-    // Derive project path from directory name: "d--hiddenstate" → "d:\hiddenstate"
+    // Derive project path from directory name as fallback: "d--hiddenstate" → "d:\hiddenstate"
     const dirName = path.basename(projectDir);
-    const projectPath = decodeDirName(dirName);
+    const fallbackProjectPath = decodeDirName(dirName);
 
     const entries: ClaudeSessionEntry[] = [];
     for (const file of jsonlFiles) {
@@ -149,8 +164,11 @@ async function scanJsonlFiles(projectDir: string): Promise<ClaudeSessionsIndex |
       const filePath = path.join(projectDir, file.name);
       const stat = await fs.stat(filePath);
 
-      // Count conversation messages and extract first prompt
+      // Count conversation messages and extract first prompt and cwd
       const counts = await countConversationMessages(filePath);
+
+      // Prefer cwd from JSONL over decoded directory name
+      const projectPath = counts.cwd || fallbackProjectPath;
 
       entries.push({
         sessionId,
