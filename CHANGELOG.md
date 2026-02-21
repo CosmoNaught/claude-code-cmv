@@ -4,6 +4,17 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [1.2.0] — 2026-02-21
+
+### Added
+
+- Test suite (vitest): 30 tests covering trimmer, session-reader, and cache-analyzer.
+  - Trimmer: file-history removal, queue-op removal, tool_result stubbing, image stripping, thinking block removal, tool_use input stubbing, pre-compaction skipping, usage stripping, threshold options, byte metrics, conversation preservation.
+  - Session reader: cwd extraction from JSONL, version extraction.
+  - Cache analyzer: token estimation, removal ratio cap, tool_use savings factor, stub overhead accounting.
+
+---
+
 ## [1.1.1] — 2026-02-21
 
 ### Fixed
