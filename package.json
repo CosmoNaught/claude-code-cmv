@@ -1,6 +1,6 @@
 {
   "name": "cmv",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "Contextual Memory Virtualisation — git-like snapshot and branching for Claude Code sessions",
   "type": "module",
   "bin": {

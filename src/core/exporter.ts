@@ -1,7 +1,5 @@
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { createReadStream, createWriteStream } from 'node:fs';
-import { pipeline } from 'node:stream/promises';
 import * as zlib from 'node:zlib';
 import { getCmvSnapshotsDir } from '../utils/paths.js';
 import { getSnapshot } from './metadata-store.js';

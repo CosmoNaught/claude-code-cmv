@@ -223,6 +223,6 @@ python docs/assets/benchmark_analysis.py --model opus --output cmv_benchmark_opu
 
 - Pricing data: [Anthropic Prompt Caching Documentation](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 - Analysis code: [`docs/assets/benchmark_analysis.py`](assets/benchmark_analysis.py)
-- CMV: [github.com/CosmoNaught/cmv](https://github.com/CosmoNaught/cmv)
+- CMV: [github.com/CosmoNaught/cmv](https://github.com/CosmoNaught/claude-code-cmv)
 
 *Generated February 2026. All analysis run against real Claude Code sessions on the author's machine.*

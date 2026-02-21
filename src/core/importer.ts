@@ -4,14 +4,9 @@ import * as zlib from 'node:zlib';
 import { getCmvSnapshotsDir } from '../utils/paths.js';
 import { initialize, getSnapshot, addSnapshot, validateSnapshotName } from './metadata-store.js';
 import { generateSnapshotId } from '../utils/id.js';
-import type { CmvSnapshot, CmvSnapshotMeta } from '../types/index.js';
+import type { CmvSnapshot, CmvSnapshotMeta, ImportOptions } from '../types/index.js';
 
 const CMV_VERSION = '1.0.0';
-
-export interface ImportOptions {
-  rename?: string;
-  force?: boolean;
-}
 
 export interface ImportResult {
   name: string;

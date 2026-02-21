@@ -10,50 +10,6 @@ export class CmvError extends Error {
   }
 }
 
-export class SessionNotFoundError extends CmvError {
-  constructor(sessionId: string) {
-    super(`Session "${sessionId}" not found.`, `Session not found: ${sessionId}`);
-    this.name = 'SessionNotFoundError';
-  }
-}
-
-export class SnapshotNotFoundError extends CmvError {
-  constructor(name: string) {
-    super(`Snapshot "${name}" not found.`, `Snapshot not found: ${name}`);
-    this.name = 'SnapshotNotFoundError';
-  }
-}
-
-export class ClaudeCliNotFoundError extends CmvError {
-  constructor() {
-    super(
-      'Claude CLI not found. Set path with: cmv config claude_cli_path <path>',
-      'Claude CLI not found in PATH'
-    );
-    this.name = 'ClaudeCliNotFoundError';
-  }
-}
-
-export class ClaudeStorageNotFoundError extends CmvError {
-  constructor() {
-    super(
-      'Claude Code not found. Is it installed? Expected ~/.claude/ directory.',
-      'Claude storage directory not found'
-    );
-    this.name = 'ClaudeStorageNotFoundError';
-  }
-}
-
-export class NoSessionsError extends CmvError {
-  constructor() {
-    super(
-      'No sessions found. Start a Claude Code session first.',
-      'No Claude sessions found'
-    );
-    this.name = 'NoSessionsError';
-  }
-}
-
 /**
  * Global error handler for CLI commands.
  * Shows userMessage to user; full stack only with CMV_DEBUG=1.

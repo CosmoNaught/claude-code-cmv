@@ -3,12 +3,6 @@ import { openSync, closeSync } from 'node:fs';
 import * as path from 'node:path';
 import * as os from 'node:os';
 
-export interface SpawnResult {
-  exitCode: number | null;
-  stdout: string;
-  stderr: string;
-}
-
 /**
  * Find the claude CLI executable path.
  * On Windows, resolves to the full path to avoid needing shell: true.
@@ -76,26 +70,5 @@ export function spawnClaudeInteractive(args: string[], cliPath?: string, cwd?: s
 
     child.on('error', (err) => { cleanup(); reject(err); });
     child.on('close', (code) => { cleanup(); resolve(code); });
-  });
-}
-
-/**
- * Spawn the claude CLI and capture output (non-interactive).
- */
-export function spawnClaudeCapture(args: string[], cliPath?: string): Promise<SpawnResult> {
-  return new Promise((resolve, reject) => {
-    const cmd = getClaudeCliPath(cliPath);
-    const child = spawn(cmd, args, {
-      stdio: ['pipe', 'pipe', 'pipe'],
-    });
-
-    let stdout = '';
-    let stderr = '';
-
-    child.stdout?.on('data', (data: Buffer) => { stdout += data.toString(); });
-    child.stderr?.on('data', (data: Buffer) => { stderr += data.toString(); });
-
-    child.on('error', reject);
-    child.on('close', (exitCode) => resolve({ exitCode, stdout, stderr }));
   });
 }
