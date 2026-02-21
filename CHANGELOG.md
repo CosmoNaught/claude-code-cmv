@@ -4,6 +4,15 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [1.1.1] — 2026-02-21
+
+### Fixed
+
+- macOS: parse cwd from JSONL session data instead of ambiguous dash-encoded directory names (thanks @KaustubhPatange).
+- macOS: resolve full claude CLI path via `command -v` to fix spawn ENOENT, graceful fallback when stored cwd no longer exists (thanks @nrolland).
+
+---
+
 ## [1.1.0] — 2026-02-21
 
 ### Added
