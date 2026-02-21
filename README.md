@@ -1,3 +1,8 @@
+[![GitHub release](https://img.shields.io/github/v/release/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/releases)
+[![License](https://img.shields.io/github/license/CosmoNaught/claude-code-cmv)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/stargazers)
+[![Node](https://img.shields.io/badge/node-18%2B-brightgreen)](https://nodejs.org)
+
 # Claude Code Contextual Memory Virtualisation (CMV)
 
 Like virtual memory lets an OS use more RAM than it physically has, CMV lets Claude Code use more context than fits in one session — by snapshotting, branching, and trimming the understanding your sessions build up.
