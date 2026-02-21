@@ -48,13 +48,19 @@ export interface CacheImpactReport {
  * Estimate post-trim token count from the session analysis breakdown.
  *
  * Trim rules (mirrors trimmer.ts):
- *   1. file-history-snapshot → removed entirely
- *   2. thinking blocks → removed entirely
- *   3. tool_result > 500 chars → stubbed (~35 bytes each)
- *   4. everything else → preserved
+ *   1. Pre-compaction content → skipped entirely
+ *   2. file-history-snapshot → removed entirely
+ *   3. queue-operation → removed entirely
+ *   4. Image blocks in tool results → stripped always
+ *   5. tool_result > threshold → stubbed (~35 bytes each)
+ *   6. tool_use input for write ops + broad fallback → stubbed
+ *   7. thinking blocks → removed entirely
+ *   8. API usage metadata → stripped
  *
  * We estimate that ~70% of tool result bytes come from results > 500 chars
  * (conservative — real sessions often see 85-95%).
+ * We estimate ~30% of tool_use request bytes are from stubbable input fields
+ * (Write/Edit payloads, Task prompts, etc.).
  */
 export function estimatePostTrimTokens(analysis: SessionAnalysis): number {
   const { breakdown, estimatedTokens, totalBytes } = analysis;
@@ -66,7 +72,8 @@ export function estimatePostTrimTokens(analysis: SessionAnalysis): number {
     breakdown.fileHistory.bytes +
     breakdown.thinkingSignatures.bytes +
     (breakdown.toolResults.bytes * 0.7) -
-    (breakdown.toolResults.count * 35); // stub overhead added back
+    (breakdown.toolResults.count * 35) + // stub overhead added back
+    (breakdown.toolUseRequests.bytes * 0.3); // ~30% of tool_use bytes are stubbable inputs
 
   const removalRatio = Math.max(0, Math.min(0.95, removedBytes / totalBytes));
 

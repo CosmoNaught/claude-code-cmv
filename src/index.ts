@@ -14,13 +14,14 @@ import { registerImportCommand } from './commands/import.js';
 import { registerCompletionsCommand } from './commands/completions.js';
 import { registerDashboardCommand } from './commands/dashboard.js';
 import { registerTrimCommand } from './commands/trim.js';
+import { registerBenchmarkCommand } from './commands/benchmark.js';
 
 const program = new Command();
 
 program
   .name('cmv')
   .description('Contextual Memory Virtualisation — git-like snapshots and branching for Claude Code sessions')
-  .version('0.1.0');
+  .version('1.1.0');
 
 // Register all commands
 registerSnapshotCommand(program);
@@ -35,6 +36,7 @@ registerExportCommand(program);
 registerImportCommand(program);
 registerCompletionsCommand(program);
 registerTrimCommand(program);
+registerBenchmarkCommand(program);
 registerDashboardCommand(program);
 
 // Default action: launch dashboard when no subcommand is provided

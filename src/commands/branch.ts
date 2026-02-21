@@ -14,7 +14,16 @@ function printTrimMetrics(result: { trimMetrics?: import('../types/index.js').Tr
   const saved = m.originalBytes - m.trimmedBytes;
   const pct = m.originalBytes > 0 ? Math.round((saved / m.originalBytes) * 100) : 0;
   console.log(`  Trimmed: ${formatSize(m.originalBytes)} → ${formatSize(m.trimmedBytes)} (${pct}% reduction)`);
-  console.log(`  Removed: ${m.toolResultsStubbed} tool results, ${m.signaturesStripped} signatures, ${m.fileHistoryRemoved} file-history entries`);
+  const removedParts = [
+    `${m.toolResultsStubbed} tool results`,
+    `${m.signaturesStripped} signatures`,
+    `${m.fileHistoryRemoved} file-history`,
+  ];
+  if (m.imagesStripped > 0) removedParts.push(`${m.imagesStripped} images`);
+  if (m.toolUseInputsStubbed > 0) removedParts.push(`${m.toolUseInputsStubbed} tool inputs`);
+  if (m.preCompactionLinesSkipped > 0) removedParts.push(`${m.preCompactionLinesSkipped} pre-compaction`);
+  if (m.queueOperationsRemoved > 0) removedParts.push(`${m.queueOperationsRemoved} queue-ops`);
+  console.log(`  Removed: ${removedParts.join(', ')}`);
   console.log(`  Preserved: ${m.userMessages} user msgs, ${m.assistantResponses} assistant msgs, ${m.toolUseRequests} tool uses`);
 }
 
@@ -24,9 +33,10 @@ export function registerBranchCommand(program: Command): void {
     .description('Create a new session from a snapshot')
     .option('-n, --name <name>', 'Name for the branch')
     .option('--trim', 'Trim context before branching (removes tool results, signatures, file history)')
+    .option('-t, --threshold <chars>', 'Stub threshold when trimming (default: 500)')
     .option('--skip-launch', "Don't launch Claude Code, just create the session file")
     .option('--dry-run', 'Show what would happen without doing it')
-    .action(async (snapshotName: string, opts: { name?: string; trim?: boolean; skipLaunch?: boolean; dryRun?: boolean }) => {
+    .action(async (snapshotName: string, opts: { name?: string; trim?: boolean; threshold?: string; skipLaunch?: boolean; dryRun?: boolean }) => {
       try {
         const result = await createBranch({
           snapshotName,
@@ -34,6 +44,7 @@ export function registerBranchCommand(program: Command): void {
           noLaunch: opts.skipLaunch,
           dryRun: opts.dryRun,
           trim: opts.trim,
+          trimThreshold: opts.threshold ? parseInt(opts.threshold, 10) : undefined,
         });
 
         if (opts.dryRun) {

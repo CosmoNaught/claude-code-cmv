@@ -2,7 +2,7 @@
 
 ## Context
 
-CMV's `trim` feature reduces context window usage by stripping mechanical overhead (tool results, thinking block signatures, file-history snapshots) from Claude Code session data. A natural question arose during community discussion: **does trimming invalidate prompt caching in a way that increases costs?**
+CMV's `trim` feature reduces context window usage by stripping mechanical overhead (tool results, image blocks, tool_use inputs, thinking block signatures, file-history snapshots, queue operations, and pre-compaction dead lines) from Claude Code session data. A natural question arose during community discussion: **does trimming invalidate prompt caching in a way that increases costs?**
 
 This document presents empirical data from 33 real Claude Code sessions to answer that question. It also identifies what this analysis covers and what remains open for future work.
 
@@ -22,8 +22,12 @@ This document presents empirical data from 33 real Claude Code sessions to answe
 Claude Code sends the full conversation history as input tokens on every API call. Over a long session, this context accumulates mechanical overhead:
 
 - **Tool results** — full file contents, grep output, command results (often 5-50k chars each)
+- **Image blocks** — base64-encoded screenshots and diagrams inside tool results (50-200KB each)
+- **Tool_use inputs** — Write/Edit tool calls contain the full file being written (often 5-20k chars)
 - **Thinking block signatures** — cryptographic signatures on every thinking block
 - **File-history snapshots** — periodic dumps of working directory state
+- **Queue operations** — internal scheduling metadata
+- **Pre-compaction dead lines** — JSONL lines before the last compaction boundary, no longer in active context
 
 CMV's `trim` feature removes this overhead when creating a snapshot/branch, reducing the token count sent to the API. Because Anthropic uses [prompt caching](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching), trimming changes the prompt prefix and causes a cache miss on the first subsequent turn. Since cache writes cost 1.25x base price while cache reads cost 0.1x, this miss introduces a one-time cost penalty.
 
@@ -46,13 +50,18 @@ The question is whether subsequent per-turn savings (from caching a smaller pref
 - Respected compaction boundaries (Claude Code's built-in summarization)
 
 ### Trim Simulation
-Mirrors the actual trim rules in `trimmer.ts`:
-1. `file-history-snapshot` entries → removed entirely
-2. Thinking block signatures → removed entirely
-3. `tool_result` blocks > 500 chars → stubbed to ~35 bytes each
-4. Everything else → preserved
+Mirrors the actual trim rules in `trimmer.ts` (v1.1.0):
+1. Pre-compaction content → skipped entirely (everything before the last compaction boundary)
+2. `file-history-snapshot` entries → removed entirely
+3. `queue-operation` entries → removed entirely
+4. Image blocks (`type: 'image'`) in tool results → always stripped
+5. `tool_result` blocks > threshold (default 500 chars) → stubbed to ~35 bytes each
+6. `tool_use` input for Write/Edit/NotebookEdit → large content fields stubbed; broad fallback stubs any tool with oversized inputs
+7. Thinking blocks → removed entirely (API requires cryptographic signature)
+8. API usage metadata → stripped
+9. Everything else → preserved
 
-We estimate that 70% of tool result bytes come from results > 500 chars. This is an assumption, not measured from the data. It is conservative in the sense that tool results in Claude Code sessions tend to be dominated by file reads and command output, which are typically large. A future version of the benchmark could measure this directly by categorizing individual tool result sizes.
+The benchmark estimator accounts for rules 1-3 and 5 directly. For rule 6, it estimates ~30% of tool_use request bytes are stubbable (conservative — Write/Edit-heavy sessions are higher). Image stripping (rule 4) and pre-compaction skipping (rule 1) are not yet modeled in the estimator, meaning the benchmark still understates actual reductions for sessions with screenshots or compaction history.
 
 ### Cost Model
 
@@ -78,7 +87,9 @@ We assume a **90% cache hit rate** in steady state. This is not empirically meas
 
 ## Results
 
-### Context Reduction
+> **Note:** The benchmark data below was collected with the v1.0 trimmer (3 rules: file-history removal, thinking block removal, tool result stubbing). The v1.1.0 trimmer adds image stripping, tool_use input stubbing, pre-compaction skipping, and queue-operation removal. Actual reductions with v1.1.0 are larger than these numbers. Run `cmv benchmark --latest` for current estimates.
+
+### Context Reduction (v1.0 baseline)
 
 | Metric | Value |
 |--------|-------|
@@ -91,7 +102,7 @@ We assume a **90% cache hit rate** in steady state. This is not empirically meas
 
 Most sessions cluster around 5-10% reduction. Higher reductions (20-25%) appear in sessions that have not yet been compacted by Claude Code's built-in summarizer. Post-compaction sessions, which represent the majority in a normal workflow, show more modest reduction. Note that these are the benchmark's conservative estimates — see [Benchmark vs. Observed Reduction](#benchmark-vs-observed-reduction) for why real-world reductions are significantly higher.
 
-### Cache Cost Impact (Opus 4.6, API-key users only)
+### Cache Cost Impact (Opus 4.6, API-key users only, v1.0 baseline)
 
 | Metric | Value |
 |--------|-------|
@@ -111,9 +122,9 @@ Most sessions cluster around 5-10% reduction. Higher reductions (20-25%) appear 
 
 For sessions with minimal reduction (<5%), trimming offers negligible cost benefit. The `cmv benchmark` command flags these directly.
 
-### Benchmark vs. Observed Reduction
+### Benchmark vs. Observed Reduction (v1.0)
 
-The benchmark model is deliberately conservative. When we compared its predictions against actual Claude Code `/context` output for the same session before and after trimming, the real reduction was roughly **2x larger** than predicted:
+The benchmark model is deliberately conservative. When we compared its predictions against actual Claude Code `/context` output for the same session before and after trimming (using the v1.0 trimmer), the real reduction was roughly **2x larger** than predicted:
 
 | Metric | Benchmark Prediction | Observed (`/context`) |
 |--------|---------------------|----------------------|
@@ -130,15 +141,15 @@ The benchmark model is deliberately conservative. When we compared its predictio
 
 ![Context after trimming — 37% usage](assets/trim.png)
 
-Three factors explain the gap:
+Three factors explained the gap (at time of v1.0 measurement):
 
-1. **Image content inflates the byte denominator.** The benchmark estimates trim savings as a ratio of removed bytes to total bytes. Sessions containing image tool results (base64 screenshots, diagrams) have large byte counts that contribute minimally to token count (~0.008 tokens/byte vs ~0.25 for text). These images are never trimmed (the trimmer only stubs text content >500 chars), but they inflate `total_bytes`, making the byte-ratio a poor proxy for the token-ratio.
+1. **Image content inflated the byte denominator.** The benchmark estimated trim savings as a ratio of removed bytes to total bytes. Sessions containing image tool results (base64 screenshots, diagrams) had large byte counts that contributed minimally to token count (~0.008 tokens/byte vs ~0.25 for text). In v1.0, images were never trimmed, inflating `total_bytes` and making the byte-ratio a poor proxy for the token-ratio. **As of v1.1.0, image blocks are always stripped from tool results**, which both improves the actual reduction and should narrow this gap in future benchmarks.
 
 2. **Bytes and tokens are not proportional for mixed content.** The model applies a single byte-removal ratio to the token estimate. This works when content is uniformly text, but breaks down when the session contains a mix of base64 images (high bytes, low tokens) and conversation text (low bytes, high tokens). Removing 100k chars of tool result text has far more token impact than the byte ratio suggests.
 
-3. **Thinking block field name mismatch (now fixed).** The analyzer was reading `block.text` for thinking blocks, but Claude's API stores thinking content under `block.thinking`. This caused ~5k tokens of thinking text per session to be invisible to the token estimator. The trimmer correctly removed these blocks, but the model didn't count the savings. This bug has been fixed in the analyzer.
+3. **Thinking block field name mismatch (fixed in v1.0.1).** The analyzer was reading `block.text` for thinking blocks, but Claude's API stores thinking content under `block.thinking`. This has been fixed.
 
-**Why we keep the conservative model:** A benchmark that understates its case is harder to attack than one that overstates it. If someone reproduces these numbers and observes 40-50% reduction where we claimed 10-25%, that validates the tool more strongly than aggressive predictions would. The model's directional finding — that trimming recovers its cache miss cost over a non-trivial session — holds regardless, and is strengthened by the observation that real reductions are larger than modeled.
+**Why we keep the conservative model:** A benchmark that understates its case is harder to attack than one that overstates it. The model's directional finding — that trimming recovers its cache miss cost over a non-trivial session — holds regardless, and is strengthened by the observation that real reductions are larger than modeled.
 
 ---
 
@@ -225,4 +236,4 @@ python docs/assets/benchmark_analysis.py --model opus --output cmv_benchmark_opu
 - Analysis code: [`docs/assets/benchmark_analysis.py`](assets/benchmark_analysis.py)
 - CMV: [github.com/CosmoNaught/cmv](https://github.com/CosmoNaught/claude-code-cmv)
 
-*Generated February 2026. All analysis run against real Claude Code sessions on the author's machine.*
+*Originally generated February 2026 (v1.0 baseline). Trim rules updated for v1.1.0. All analysis run against real Claude Code sessions on the author's machine.*

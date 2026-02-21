@@ -17,7 +17,8 @@ export function registerTrimCommand(program: Command): void {
     .option('--latest', 'Trim the most recently modified session')
     .option('-n, --name <name>', 'Name for the snapshot')
     .option('--skip-launch', "Don't launch Claude Code after trimming")
-    .action(async (opts: { session?: string; latest?: boolean; name?: string; skipLaunch?: boolean }) => {
+    .option('-t, --threshold <chars>', 'Stub threshold in characters (default: 500)')
+    .action(async (opts: { session?: string; latest?: boolean; name?: string; skipLaunch?: boolean; threshold?: string }) => {
       try {
         if (!opts.session && !opts.latest) {
           console.error('Must provide --session <id> or --latest');
@@ -45,6 +46,7 @@ export function registerTrimCommand(program: Command): void {
           snapshotName,
           trim: true,
           noLaunch: opts.skipLaunch,
+          trimThreshold: opts.threshold ? parseInt(opts.threshold, 10) : undefined,
         });
 
         success(`Trimmed branch "${result.branchName}" created.`);
@@ -62,6 +64,18 @@ export function registerTrimCommand(program: Command): void {
           console.log(`  Tool results stubbed:         ${m.toolResultsStubbed}`);
           console.log(`  Thinking signatures stripped:  ${m.signaturesStripped}`);
           console.log(`  File-history entries removed:  ${m.fileHistoryRemoved}`);
+          if (m.imagesStripped > 0) {
+            console.log(`  Image blocks stripped:         ${m.imagesStripped}`);
+          }
+          if (m.toolUseInputsStubbed > 0) {
+            console.log(`  Tool use inputs stubbed:       ${m.toolUseInputsStubbed}`);
+          }
+          if (m.preCompactionLinesSkipped > 0) {
+            console.log(`  Pre-compaction lines skipped:  ${m.preCompactionLinesSkipped}`);
+          }
+          if (m.queueOperationsRemoved > 0) {
+            console.log(`  Queue operations removed:      ${m.queueOperationsRemoved}`);
+          }
           console.log();
           console.log(`  Conversation preserved:`);
           console.log(`    User messages:       ${m.userMessages}`);

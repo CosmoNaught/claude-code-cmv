@@ -25,7 +25,7 @@ cmv sessions                                         # list Claude Code sessions
 cmv snapshot "analysis" --latest                     # commit context state
 cmv branch "analysis" --name "auth-work"             # fork — full history, fresh session
 cmv branch "analysis" --name "api-work"              # fork again — independent, same starting point
-cmv branch "analysis" --name "trimmed" --trim        # fork with cleanup — 50-70% smaller, nothing lost
+cmv branch "analysis" --name "trimmed" --trim        # fork with cleanup — strips bloat, keeps conversation
 cmv tree                                             # view the history
 ```
 
@@ -126,6 +126,7 @@ Fork from a snapshot. Creates a new session with the full conversation history. 
 ```bash
 cmv branch "analysis" --name "auth-work"
 cmv branch "analysis" --name "clean-start" --trim
+cmv branch "analysis" --name "clean-start" --trim --threshold 200  # more aggressive
 cmv branch "analysis" --name "later" --skip-launch
 ```
 
@@ -135,6 +136,7 @@ Snapshot, trim, and launch in one step. The "better `/compact`" workflow — exi
 
 ```bash
 cmv trim --latest
+cmv trim --latest --threshold 200    # lower threshold = more aggressive trimming
 ```
 
 More on this [below](#trim).
@@ -166,6 +168,16 @@ Move context between machines. Portable `.cmv` archives.
 ```bash
 cmv export "analysis" -o ./team-context.cmv
 cmv import ./team-context.cmv
+```
+
+### `cmv benchmark`
+
+Analyze cache impact of trimming a session. Shows context breakdown, cost projections, and break-even analysis.
+
+```bash
+cmv benchmark --latest                    # analyze most recent session
+cmv benchmark --latest --model opus       # use Opus 4.6 pricing
+cmv benchmark --latest --json             # JSON output for scripting
 ```
 
 Run `cmv config --help` for settings. `cmv completions --install` for shell tab-completion.
@@ -204,11 +216,11 @@ Claude: "The auth module uses JWT with refresh tokens
 
 Claude's synthesis — the part with the actual understanding — stays. The 847 lines of raw source are gone. If Claude needs the file again later, it can just re-read it.
 
-**What gets removed:** tool result bodies over 500 chars, thinking signatures, file-history metadata.
+**What gets removed:** tool result bodies over 500 chars, image blocks (base64 screenshots), large tool_use inputs (Write/Edit file contents), thinking signatures, file-history metadata, queue operations, and pre-compaction dead lines.
 
 **What stays:** every user message, every assistant response, every tool use request, all reasoning.
 
-Typical reduction is 50-70%, with near-zero information loss. Compare that to `/compact`, which gets you ~98% reduction but wipes out the entire conversation in the process.
+Typical reduction is 50-70%+, with near-zero information loss. Use `--threshold 200` for more aggressive trimming. Compare that to `/compact`, which gets you ~98% reduction but wipes out the entire conversation in the process.
 
 For a detailed analysis of how trimming interacts with Anthropic's prompt caching and what it costs, see the [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
 
@@ -317,3 +329,45 @@ Claude Code already has session-level primitives. CMV isn't replacing them — i
 - **Branch won't launch:** Check `claude --version` works. Or: `cmv config claude_cli_path /path/to/claude`
 - **"Session appears active":** Exit the Claude session before snapshotting.
 - **Debug:** `CMV_DEBUG=1 cmv <command>` for stack traces.
+
+## Contributing
+
+Contributions are welcome. Here's how to get set up:
+
+```bash
+git clone https://github.com/CosmoNaught/claude-code-cmv.git
+cd cmv
+npm install
+npm run build
+npm link        # makes `cmv` available globally from your local build
+```
+
+`npm run dev` starts the TypeScript compiler in watch mode.
+
+### What helps most
+
+- **Benchmark data.** Run `cmv benchmark --latest --json` and share the output (anonymized — no conversation content is included). More data from different usage patterns strengthens the [cache impact analysis](docs/CACHE_IMPACT_ANALYSIS.md).
+- **Bug reports.** Open an issue with the command you ran, what you expected, and what happened. Include `CMV_DEBUG=1` output if relevant.
+- **Platform testing.** macOS support is untested. If you're on macOS and it works (or doesn't), that's useful information.
+- **Trim quality feedback.** If you trim a session and notice Claude struggling on the new branch (hallucinating file contents, asking to re-read things it shouldn't need to), that's the most valuable signal we don't have yet.
+
+### Before submitting a PR
+
+1. `npm run build` must pass with no errors.
+2. Keep changes focused — one feature or fix per PR.
+3. If you're adding a new trim rule, update the docstring in `src/core/trimmer.ts` and add the metric to `TrimMetrics` in `src/types/index.ts`.
+
+### Project structure
+
+```
+src/
+  commands/     CLI command handlers (one file per command)
+  core/         Business logic (trimmer, analyzer, snapshot/branch managers)
+  tui/          Ink/React dashboard components
+  types/        TypeScript interfaces
+  utils/        Path handling, display formatting, process spawning
+```
+
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for version history.

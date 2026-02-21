@@ -13,6 +13,7 @@ export interface BranchParams {
   noLaunch?: boolean;
   dryRun?: boolean;
   trim?: boolean;
+  trimThreshold?: number;
 }
 
 export interface BranchResult {
@@ -109,7 +110,9 @@ export async function createBranch(params: BranchParams): Promise<BranchResult> 
   let trimMetrics: TrimMetrics | undefined;
   try {
     if (params.trim) {
-      trimMetrics = await trimJsonl(snapshotJsonlPath, destJsonlPath);
+      trimMetrics = await trimJsonl(snapshotJsonlPath, destJsonlPath, {
+        threshold: params.trimThreshold,
+      });
     } else {
       await fs.copyFile(snapshotJsonlPath, destJsonlPath);
     }

@@ -139,6 +139,10 @@ export interface TrimMetrics {
   toolResultsStubbed: number;
   signaturesStripped: number;
   fileHistoryRemoved: number;
+  imagesStripped: number;
+  toolUseInputsStubbed: number;
+  preCompactionLinesSkipped: number;
+  queueOperationsRemoved: number;
   userMessages: number;
   assistantResponses: number;
   toolUseRequests: number;
