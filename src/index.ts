@@ -21,7 +21,7 @@ const program = new Command();
 program
   .name('cmv')
   .description('Contextual Memory Virtualisation — git-like snapshots and branching for Claude Code sessions')
-  .version('1.1.1');
+  .version('1.2.0');
 
 // Register all commands
 registerSnapshotCommand(program);
