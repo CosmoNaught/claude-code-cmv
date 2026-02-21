@@ -16,4 +16,3 @@
 - [ ] `npm test` passes
 - [ ] Tested against a real JSONL session
 - [ ] No breaking changes (or clearly noted below)
-- [ ] If adding a new trim rule: updated docstring in `src/core/trimmer.ts` and added metric to `TrimMetrics` in `src/types/index.ts`
