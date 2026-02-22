@@ -4,6 +4,26 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [2.0.0] — 2026-02-22
+
+### Added
+
+- **Auto-trim hooks** — `cmv hook install` registers PreCompact and PostToolUse hooks with Claude Code. PreCompact trims before compaction fires. PostToolUse checks file size on every tool call and trims when context exceeds ~600KB (1ms overhead otherwise). Auto-backup before each trim with rotation.
+- **Batch branching** — press `m` on a snapshot in the TUI to create multiple branches at once. Each branch gets an orientation message injected so Claude knows its focus area.
+- **Read-only session viewer** — press `Enter` on a branch to watch its JSONL in real-time in the TUI right pane. Structured conversation view (user/assistant/tool messages). Press `Esc` to stop watching, `o` to open externally.
+- **Session status indicators** — branches in the tree show `●` (active, modified < 2 min ago) or `○` (idle).
+- **Hook management CLI** — `cmv hook install`, `cmv hook uninstall`, `cmv hook status`, `cmv hook restore`.
+- **Auto-backup system** — `src/core/auto-backup.ts` with save, list, restore, and rotate.
+- **New tests** — auto-backup (6 tests), session-watcher (6 tests). Total: 42 tests.
+
+### Changed
+
+- **Branch now trims by default.** Use `--no-trim` for raw context. This is a breaking change to CLI behavior.
+- TUI branch action (`b` key) trims by default.
+- Branch action bar: `Enter` now watches, `o` opens externally.
+
+---
+
 ## [1.2.0] — 2026-02-21
 
 ### Added

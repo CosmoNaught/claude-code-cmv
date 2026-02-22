@@ -70,6 +70,23 @@ export interface CmvSnapshotMeta {
 export interface CmvConfig {
   claude_cli_path?: string;
   default_project?: string;
+  autoTrim?: AutoTrimConfig;
+}
+
+export interface AutoTrimConfig {
+  threshold?: number;
+  sizeThresholdBytes?: number;
+  maxBackups?: number;
+}
+
+export interface AutoTrimLogEntry {
+  timestamp: string;
+  sessionId: string;
+  trigger: string;
+  originalBytes: number;
+  trimmedBytes: number;
+  reductionPercent: number;
+  backupPath: string;
 }
 
 export interface TreeNode {

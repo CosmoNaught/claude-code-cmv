@@ -14,6 +14,7 @@ export interface BranchParams {
   dryRun?: boolean;
   trim?: boolean;
   trimThreshold?: number;
+  orientationMessage?: string;
 }
 
 export interface BranchResult {
@@ -118,6 +119,15 @@ export async function createBranch(params: BranchParams): Promise<BranchResult> 
     }
   } catch (err) {
     throw new Error(`Failed to ${params.trim ? 'trim' : 'copy'} session file: ${(err as Error).message}`);
+  }
+
+  // Append orientation message if provided (used by multi-branch)
+  if (params.orientationMessage) {
+    const orientationLine = JSON.stringify({
+      type: 'human',
+      message: { role: 'user', content: params.orientationMessage },
+    }) + '\n';
+    await fs.appendFile(destJsonlPath, orientationLine);
   }
 
   // Update sessions-index.json in the project directory
