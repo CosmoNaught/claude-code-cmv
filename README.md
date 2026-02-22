@@ -8,6 +8,7 @@
 Like virtual memory lets an OS use more RAM than it physically has, CMV lets Claude Code use more context than fits in one session — by snapshotting, branching, and trimming the understanding your sessions build up.
 
 ![CMV demo](assets/demo.gif)
+
 ## The Problem
 
 Every conversation with Claude builds up state. Not just chat history — actual understanding. Architecture mapped, tradeoffs weighed, decisions made, conventions learned. After 30 minutes of deep work (sometimes less!), Claude has a mental model of your whole codebase sitting in its context window. That took real time and real tokens to build.
@@ -29,36 +30,6 @@ Build up context once, reuse it whenever you need it.
 
 > **Note:** The "Messages" token count in `/context` includes tool results, tool calls, and system entries — not just your conversation. The drop from 132k to 2.3k is the tool result bloat being stripped. Every user and assistant message is still there verbatim.
 
-## Quick Start
-
-```bash
-cmv                                                  # launch the TUI dashboard
-cmv sessions                                         # list Claude Code sessions
-cmv snapshot "analysis" --latest                     # commit context state
-cmv branch "analysis" --name "auth-work"             # fork — trimmed by default
-cmv branch "analysis" --name "api-work"              # fork again — independent, same starting point
-cmv branch "analysis" --name "raw" --no-trim         # fork without trimming (raw context)
-cmv hook status                                      # auto-trim hooks (installed automatically)
-cmv tree                                             # view the history
-```
-
-## FAQ
-
-**Won't trimming break prompt caching?**
-One-time cache miss of ~$0.07-0.22 when the trimmed session starts, recovered within a few turns as the smaller prefix gets cached. Pro/Max subscribers pay no per-token cost — caching only affects rate limits, so trimming is purely a context window win. Full analysis: [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
-
-**Does Claude lose understanding after a trim?**
-No. Trimming removes tool *results* (raw file dumps, command output), not Claude's responses about them. If Claude read 847 lines of `auth.ts` and summarised the JWT flow, the summary stays — the 847 lines go. If Claude needs the file again, it re-reads it.
-
-**What exactly gets removed?**
-Tool result bodies over 500 chars, base64 image blocks, thinking signatures, file-history metadata, and large tool inputs (file writes/edits). Every user message, every assistant response, and every tool *request* stays verbatim.
-
-**Do I need to use branching?**
-No. `cmv trim --latest` snapshots, trims, and launches a fresh session in one step — no branching required. Auto-trim hooks (`cmv hook status`) also run in the background without any manual intervention.
-
-**Pro/Max subscriber vs API user — does this matter for me?**
-Different value propositions. **Subscribers:** no per-token cost, so the win is purely freeing context window space and reducing rate-limit burn from cache misses. **API users:** small one-time cache miss cost, net savings after a few turns from caching a much smaller prefix. Both benefit from fitting more useful conversation into the 200k window.
-
 ## Install
 
 Requires [Node.js 18+](https://nodejs.org) and [Claude Code](https://docs.anthropic.com/en/docs/claude-code).
@@ -72,7 +43,7 @@ nvm install --lts
 
 # CMV
 git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+cd claude-code-cmv
 npm install && npm run build
 npm link
 ```
@@ -87,7 +58,7 @@ winget install OpenJS.NodeJS.LTS
 
 # CMV (reopen terminal after installing Node)
 git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+cd claude-code-cmv
 npm install && npm run build
 npm link
 ```
@@ -102,9 +73,24 @@ brew install node
 
 # CMV
 git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+cd claude-code-cmv
 npm install && npm run build
 npm link
+```
+
+Auto-trim hooks are installed automatically after the build. Run `cmv hook status` to verify.
+
+## Quick Start
+
+```bash
+cmv                                                  # launch the TUI dashboard
+cmv sessions                                         # list Claude Code sessions
+cmv snapshot "analysis" --latest                     # commit context state
+cmv branch "analysis" --name "auth-work"             # fork — trimmed by default
+cmv branch "analysis" --name "api-work"              # fork again — independent, same starting point
+cmv branch "analysis" --name "raw" --no-trim         # fork without trimming (raw context)
+cmv hook status                                      # auto-trim hooks (installed automatically)
+cmv tree                                             # view the history
 ```
 
 ## Dashboard
@@ -209,7 +195,7 @@ cmv benchmark --latest --json             # JSON output for scripting
 
 ### `cmv hook`
 
-Manage auto-trim hooks for Claude Code. Hooks are **installed automatically** when you run `npm install` — no extra step needed. Once active, CMV periodically trims sessions in the background — before compaction fires and when context gets heavy — so you rarely need to trim manually.
+Manage auto-trim hooks for Claude Code. Hooks are installed automatically during setup — after `npm run build`, the next `npm install` (or `npm link`) registers them. Once active, CMV trims sessions in the background — before compaction fires and when context gets heavy — so you rarely need to trim manually.
 
 If you need to reinstall or manage them manually:
 
@@ -222,6 +208,23 @@ cmv hook restore --list   # list available backups
 ```
 
 Run `cmv config --help` for settings. `cmv completions --install` for shell tab-completion.
+
+## FAQ
+
+**Won't trimming break prompt caching?**
+One-time cache miss of ~$0.07-0.22 when the trimmed session starts, recovered within a few turns as the smaller prefix gets cached. Pro/Max subscribers pay no per-token cost — caching only affects rate limits, so trimming is purely a context window win. Full analysis: [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
+
+**Does Claude lose understanding after a trim?**
+No. Trimming removes tool *results* (raw file dumps, command output), not Claude's responses about them. If Claude read 847 lines of `auth.ts` and summarised the JWT flow, the summary stays — the 847 lines go. If Claude needs the file again, it re-reads it.
+
+**What exactly gets removed?**
+Tool result bodies over 500 chars, base64 image blocks, thinking signatures, file-history metadata, and large tool inputs (file writes/edits). Every user message, every assistant response, and every tool *request* stays verbatim.
+
+**Do I need to use branching?**
+No. `cmv trim --latest` snapshots, trims, and launches a fresh session in one step — no branching required. Auto-trim hooks (`cmv hook status`) also run in the background without any manual intervention.
+
+**Pro/Max subscriber vs API user — does this matter for me?**
+Different value propositions. **Subscribers:** no per-token cost, so the win is purely freeing context window space and reducing rate-limit burn from cache misses. **API users:** small one-time cache miss cost, net savings after a few turns from caching a much smaller prefix. Both benefit from fitting more useful conversation into the 200k window.
 
 ## Trim
 
