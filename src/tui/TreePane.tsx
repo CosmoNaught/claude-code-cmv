@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import type { FlatNode } from './hooks/useTreeNavigation.js';
+import type { ClaudeSessionEntry } from '../types/index.js';
 import { formatRelativeTime, truncate } from '../utils/display.js';
 
 interface TreePaneProps {
@@ -10,6 +11,22 @@ interface TreePaneProps {
   height: number;
   width: number;
   projectName?: string;
+  sessions?: (ClaudeSessionEntry & { _projectDir: string })[];
+}
+
+function getStatusIcon(node: { type: string; branch?: { forked_session_id: string } }, sessions?: (ClaudeSessionEntry & { _projectDir: string })[]): string {
+  if (!sessions) return '';
+  let session: ClaudeSessionEntry | undefined;
+
+  if (node.type === 'branch' && node.branch) {
+    session = sessions.find(s => s.sessionId === node.branch!.forked_session_id);
+  }
+
+  if (!session?.modified) return '';
+
+  const modifiedMs = new Date(session.modified).getTime();
+  const twoMinAgo = Date.now() - 2 * 60 * 1000;
+  return modifiedMs > twoMinAgo ? '● ' : '○ ';
 }
 
 function SeparatorRow({ name, maxWidth }: { name: string; maxWidth: number }) {
@@ -50,7 +67,7 @@ function SessionRow({ flatNode, selected, focused, maxWidth }: { flatNode: FlatN
   );
 }
 
-function SnapshotRow({ flatNode, selected, focused, maxWidth }: { flatNode: FlatNode; selected: boolean; focused: boolean; maxWidth: number }) {
+function SnapshotRow({ flatNode, selected, focused, maxWidth, sessions }: { flatNode: FlatNode; selected: boolean; focused: boolean; maxWidth: number; sessions?: (ClaudeSessionEntry & { _projectDir: string })[] }) {
   const { node, depth, isLast, hasChildren, isCollapsed, parentPrefixes } = flatNode;
 
   // Build prefix with tree-line characters
@@ -72,12 +89,13 @@ function SnapshotRow({ flatNode, selected, focused, maxWidth }: { flatNode: Flat
   }
 
   // Format suffix based on type
+  const statusIcon = getStatusIcon(node, sessions);
   let suffix = '';
   if (node.type === 'snapshot' && node.snapshot) {
     const msgs = node.snapshot.message_count;
     suffix = msgs ? ` ${msgs}m` : '';
   } else if (node.type === 'branch') {
-    suffix = ' (br)';
+    suffix = ` ${statusIcon}(br)`;
   }
 
   // Truncate name if needed
@@ -114,7 +132,7 @@ function SnapshotRow({ flatNode, selected, focused, maxWidth }: { flatNode: Flat
   );
 }
 
-export function TreePane({ flatNodes, selectedIndex, focused, height, width, projectName }: TreePaneProps) {
+export function TreePane({ flatNodes, selectedIndex, focused, height, width, projectName, sessions }: TreePaneProps) {
   const visibleCount = Math.max(1, height - 2);
   const halfWindow = Math.floor(visibleCount / 2);
   let startIndex = Math.max(0, selectedIndex - halfWindow);
@@ -148,7 +166,7 @@ export function TreePane({ flatNodes, selectedIndex, focused, height, width, pro
             return <SessionRow key={key} flatNode={flatNode} selected={isSelected} focused={focused} maxWidth={maxWidth} />;
           }
 
-          return <SnapshotRow key={key} flatNode={flatNode} selected={isSelected} focused={focused} maxWidth={maxWidth} />;
+          return <SnapshotRow key={key} flatNode={flatNode} selected={isSelected} focused={focused} maxWidth={maxWidth} sessions={sessions} />;
         })
       )}
     </Box>

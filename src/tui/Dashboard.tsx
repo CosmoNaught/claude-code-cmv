@@ -8,6 +8,8 @@ import { TreePane } from './TreePane.js';
 import { DetailPane } from './DetailPane.js';
 import { ActionBar } from './ActionBar.js';
 import { BranchPrompt } from './BranchPrompt.js';
+import { MultiBranchPrompt } from './MultiBranchPrompt.js';
+import { SessionViewer } from './SessionViewer.js';
 import { SnapshotPrompt } from './SnapshotPrompt.js';
 import { ConfirmDelete } from './ConfirmDelete.js';
 import { ImportPrompt } from './ImportPrompt.js';
@@ -18,7 +20,8 @@ import { deleteSession } from '../core/session-reader.js';
 import { exportSnapshot } from '../core/exporter.js';
 import { importSnapshot } from '../core/importer.js';
 import { initialize } from '../core/metadata-store.js';
-import type { TreeNode } from '../types/index.js';
+import type { TreeNode, ClaudeSessionEntry } from '../types/index.js';
+import * as path from 'node:path';
 
 export type DashboardAction = 'quit' | 'branch-launch' | 'trim-launch' | 'resume';
 
@@ -34,7 +37,7 @@ interface DashboardProps {
   onExit: (result: DashboardResult) => void;
 }
 
-type Mode = 'navigate' | 'branch-prompt' | 'branch-launch-prompt' | 'trim-prompt' | 'snapshot-prompt' | 'confirm-delete' | 'confirm-delete-branch' | 'confirm-delete-session' | 'import-prompt';
+type Mode = 'navigate' | 'branch-prompt' | 'branch-launch-prompt' | 'trim-prompt' | 'snapshot-prompt' | 'confirm-delete' | 'confirm-delete-branch' | 'confirm-delete-session' | 'import-prompt' | 'multi-branch-prompt';
 type FocusPane = 'projects' | 'tree';
 
 interface StatusMessage {
@@ -51,6 +54,12 @@ export function Dashboard({ onExit }: DashboardProps) {
   const [projectIndex, setProjectIndex] = useState(0);
   const [status, setStatus] = useState<StatusMessage | null>(null);
   const [initialized, setInitialized] = useState(false);
+  const [watchedSession, setWatchedSession] = useState<{
+    sessionId: string;
+    branchName: string;
+    snapshotName: string;
+    jsonlPath: string;
+  } | null>(null);
 
   // Clamp project index
   const clampedProjectIndex = Math.min(projectIndex, Math.max(0, projects.length - 1));
@@ -65,16 +74,17 @@ export function Dashboard({ onExit }: DashboardProps) {
     if (!selectedProject) return [];
     const items: TreeNode[] = [];
 
-    // Add snapshot roots for this project
-    for (const root of selectedProject.snapshotRoots) {
-      items.push(root);
+    // Add snapshots under a separator header
+    if (selectedProject.snapshotRoots.length > 0) {
+      items.push({ type: 'separator', name: 'Snapshots', children: [] });
+      for (const root of selectedProject.snapshotRoots) {
+        items.push(root);
+      }
     }
 
-    // Add sessions as flat nodes below a separator
+    // Add sessions under a separator header
     if (selectedProject.sessions.length > 0) {
-      if (items.length > 0) {
-        items.push({ type: 'separator', name: 'Sessions', children: [] });
-      }
+      items.push({ type: 'separator', name: 'Sessions', children: [] });
       for (const session of selectedProject.sessions) {
         items.push({
           type: 'session',
@@ -107,6 +117,12 @@ export function Dashboard({ onExit }: DashboardProps) {
   // Keyboard handler for navigate mode
   useInput((input, key) => {
     if (!isNavigating) return;
+
+    // Escape: dismiss session viewer
+    if (key.escape && watchedSession) {
+      setWatchedSession(null);
+      return;
+    }
 
     // Tab to switch focus between panes
     if (key.tab) {
@@ -185,14 +201,37 @@ export function Dashboard({ onExit }: DashboardProps) {
       return;
     }
 
+    // Multi-branch from selected snapshot
+    if (input === 'm' && nav.selectedNode?.type === 'snapshot') {
+      setMode('multi-branch-prompt');
+      return;
+    }
+
     // Import
     if (input === 'i') {
       setMode('import-prompt');
       return;
     }
 
-    // Enter: resume an existing branch session
+    // Enter: watch an existing branch session in the viewer
     if (key.return && nav.selectedNode?.type === 'branch' && nav.selectedNode.branch) {
+      const branchSession = selectedProject?.sessions.find(
+        s => s.sessionId === nav.selectedNode!.branch!.forked_session_id
+      );
+      const parentName = findParentSnapshotName(nav.selectedNode) || 'unknown';
+      if (branchSession) {
+        setWatchedSession({
+          sessionId: branchSession.sessionId,
+          branchName: nav.selectedNode.name,
+          snapshotName: parentName,
+          jsonlPath: path.join(branchSession._projectDir, `${branchSession.sessionId}.jsonl`),
+        });
+      }
+      return;
+    }
+
+    // o: open branch session externally
+    if (input === 'o' && nav.selectedNode?.type === 'branch' && nav.selectedNode.branch) {
       onExit({
         action: 'resume',
         sessionId: nav.selectedNode.branch.forked_session_id,
@@ -228,6 +267,7 @@ export function Dashboard({ onExit }: DashboardProps) {
         snapshotName: nav.selectedNode.name,
         branchName,
         noLaunch: true,
+        trim: true,
       });
       setStatus({ text: `Branch "${branchName}" created`, type: 'success' });
       refresh();
@@ -380,15 +420,39 @@ export function Dashboard({ onExit }: DashboardProps) {
     }
   }, [nav.selectedNode, refresh]);
 
+  const handleMultiBranch = useCallback(async (branchNames: string[]) => {
+    setMode('navigate');
+    if (!nav.selectedNode?.snapshot) return;
+    const snapshotName = nav.selectedNode.name;
+    let created = 0;
+    for (const name of branchNames) {
+      try {
+        await createBranch({
+          snapshotName,
+          branchName: name,
+          noLaunch: true,
+          trim: true,
+          orientationMessage: `You are continuing from a branched snapshot called "${name}", forked from "${snapshotName}". Focus area: ${name}.`,
+        });
+        created++;
+      } catch {
+        // Continue with remaining branches
+      }
+    }
+    setStatus({ text: `Created ${created} branch${created !== 1 ? 'es' : ''} from "${snapshotName}"`, type: 'success' });
+    refresh();
+  }, [nav.selectedNode, refresh]);
+
   const cancelPrompt = useCallback(() => {
     setMode('navigate');
   }, []);
 
-  // Layout calculations — three columns
-  const projectWidth = Math.max(16, Math.floor(columns * 0.2));
-  const treeWidth = Math.max(20, Math.floor(columns * 0.35));
-  const detailWidth = columns - projectWidth - treeWidth;
+  // Layout calculations — two columns: left (projects + details) and right (tree / viewer)
+  const leftWidth = Math.max(20, Math.floor(columns * 0.35));
+  const rightWidth = columns - leftWidth;
   const bodyHeight = rows - 4;
+  const projectHeight = Math.min(Math.max(5, projects.length + 3), Math.floor(bodyHeight * 0.35));
+  const detailHeight = bodyHeight - projectHeight;
 
   if (loading || !initialized) {
     return (
@@ -417,32 +481,48 @@ export function Dashboard({ onExit }: DashboardProps) {
 
   return (
     <Box flexDirection="column" height={rows}>
-      {/* Main body: three panes */}
+      {/* Main body: two columns */}
       <Box flexGrow={1} height={bodyHeight}>
-        <ProjectPane
-          projects={projects}
-          selectedIndex={clampedProjectIndex}
-          focused={focus === 'projects' && isNavigating}
-          height={bodyHeight}
-          width={projectWidth}
-        />
+        {/* Left column: projects + details */}
+        <Box flexDirection="column" width={leftWidth}>
+          <ProjectPane
+            projects={projects}
+            selectedIndex={clampedProjectIndex}
+            focused={focus === 'projects' && isNavigating}
+            height={projectHeight}
+            width={leftWidth}
+          />
+          {watchedSession ? (
+            <SessionViewer
+              sessionId={watchedSession.sessionId}
+              branchName={watchedSession.branchName}
+              snapshotName={watchedSession.snapshotName}
+              jsonlPath={watchedSession.jsonlPath}
+              width={leftWidth}
+              height={detailHeight}
+            />
+          ) : (
+            <DetailPane
+              node={nav.selectedNode}
+              width={leftWidth}
+              sessions={selectedProject?.sessions}
+            />
+          )}
+        </Box>
+        {/* Right column: snapshots / sessions tree */}
         <TreePane
           flatNodes={nav.flatNodes}
           selectedIndex={nav.selectedIndex}
           focused={focus === 'tree' && isNavigating}
           height={bodyHeight}
-          width={treeWidth}
+          width={rightWidth}
           projectName={selectedProject?.path}
-        />
-        <DetailPane
-          node={nav.selectedNode}
-          width={detailWidth}
           sessions={selectedProject?.sessions}
         />
       </Box>
 
       {/* Bottom bar */}
-      {mode === 'navigate' && <ActionBar selectedNode={nav.selectedNode} />}
+      {mode === 'navigate' && <ActionBar selectedNode={nav.selectedNode} watching={!!watchedSession} />}
       {mode === 'branch-prompt' && nav.selectedNode && (
         <BranchPrompt
           snapshotName={nav.selectedNode.name}
@@ -492,6 +572,13 @@ export function Dashboard({ onExit }: DashboardProps) {
         <BranchPrompt
           snapshotName={nav.selectedNode.name}
           onSubmit={handleTrim}
+          onCancel={cancelPrompt}
+        />
+      )}
+      {mode === 'multi-branch-prompt' && nav.selectedNode && (
+        <MultiBranchPrompt
+          snapshotName={nav.selectedNode.name}
+          onSubmit={handleMultiBranch}
           onCancel={cancelPrompt}
         />
       )}

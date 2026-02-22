@@ -28,9 +28,10 @@ Build up context once, reuse it whenever you need it.
 cmv                                                  # launch the TUI dashboard
 cmv sessions                                         # list Claude Code sessions
 cmv snapshot "analysis" --latest                     # commit context state
-cmv branch "analysis" --name "auth-work"             # fork — full history, fresh session
+cmv branch "analysis" --name "auth-work"             # fork — trimmed by default
 cmv branch "analysis" --name "api-work"              # fork again — independent, same starting point
-cmv branch "analysis" --name "trimmed" --trim        # fork with cleanup — strips bloat, keeps conversation
+cmv branch "analysis" --name "raw" --no-trim         # fork without trimming (raw context)
+cmv hook install                                     # auto-trim before compaction + when context gets heavy
 cmv tree                                             # view the history
 ```
 
@@ -98,13 +99,16 @@ npm link
 | Key | Action |
 |-----|--------|
 | `b` | Branch from selected snapshot |
+| `m` | Multi-branch from snapshot (comma-separated names) |
 | `t` | Trim branch — strips bloat, keeps conversation |
 | `s` | Snapshot selected session |
 | `d` | Delete snapshot or branch |
 | `e` / `i` | Export / import `.cmv` files |
-| `Enter` | Branch and launch Claude |
+| `Enter` | On snapshot: branch and launch. On branch: watch session in viewer |
+| `o` | Open branch session externally |
+| `Esc` | Stop watching |
 
-Arrow keys or `j`/`k` to navigate. `Tab` switches panes. The detail pane shows a full context breakdown — what's eating your tokens and how much you can trim.
+Arrow keys or `j`/`k` to navigate. `Tab` switches panes. The detail pane shows a full context breakdown, or a live session viewer when watching a branch.
 
 ## Commands
 
@@ -126,12 +130,12 @@ cmv snapshot "analysis" --latest -d "Full codebase walkthrough"
 
 ### `cmv branch <snapshot>`
 
-Fork from a snapshot. Creates a new session with the full conversation history. Same starting point, independent from there.
+Fork from a snapshot. Trims by default. Creates a new session with the full conversation history minus mechanical overhead. Same starting point, independent from there.
 
 ```bash
-cmv branch "analysis" --name "auth-work"
-cmv branch "analysis" --name "clean-start" --trim
-cmv branch "analysis" --name "clean-start" --trim --threshold 200  # more aggressive
+cmv branch "analysis" --name "auth-work"                  # trimmed by default
+cmv branch "analysis" --name "auth-work" --threshold 200  # more aggressive trimming
+cmv branch "analysis" --name "raw" --no-trim              # raw context, no trimming
 cmv branch "analysis" --name "later" --skip-launch
 ```
 
@@ -183,6 +187,18 @@ Analyze cache impact of trimming a session. Shows context breakdown, cost projec
 cmv benchmark --latest                    # analyze most recent session
 cmv benchmark --latest --model opus       # use Opus 4.6 pricing
 cmv benchmark --latest --json             # JSON output for scripting
+```
+
+### `cmv hook`
+
+Manage auto-trim hooks for Claude Code. Once installed, CMV automatically trims sessions before compaction fires and when context gets heavy.
+
+```bash
+cmv hook install          # register PreCompact + PostToolUse hooks
+cmv hook status           # check if hooks are installed, show last trim stats
+cmv hook uninstall        # remove CMV hooks (preserves other hooks)
+cmv hook restore <id>     # restore a session from auto-backup
+cmv hook restore --list   # list available backups
 ```
 
 Run `cmv config --help` for settings. `cmv completions --install` for shell tab-completion.
