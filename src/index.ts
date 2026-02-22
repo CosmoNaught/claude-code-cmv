@@ -15,13 +15,15 @@ import { registerCompletionsCommand } from './commands/completions.js';
 import { registerDashboardCommand } from './commands/dashboard.js';
 import { registerTrimCommand } from './commands/trim.js';
 import { registerBenchmarkCommand } from './commands/benchmark.js';
+import { registerAutoTrimCommand } from './commands/auto-trim.js';
+import { registerHookCommand } from './commands/hook.js';
 
 const program = new Command();
 
 program
   .name('cmv')
   .description('Contextual Memory Virtualisation — git-like snapshots and branching for Claude Code sessions')
-  .version('1.2.0');
+  .version('2.0.0');
 
 // Register all commands
 registerSnapshotCommand(program);
@@ -37,33 +39,15 @@ registerImportCommand(program);
 registerCompletionsCommand(program);
 registerTrimCommand(program);
 registerBenchmarkCommand(program);
+registerAutoTrimCommand(program);
+registerHookCommand(program);
 registerDashboardCommand(program);
 
 // Default action: launch dashboard when no subcommand is provided
 program.action(async () => {
   try {
     const { launchDashboard } = await import('./tui/index.js');
-    const result = await launchDashboard();
-
-    if (result.action === 'branch-launch' && result.snapshotName) {
-      const { createBranch } = await import('./core/branch-manager.js');
-      await createBranch({
-        snapshotName: result.snapshotName,
-        branchName: result.branchName,
-        noLaunch: false,
-      });
-    } else if (result.action === 'trim-launch' && result.snapshotName) {
-      const { createBranch } = await import('./core/branch-manager.js');
-      await createBranch({
-        snapshotName: result.snapshotName,
-        branchName: result.branchName,
-        noLaunch: false,
-        trim: true,
-      });
-    } else if (result.action === 'resume' && result.sessionId) {
-      const { spawnClaudeInteractive } = await import('./utils/process.js');
-      await spawnClaudeInteractive(['--resume', result.sessionId], undefined, result.cwd);
-    }
+    await launchDashboard();
   } catch (err) {
     const { handleError } = await import('./utils/errors.js');
     handleError(err);

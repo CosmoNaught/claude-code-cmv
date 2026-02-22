@@ -9,19 +9,7 @@ export function registerDashboardCommand(program: Command): void {
       try {
         // Dynamic import to avoid loading React/Ink for non-TUI commands
         const { launchDashboard } = await import('../tui/index.js');
-        const result = await launchDashboard();
-
-        if (result.action === 'branch-launch' && result.snapshotName) {
-          const { createBranch } = await import('../core/branch-manager.js');
-          await createBranch({
-            snapshotName: result.snapshotName,
-            branchName: result.branchName,
-            noLaunch: false,
-          });
-        } else if (result.action === 'resume' && result.sessionId) {
-          const { spawnClaudeInteractive } = await import('../utils/process.js');
-          await spawnClaudeInteractive(['--resume', result.sessionId], undefined, result.cwd);
-        }
+        await launchDashboard();
       } catch (err) {
         handleError(err);
       }

@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Text } from 'ink';
 import * as path from 'node:path';
 import type { TreeNode, SessionAnalysis, ClaudeSessionEntry } from '../types/index.js';
+import type { ProjectInfo } from './hooks/useProjects.js';
 import { formatRelativeTime, truncate } from '../utils/display.js';
 import { getSnapshotSize } from '../core/metadata-store.js';
 import { analyzeSession } from '../core/analyzer.js';
@@ -10,7 +11,37 @@ import { getCmvSnapshotsDir } from '../utils/paths.js';
 interface DetailPaneProps {
   node: TreeNode | null;
   width: number;
+  height: number;
   sessions?: (ClaudeSessionEntry & { _projectDir: string })[];
+  project?: ProjectInfo | null;
+  focusPane?: 'projects' | 'tree';
+  sessionStatuses?: Record<string, 'active' | 'busy' | 'idle'>;
+}
+
+interface ProjectStats {
+  sessionCount: number;
+  snapshotCount: number;
+  branchCount: number;
+  totalMessages: number;
+  oldestActivity: string | null;
+  newestActivity: string | null;
+}
+
+function countSnapshotsAndBranches(roots: TreeNode[]): { snapshots: number; branches: number } {
+  let snapshots = 0;
+  let branches = 0;
+  const stack = [...roots];
+  while (stack.length > 0) {
+    const node = stack.pop()!;
+    if (node.type === 'snapshot') {
+      snapshots++;
+      branches += node.snapshot?.branches.length ?? 0;
+    }
+    for (const child of node.children) {
+      stack.push(child);
+    }
+  }
+  return { snapshots, branches };
 }
 
 function formatSize(bytes: number): string {
@@ -22,7 +53,7 @@ function formatSize(bytes: number): string {
 function DetailRow({ label, value }: { label: string; value: string }) {
   return (
     <Box>
-      <Box width={14}>
+      <Box width={15}>
         <Text dimColor>{label}</Text>
       </Box>
       <Text>{value}</Text>
@@ -51,7 +82,7 @@ function ContextAnalysis({ analysis, width }: { analysis: SessionAnalysis; width
       <Text> </Text>
       <Text bold dimColor>Context</Text>
       <Box>
-        <Box width={14}>
+        <Box width={15}>
           <Text dimColor>Tokens:</Text>
         </Box>
         <Text>~{tokensK}k / {limitK}k </Text>
@@ -79,7 +110,27 @@ function ContextAnalysis({ analysis, width }: { analysis: SessionAnalysis; width
   );
 }
 
-export function DetailPane({ node, width, sessions }: DetailPaneProps) {
+function ProjectSummary({ stats, project, width }: { stats: ProjectStats; project: ProjectInfo; width: number }) {
+  return (
+    <>
+      <Text bold color="cyan">{truncate(project.path, width - 6)}</Text>
+      <Text> </Text>
+      <Text bold dimColor>Overview</Text>
+      <DetailRow label="Sessions:" value={stats.sessionCount.toString()} />
+      <DetailRow label="Snapshots:" value={stats.snapshotCount.toString()} />
+      <DetailRow label="Branches:" value={stats.branchCount.toString()} />
+      <DetailRow label="Messages:" value={stats.totalMessages.toString()} />
+      {stats.newestActivity && (
+        <DetailRow label="Last active:" value={formatRelativeTime(stats.newestActivity)} />
+      )}
+      {stats.oldestActivity && (
+        <DetailRow label="First seen:" value={formatRelativeTime(stats.oldestActivity)} />
+      )}
+    </>
+  );
+}
+
+export function DetailPane({ node, width, height, sessions, project, focusPane, sessionStatuses }: DetailPaneProps) {
   const [snapshotSize, setSnapshotSize] = useState<number | null>(null);
   const [analysis, setAnalysis] = useState<SessionAnalysis | null>(null);
 
@@ -87,6 +138,32 @@ export function DetailPane({ node, width, sessions }: DetailPaneProps) {
   const branchSession = node?.type === 'branch' && node.branch && sessions
     ? sessions.find(s => s.sessionId === node.branch!.forked_session_id)
     : null;
+
+  const projectStats = useMemo((): ProjectStats | null => {
+    if (!project) return null;
+    const { snapshots: snapshotCount, branches: branchCount } = countSnapshotsAndBranches(project.snapshotRoots);
+
+    let totalMessages = 0;
+    let oldest: string | null = null;
+    let newest: string | null = null;
+
+    for (const s of project.sessions) {
+      totalMessages += s.messageCount ?? 0;
+      if (s.created && (!oldest || s.created < oldest)) oldest = s.created;
+      if (s.modified && (!newest || s.modified > newest)) newest = s.modified;
+    }
+
+    return {
+      sessionCount: project.sessions.length,
+      snapshotCount,
+      branchCount,
+      totalMessages,
+      oldestActivity: oldest,
+      newestActivity: newest,
+    };
+  }, [project]);
+
+  const showProjectSummary = focusPane === 'projects' || !node || node.type === 'separator';
 
   useEffect(() => {
     if (node?.type !== 'snapshot' || !node.snapshot) {
@@ -137,18 +214,22 @@ export function DetailPane({ node, width, sessions }: DetailPaneProps) {
   }, [node, branchSession]);
 
   return (
-    <Box flexDirection="column" width={width} borderStyle="single" borderColor="gray">
+    <Box flexDirection="column" width={width} height={height} borderStyle="single" borderColor="gray" overflow="hidden">
       <Box paddingX={1}>
-        <Text bold> Details</Text>
+        <Text bold>Details</Text>
       </Box>
       <Box flexDirection="column" paddingX={2} paddingY={1}>
-        {!node && (
-          <Text dimColor>Select a snapshot or session to see details.</Text>
+        {showProjectSummary && projectStats && project && (
+          <ProjectSummary stats={projectStats} project={project} width={width} />
+        )}
+        {showProjectSummary && !projectStats && (
+          <Text dimColor>No project selected.</Text>
         )}
 
-        {node?.type === 'snapshot' && node.snapshot && (
+        {!showProjectSummary && node?.type === 'snapshot' && node.snapshot && (
           <>
             <DetailRow label="Name:" value={node.snapshot.name} />
+            <DetailRow label="Type:" value={node.snapshot.parent_snapshot ? 'Child Snapshot' : 'Root Snapshot'} />
             <DetailRow label="Created:" value={formatRelativeTime(node.snapshot.created_at)} />
             <DetailRow label="Source:" value={node.snapshot.source_session_id.substring(0, 12) + '…'} />
             <DetailRow label="Messages:" value={node.snapshot.message_count?.toString() ?? '—'} />
@@ -168,10 +249,16 @@ export function DetailPane({ node, width, sessions }: DetailPaneProps) {
           </>
         )}
 
-        {node?.type === 'branch' && node.branch && (
-          <>
+        {!showProjectSummary && node?.type === 'branch' && node.branch && (() => {
+          const branchStatus = sessionStatuses?.[node.branch!.forked_session_id] || 'idle';
+          const statusLabel = branchStatus === 'active' ? 'Active' : branchStatus === 'busy' ? 'Busy' : 'Idle';
+          const statusColor = branchStatus === 'active' ? 'green' : branchStatus === 'busy' ? 'yellow' : undefined;
+          return <>
             <DetailRow label="Name:" value={node.branch.name} />
-            <DetailRow label="Type:" value="Branch" />
+            <Box>
+              <Box width={15}><Text dimColor>Status:</Text></Box>
+              <Text color={statusColor} dimColor={branchStatus === 'idle'}>{statusLabel}</Text>
+            </Box>
             <DetailRow label="Created:" value={formatRelativeTime(node.branch.created_at)} />
             <DetailRow label="Session:" value={node.branch.forked_session_id.substring(0, 12) + '…'} />
             {branchSession && (
@@ -183,13 +270,30 @@ export function DetailPane({ node, width, sessions }: DetailPaneProps) {
               </>
             )}
             {analysis && <ContextAnalysis analysis={analysis} width={width} />}
-          </>
-        )}
+          </>;
+        })()}
 
-        {node?.type === 'session' && node.session && (
-          <>
-            <DetailRow label="Session ID:" value={node.session.sessionId} />
-            <DetailRow label="Type:" value="Active Session" />
+        {!showProjectSummary && node?.type === 'session' && node.session && (() => {
+          const sid = node.session!.sessionId;
+          const sessStatus = sessionStatuses?.[sid] || 'idle';
+          const isSource = project?.snapshotRoots.some(function check(n: TreeNode): boolean {
+            if (n.type === 'snapshot' && n.snapshot?.source_session_id === sid) return true;
+            return n.children.some(check);
+          }) ?? false;
+          const isBranchSession = project?.snapshotRoots.some(function check(n: TreeNode): boolean {
+            if (n.type === 'branch' && n.branch?.forked_session_id === sid) return true;
+            return n.children.some(check);
+          }) ?? false;
+          const typeLabel = isSource ? 'Source Session' : isBranchSession ? 'Forked Session' : 'Session';
+          const statusLabel = sessStatus === 'active' ? 'Active' : sessStatus === 'busy' ? 'Busy' : 'Idle';
+          const statusColor = sessStatus === 'active' ? 'green' : sessStatus === 'busy' ? 'yellow' : undefined;
+          return <>
+            <DetailRow label="Session ID:" value={sid} />
+            <DetailRow label="Type:" value={typeLabel} />
+            <Box>
+              <Box width={15}><Text dimColor>Status:</Text></Box>
+              <Text color={statusColor} dimColor={sessStatus === 'idle'}>{statusLabel}</Text>
+            </Box>
             {node.session.modified && (
               <DetailRow label="Modified:" value={formatRelativeTime(node.session.modified)} />
             )}
@@ -212,8 +316,8 @@ export function DetailPane({ node, width, sessions }: DetailPaneProps) {
             {analysis && <ContextAnalysis analysis={analysis} width={width} />}
             <Text> </Text>
             <Text dimColor>Press [s] to snapshot this session</Text>
-          </>
-        )}
+          </>;
+        })()}
       </Box>
     </Box>
   );

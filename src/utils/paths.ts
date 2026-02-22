@@ -80,3 +80,24 @@ export async function listProjectDirs(): Promise<string[]> {
 export function getClaudeIdeLockDir(): string {
   return path.join(getClaudeBaseDir(), 'ide');
 }
+
+/**
+ * Get the CMV auto-backups directory: ~/.cmv/auto-backups/
+ */
+export function getCmvAutoBackupsDir(): string {
+  return path.join(getCmvDir(), 'auto-backups');
+}
+
+/**
+ * Get the CMV auto-trim log path: ~/.cmv/auto-trim-log.json
+ */
+export function getCmvAutoTrimLogPath(): string {
+  return path.join(getCmvDir(), 'auto-trim-log.json');
+}
+
+/**
+ * Get the Claude Code settings path: ~/.claude/settings.json
+ */
+export function getClaudeSettingsPath(): string {
+  return path.join(getClaudeBaseDir(), 'settings.json');
+}

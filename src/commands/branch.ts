@@ -32,11 +32,11 @@ export function registerBranchCommand(program: Command): void {
     .command('branch <snapshot>')
     .description('Create a new session from a snapshot')
     .option('-n, --name <name>', 'Name for the branch')
-    .option('--trim', 'Trim context before branching (removes tool results, signatures, file history)')
+    .option('--no-trim', 'Skip trimming (copies raw context)')
     .option('-t, --threshold <chars>', 'Stub threshold when trimming (default: 500)')
     .option('--skip-launch', "Don't launch Claude Code, just create the session file")
     .option('--dry-run', 'Show what would happen without doing it')
-    .action(async (snapshotName: string, opts: { name?: string; trim?: boolean; threshold?: string; skipLaunch?: boolean; dryRun?: boolean }) => {
+    .action(async (snapshotName: string, opts: { name?: string; trim: boolean; threshold?: string; skipLaunch?: boolean; dryRun?: boolean }) => {
       try {
         const result = await createBranch({
           snapshotName,

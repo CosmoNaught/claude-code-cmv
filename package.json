@@ -1,6 +1,6 @@
 {
   "name": "cmv",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "description": "Contextual Memory Virtualisation — git-like snapshot and branching for Claude Code sessions",
   "type": "module",
   "bin": {
@@ -11,6 +11,7 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "link": "npm run build && npm link",
+    "postinstall": "test -f dist/postinstall.js && node dist/postinstall.js || echo \"CMV: run 'npm run build' then 'npm install' to auto-install hooks.\"",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [

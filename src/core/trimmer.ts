@@ -213,7 +213,36 @@ export async function trimJsonl(
     scanRl.close();
   }
 
-  // ── Pass 2: Trim, skipping lines before last compaction boundary ──
+  // ── Pass 2: Collect tool_use IDs from skipped pre-compaction content ──
+  // When we skip lines before the compaction boundary, we need to know which
+  // tool_use IDs lived in those lines so we can strip orphaned tool_result
+  // blocks that reference them from the kept content.
+  const skippedToolUseIds = new Set<string>();
+  if (lastCompactionLine >= 0) {
+    const preStream = createReadStream(sourcePath, { encoding: 'utf-8' });
+    const preRl = readline.createInterface({ input: preStream, crlfDelay: Infinity });
+    let preLineNum = 0;
+    for await (const line of preRl) {
+      if (preLineNum >= lastCompactionLine) break;
+      if (line.trim()) {
+        try {
+          const p = JSON.parse(line);
+          const content = p.message?.content || p.content;
+          if (Array.isArray(content)) {
+            for (const block of content) {
+              if (block.type === 'tool_use' && block.id) {
+                skippedToolUseIds.add(block.id);
+              }
+            }
+          }
+        } catch { /* skip unparseable */ }
+      }
+      preLineNum++;
+    }
+    preRl.close();
+  }
+
+  // ── Pass 3: Trim, skipping lines before last compaction boundary ──
   const fileStream = createReadStream(sourcePath, { encoding: 'utf-8' });
   const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
   const writer = createWriteStream(destPath, { encoding: 'utf-8' });
@@ -267,6 +296,30 @@ export async function trimJsonl(
     }
     if (Array.isArray(parsed.content)) {
       parsed.content = processContentArray(parsed.content, STUB_THRESHOLD, metrics);
+    }
+
+    // Strip orphaned tool_result blocks that reference tool_use IDs from
+    // skipped pre-compaction content. The API requires every tool_result to
+    // have a matching tool_use in the preceding assistant message.
+    if (skippedToolUseIds.size > 0) {
+      for (const key of ['message.content', 'content'] as const) {
+        const content = key === 'message.content' ? parsed.message?.content : parsed.content;
+        if (Array.isArray(content)) {
+          const filtered = content.filter((block: any) => {
+            if (block.type === 'tool_result' && block.tool_use_id && skippedToolUseIds.has(block.tool_use_id)) {
+              return false;
+            }
+            return true;
+          });
+          if (filtered.length !== content.length) {
+            if (key === 'message.content') {
+              parsed.message.content = filtered;
+            } else {
+              parsed.content = filtered;
+            }
+          }
+        }
+      }
     }
 
     // Strip API usage data — it reflects the original pre-trim context size

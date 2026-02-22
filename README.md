@@ -1,13 +1,14 @@
 [![GitHub release](https://img.shields.io/github/v/release/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/releases)
 [![License](https://img.shields.io/github/license/CosmoNaught/claude-code-cmv)](LICENSE)
-[![GitHub stars](https://img.shields.io/github/stars/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/stargazers)
 [![Node](https://img.shields.io/badge/node-18%2B-brightgreen)](https://nodejs.org)
+[![GitHub stars](https://img.shields.io/github/stars/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/stargazers)
 
 # Claude Code Contextual Memory Virtualisation (CMV)
 
 Like virtual memory lets an OS use more RAM than it physically has, CMV lets Claude Code use more context than fits in one session — by snapshotting, branching, and trimming the understanding your sessions build up.
 
 ![CMV demo](assets/demo.gif)
+
 ## The Problem
 
 Every conversation with Claude builds up state. Not just chat history — actual understanding. Architecture mapped, tradeoffs weighed, decisions made, conventions learned. After 30 minutes of deep work (sometimes less!), Claude has a mental model of your whole codebase sitting in its context window. That took real time and real tokens to build.
@@ -22,24 +23,27 @@ Contextual Memory Virtualisation (CMV) treats that accumulated understanding as 
 - **Tree** shows how your context evolved over time (think `git log --graph`)
 
 Build up context once, reuse it whenever you need it.
-## Quick Start
 
-```bash
-cmv                                                  # launch the TUI dashboard
-cmv sessions                                         # list Claude Code sessions
-cmv snapshot "analysis" --latest                     # commit context state
-cmv branch "analysis" --name "auth-work"             # fork — full history, fresh session
-cmv branch "analysis" --name "api-work"              # fork again — independent, same starting point
-cmv branch "analysis" --name "trimmed" --trim        # fork with cleanup — strips bloat, keeps conversation
-cmv tree                                             # view the history
-```
+| Before — 152k tokens, 76% full, ~3 turns left | After trim — 23k tokens, 85% reduction |
+|:---:|:---:|
+| ![High context](assets/high_context.png) | ![Low context](assets/low_context.png) |
+
+What's actually happening inside:
 
 ```
-analysis (snapshot, 2d ago, 82 msgs)
-├── auth-work (branch, 2d ago)
-├── api-work (branch, 1d ago)
-└── trimmed (branch, 1d ago)
+Before trim                                          After trim
+─────────────────────────────────────────            ─────────────────────────────────────────
+User: "read auth.ts"                                 User: "read auth.ts"
+Claude: [calls Read on src/auth.ts]                  Claude: [calls Read on src/auth.ts]
+Result: [847 lines of raw TypeScript]    ← gone      Result: [File read: src/auth.ts, 847 lines]  ← stub
+Claude: "The auth module uses JWT with               Claude: "The auth module uses JWT with
+         refresh tokens in httpOnly                            refresh tokens in httpOnly
+         cookies..."                     ← kept               cookies..."                     ← kept
 ```
+
+Claude's synthesis — the part with actual understanding — stays. The raw file dumps, tool outputs, thinking signatures, and image blocks are gone. If Claude needs a file again, it re-reads it.
+
+> **Note:** The "Messages" token count in `/context` includes tool results, tool calls, and system entries — not just your conversation. The drop from 132k to 2.3k is the tool result bloat being stripped. Every user and assistant message is still there verbatim. For details on what gets removed, see the [FAQ](#faq). For how trimming interacts with prompt caching, see the [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
 
 ## Install
 
@@ -54,7 +58,7 @@ nvm install --lts
 
 # CMV
 git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+cd claude-code-cmv
 npm install && npm run build
 npm link
 ```
@@ -69,14 +73,14 @@ winget install OpenJS.NodeJS.LTS
 
 # CMV (reopen terminal after installing Node)
 git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+cd claude-code-cmv
 npm install && npm run build
 npm link
 ```
 
 > `cmv` not found? Reopen your terminal. Check that `%APPDATA%\npm` is on your PATH.
 
-### macOS (untested as of 19/02/2025)
+### macOS
 
 ```bash
 # Node.js (if you don't have it)
@@ -84,27 +88,46 @@ brew install node
 
 # CMV
 git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+cd claude-code-cmv
 npm install && npm run build
 npm link
 ```
 
+Auto-trim hooks are installed automatically after the build. Run `cmv hook status` to verify.
+
+## Quick Start
+
+```bash
+cmv                                                  # launch the TUI dashboard
+cmv sessions                                         # list Claude Code sessions
+cmv snapshot "analysis" --latest                     # commit context state
+cmv branch "analysis" --name "auth-work"             # fork — trimmed by default
+cmv branch "analysis" --name "api-work"              # fork again — independent, same starting point
+cmv branch "analysis" --name "raw" --no-trim         # fork without trimming (raw context)
+cmv hook status                                      # auto-trim hooks (installed automatically)
+cmv tree                                             # view the history
+```
+
 ## Dashboard
 
-`cmv` with no arguments launches a three-column Ranger-style TUI.
+`cmv` with no arguments launches a two-column, four-pane TUI: projects and details on the left, snapshots and sessions on the right.
 
 ![CMV dashboard](assets/sc.png)
 
 | Key | Action |
 |-----|--------|
+| `Enter` | On snapshot: branch and open in new terminal. On branch/session: open in new terminal |
 | `b` | Branch from selected snapshot |
-| `t` | Trim branch — strips bloat, keeps conversation |
+| `m` | Multi-branch from snapshot (comma-separated names) |
 | `s` | Snapshot selected session |
-| `d` | Delete snapshot or branch |
+| `d` | Delete snapshot, branch, or session |
 | `e` / `i` | Export / import `.cmv` files |
-| `Enter` | Branch and launch Claude |
+| `r` | Refresh |
+| `Tab` | Switch between project and tree panes |
+| `j`/`k` | Navigate up/down (also arrow keys) |
+| `q` | Quit |
 
-Arrow keys or `j`/`k` to navigate. `Tab` switches panes. The detail pane shows a full context breakdown — what's eating your tokens and how much you can trim.
+The detail pane shows a project summary when browsing projects, or a full context breakdown when a snapshot, branch, or session is selected. Branch and session status (active/busy/idle) is shown with live polling.
 
 ## Commands
 
@@ -126,12 +149,12 @@ cmv snapshot "analysis" --latest -d "Full codebase walkthrough"
 
 ### `cmv branch <snapshot>`
 
-Fork from a snapshot. Creates a new session with the full conversation history. Same starting point, independent from there.
+Fork from a snapshot. Trims automatically by default — strips dead weight (tool results, thinking signatures, file history) while keeping the full conversation. Same starting point, independent from there.
 
 ```bash
-cmv branch "analysis" --name "auth-work"
-cmv branch "analysis" --name "clean-start" --trim
-cmv branch "analysis" --name "clean-start" --trim --threshold 200  # more aggressive
+cmv branch "analysis" --name "auth-work"                  # trimmed by default
+cmv branch "analysis" --name "auth-work" --threshold 200  # more aggressive trimming
+cmv branch "analysis" --name "raw" --no-trim              # raw context, no trimming
 cmv branch "analysis" --name "later" --skip-launch
 ```
 
@@ -143,8 +166,6 @@ Snapshot, trim, and launch in one step. The "better `/compact`" workflow — exi
 cmv trim --latest
 cmv trim --latest --threshold 200    # lower threshold = more aggressive trimming
 ```
-
-More on this [below](#trim).
 
 ### `cmv list`
 
@@ -185,49 +206,38 @@ cmv benchmark --latest --model opus       # use Opus 4.6 pricing
 cmv benchmark --latest --json             # JSON output for scripting
 ```
 
+### `cmv hook`
+
+Manage auto-trim hooks for Claude Code. Hooks are installed automatically during setup — after `npm run build`, the next `npm install` (or `npm link`) registers them. Once active, CMV trims sessions in the background — before compaction fires and when context gets heavy — so you rarely need to trim manually.
+
+If you need to reinstall or manage them manually:
+
+```bash
+cmv hook install          # register PreCompact + PostToolUse hooks
+cmv hook status           # check if hooks are installed, show last trim stats
+cmv hook uninstall        # remove CMV hooks (preserves other hooks)
+cmv hook restore <id>     # restore a session from auto-backup
+cmv hook restore --list   # list available backups
+```
+
 Run `cmv config --help` for settings. `cmv completions --install` for shell tab-completion.
 
-## Trim
+## FAQ
 
-This is the bit that actually matters. A typical 150k-token session looks roughly like this:
+**Won't trimming break prompt caching?**
+One-time cache miss of ~$0.07-0.22 when the trimmed session starts, recovered within a few turns as the smaller prefix gets cached. Pro/Max subscribers pay no per-token cost — caching only affects rate limits, so trimming is purely a context window win. Full analysis: [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
 
-| Content | % of context | Value on reload |
-|---------|-------------|-----------------|
-| Tool results (file contents, bash output) | ~60-70% | None — Claude already synthesised these |
-| Thinking signatures (base64 blobs) | ~15-20% | None — cryptographic verification, not reasoning |
-| Your actual conversation | ~10-15% | All of it |
+**Does Claude lose understanding after a trim?**
+No. Trimming removes tool *results* (raw file dumps, command output), not Claude's responses about them. If Claude read 847 lines of `auth.ts` and summarised the JWT flow, the summary stays — the 847 lines go. If Claude needs the file again, it re-reads it.
 
-Most of your context window is stuff Claude doesn't need anymore.
+**What exactly gets removed?**
+Tool result bodies over 500 chars, base64 image blocks, thinking signatures, file-history metadata, and large tool inputs (file writes/edits). Every user message, every assistant response, and every tool *request* stays verbatim.
 
-`/compact` deals with this by nuking everything and writing a summary. Trim does the opposite: throw away the junk, keep the conversation.
+**Do I need to use branching?**
+No. `cmv trim --latest` snapshots, trims, and launches a fresh session in one step — no branching required. Auto-trim hooks (`cmv hook status`) also run in the background without any manual intervention.
 
-Before trim:
-```
-User: "read auth.ts"
-Claude: [calls Read on src/auth.ts]
-Result: [847 lines of raw TypeScript]                    ← gone
-Claude: "The auth module uses JWT with refresh tokens
-         stored in httpOnly cookies..."                   ← kept
-```
-
-After trim:
-```
-User: "read auth.ts"
-Claude: [calls Read on src/auth.ts]
-Result: [File read: src/auth.ts, 847 lines]              ← stub
-Claude: "The auth module uses JWT with refresh tokens
-         stored in httpOnly cookies..."                   ← kept
-```
-
-Claude's synthesis — the part with the actual understanding — stays. The 847 lines of raw source are gone. If Claude needs the file again later, it can just re-read it.
-
-**What gets removed:** tool result bodies over 500 chars, image blocks (base64 screenshots), large tool_use inputs (Write/Edit file contents), thinking signatures, file-history metadata, queue operations, and pre-compaction dead lines.
-
-**What stays:** every user message, every assistant response, every tool use request, all reasoning.
-
-Typical reduction is 50-70%+, with near-zero information loss. Use `--threshold 200` for more aggressive trimming. Compare that to `/compact`, which gets you ~98% reduction but wipes out the entire conversation in the process.
-
-For a detailed analysis of how trimming interacts with Anthropic's prompt caching and what it costs, see the [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
+**Pro/Max subscriber vs API user — does this matter for me?**
+Different value propositions. **Subscribers:** no per-token cost, so the win is purely freeing context window space and reducing rate-limit burn from cache misses. **API users:** small one-time cache miss cost, net savings after a few turns from caching a much smaller prefix. Both benefit from fitting more useful conversation into the 200k window.
 
 ## Workflows
 
@@ -268,16 +278,6 @@ analyzed
 
 Each level inherits everything above it. The backend branch doesn't need the auth decisions re-explained — they're already there in the context.
 
-### Stay ahead of context bloat
-
-Don't wait for auto-compact to kick in. When a session gets heavy, just exit and trim:
-
-```bash
-cmv trim --latest
-```
-
-Fresh session, full conversation, 50-70% less dead weight. Repeat whenever things get chunky.
-
 ### Share understanding across a team
 
 A lead spends time getting Claude up to speed on the codebase and making architectural decisions. That context becomes something everyone can use:
@@ -313,19 +313,7 @@ There are a few different approaches to managing Claude Code context. They solve
 | Snapshot lineage / tree view | ✗ | ✗ | ✗ | ✅ |
 | Export / share context | ✗ | Varies | ✗ | ✅ |
 
-CMV doesn't replace any of these — it fills a gap none of them cover. Use them together!
-
-## Why Not Just Use `/rewind`, `/fork`, or `/compact`?
-
-Claude Code already has session-level primitives. CMV isn't replacing them — it's the layer on top that they're missing.
-
-**`/rewind`** is an undo button. It rolls back file edits and conversation within the current session. Good for "Claude just broke my auth module, go back three turns." But it doesn't name states, doesn't persist anything, doesn't trim bloat, and doesn't let you branch from the same point twice. It's a safety net, not a management system.
-
-**`/fork`** creates a one-off copy of your conversation. Useful, but it's not version control. You can't name the fork point, come back to it later, branch five more times from it, see the tree, or trim before forking. After a few days you end up with a flat list of session IDs and no idea which came from where.
-
-**`/compact`** just destroys state. It replaces your entire conversation with a 3-4k token summary the model writes about itself. That 15-turn discussion where you debated JWT vs sessions and explored a bunch of tradeoffs? Now it's: *"We discussed auth and decided on JWT."* Cool, thanks.
-
-**CMV sits above all three.** Use rewind during a session. When the session's done, snapshot and branch with CMV. Use trim instead of compact when things get bloated — it strips 50-70% of dead weight while keeping every message verbatim. They all work together.
+CMV doesn't replace any of these — it fills a gap none of them cover. Use them together.
 
 ## Troubleshooting
 
@@ -337,11 +325,11 @@ Claude Code already has session-level primitives. CMV isn't replacing them — i
 
 ## Contributing
 
-Contributions are welcome. Here's how to get set up:
+Contributions are welcome. Fork the repo on GitHub, then:
 
 ```bash
-git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd cmv
+git clone https://github.com/<your-username>/claude-code-cmv.git
+cd claude-code-cmv
 npm install
 npm run build
 npm link        # makes `cmv` available globally from your local build
@@ -353,7 +341,7 @@ npm link        # makes `cmv` available globally from your local build
 
 - **Benchmark data.** Run `cmv benchmark --latest --json` and share the output (anonymized — no conversation content is included). More data from different usage patterns strengthens the [cache impact analysis](docs/CACHE_IMPACT_ANALYSIS.md).
 - **Bug reports.** Open an issue with the command you ran, what you expected, and what happened. Include `CMV_DEBUG=1` output if relevant.
-- **Platform testing.** macOS support is untested. If you're on macOS and it works (or doesn't), that's useful information.
+- **Platform testing.** CMV works on Linux, macOS, and Windows. If you hit platform-specific issues, that's useful information.
 - **Trim quality feedback.** If you trim a session and notice Claude struggling on the new branch (hallucinating file contents, asking to re-read things it shouldn't need to), that's the most valuable signal we don't have yet.
 
 ### Before submitting a PR
