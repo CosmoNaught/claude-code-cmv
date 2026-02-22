@@ -11,7 +11,7 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "link": "npm run build && npm link",
-    "postinstall": "node dist/postinstall.js 2>/dev/null || true",
+    "postinstall": "test -f dist/postinstall.js && node dist/postinstall.js || echo \"CMV: run 'npm run build' then 'npm install' to auto-install hooks.\"",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
