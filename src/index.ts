@@ -47,28 +47,7 @@ registerDashboardCommand(program);
 program.action(async () => {
   try {
     const { launchDashboard } = await import('./tui/index.js');
-    const result = await launchDashboard();
-
-    if (result.action === 'branch-launch' && result.snapshotName) {
-      const { createBranch } = await import('./core/branch-manager.js');
-      await createBranch({
-        snapshotName: result.snapshotName,
-        branchName: result.branchName,
-        noLaunch: false,
-        trim: true,
-      });
-    } else if (result.action === 'trim-launch' && result.snapshotName) {
-      const { createBranch } = await import('./core/branch-manager.js');
-      await createBranch({
-        snapshotName: result.snapshotName,
-        branchName: result.branchName,
-        noLaunch: false,
-        trim: true,
-      });
-    } else if (result.action === 'resume' && result.sessionId) {
-      const { spawnClaudeInteractive } = await import('./utils/process.js');
-      await spawnClaudeInteractive(['--resume', result.sessionId], undefined, result.cwd);
-    }
+    await launchDashboard();
   } catch (err) {
     const { handleError } = await import('./utils/errors.js');
     handleError(err);

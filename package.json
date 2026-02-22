@@ -11,6 +11,7 @@
     "dev": "tsc --watch",
     "test": "vitest",
     "link": "npm run build && npm link",
+    "postinstall": "node dist/postinstall.js 2>/dev/null || true",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [

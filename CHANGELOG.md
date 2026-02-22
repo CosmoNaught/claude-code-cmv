@@ -8,19 +8,34 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ### Added
 
+- **TUI overhaul — two-column, four-pane layout.** Projects and details on the left, snapshots and sessions split into separate boxes on the right. Stable 50/50 height split.
+- **Sessions open in new terminal windows.** `Enter` on a branch or session spawns `claude --resume` in a new OS window (Windows `start`, macOS Terminal.app, Linux auto-detects terminal emulator). The TUI stays running — no more exiting to open sessions.
+- **Enter on snapshot branches and opens** in one step — prompts for a branch name, creates the branch (trimmed), and launches it in a new window.
+- **Live session status detection.** Hybrid approach: polls OS process list + monitors JSONL file growth + reads last line type. Three states: active (green `●`, Claude waiting for input), busy (amber `●`, Claude working), idle (grey `○`, no process). Shown in tree pane branch dots and detail pane.
+- **Project summary view** — details pane shows session/snapshot/branch counts, total messages, and activity timestamps when browsing the project list.
 - **Auto-trim hooks** — `cmv hook install` registers PreCompact and PostToolUse hooks with Claude Code. PreCompact trims before compaction fires. PostToolUse checks file size on every tool call and trims when context exceeds ~600KB (1ms overhead otherwise). Auto-backup before each trim with rotation.
+- **Auto-install hooks on `npm install`** — postinstall script registers hooks into Claude Code settings automatically. Failures are swallowed so install never breaks.
 - **Batch branching** — press `m` on a snapshot in the TUI to create multiple branches at once. Each branch gets an orientation message injected so Claude knows its focus area.
-- **Read-only session viewer** — press `Enter` on a branch to watch its JSONL in real-time in the TUI right pane. Structured conversation view (user/assistant/tool messages). Press `Esc` to stop watching, `o` to open externally.
-- **Session status indicators** — branches in the tree show `●` (active, modified < 2 min ago) or `○` (idle).
 - **Hook management CLI** — `cmv hook install`, `cmv hook uninstall`, `cmv hook status`, `cmv hook restore`.
 - **Auto-backup system** — `src/core/auto-backup.ts` with save, list, restore, and rotate.
-- **New tests** — auto-backup (6 tests), session-watcher (6 tests). Total: 42 tests.
+- **Orphaned tool_result stripping** — trimmer now collects tool_use IDs from skipped pre-compaction content and strips tool_result blocks that reference them. Fixes API errors on trimmed sessions where tool_results referenced tool_use blocks that lived before the compaction boundary.
+- `r` key to refresh in the TUI.
+- `getRunningSessionIds()` — queries OS process list for live `claude --resume` sessions.
+- `spawnClaudeInNewWindow()` — cross-platform new terminal window spawning.
 
 ### Changed
 
 - **Branch now trims by default.** Use `--no-trim` for raw context. This is a breaking change to CLI behavior.
 - TUI branch action (`b` key) trims by default.
-- Branch action bar: `Enter` now watches, `o` opens externally.
+- TUI no longer exits when opening sessions — all actions happen in new windows while the dashboard stays open.
+- DashboardResult simplified to `quit` only — branch/resume actions are handled internally.
+- ActionBar is now context-aware based on which pane has focus.
+- TreePane splits snapshots and sessions into separate bordered boxes with independent scroll.
+
+### Removed
+
+- **Session viewer** — the in-TUI JSONL watcher (`SessionViewer.tsx`) has been removed. Sessions now open directly in new terminal windows.
+- `t` (trim) key removed from TUI — trimming happens automatically on branch creation.
 
 ---
 

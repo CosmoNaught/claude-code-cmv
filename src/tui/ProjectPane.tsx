@@ -28,7 +28,7 @@ function shortenPath(p: string, maxLen: number): string {
 }
 
 export function ProjectPane({ projects, selectedIndex, focused, height, width }: ProjectPaneProps) {
-  const visibleCount = Math.max(1, height - 2);
+  const visibleCount = Math.max(1, height - 3); // -2 borders, -1 header
   const halfWindow = Math.floor(visibleCount / 2);
   let startIndex = Math.max(0, selectedIndex - halfWindow);
   const endIndex = Math.min(projects.length, startIndex + visibleCount);
@@ -40,7 +40,7 @@ export function ProjectPane({ projects, selectedIndex, focused, height, width }:
   const maxWidth = width - 4;
 
   return (
-    <Box flexDirection="column" width={width} borderStyle="single" borderColor={focused ? 'cyan' : 'gray'}>
+    <Box flexDirection="column" width={width} height={height} borderStyle="single" borderColor={focused ? 'cyan' : 'gray'}>
       <Box paddingX={1}>
         <Text bold> Projects</Text>
       </Box>
@@ -52,7 +52,6 @@ export function ProjectPane({ projects, selectedIndex, focused, height, width }:
         visibleProjects.map((project, i) => {
           const isSelected = startIndex + i === selectedIndex;
           const label = shortenPath(project.path, maxWidth - 4);
-          const count = project.sessions.length + project.snapshotRoots.length;
 
           if (isSelected && focused) {
             return (
@@ -69,7 +68,6 @@ export function ProjectPane({ projects, selectedIndex, focused, height, width }:
               <Text color={isSelected ? 'cyan' : undefined} dimColor={!isSelected}>
                 {'  '}{label}
               </Text>
-              <Text dimColor> {count}</Text>
             </Box>
           );
         })

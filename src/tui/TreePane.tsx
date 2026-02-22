@@ -1,42 +1,26 @@
 import React from 'react';
 import { Box, Text } from 'ink';
 import type { FlatNode } from './hooks/useTreeNavigation.js';
-import type { ClaudeSessionEntry } from '../types/index.js';
 import { formatRelativeTime, truncate } from '../utils/display.js';
 
 interface TreePaneProps {
   flatNodes: FlatNode[];
   selectedIndex: number;
   focused: boolean;
-  height: number;
+  snapshotBoxHeight: number;
+  sessionBoxHeight: number;
   width: number;
   projectName?: string;
-  sessions?: (ClaudeSessionEntry & { _projectDir: string })[];
+  sessionStatuses?: Record<string, 'active' | 'busy' | 'idle'>;
 }
 
-function getStatusIcon(node: { type: string; branch?: { forked_session_id: string } }, sessions?: (ClaudeSessionEntry & { _projectDir: string })[]): string {
-  if (!sessions) return '';
-  let session: ClaudeSessionEntry | undefined;
+type SessionStatus = 'active' | 'busy' | 'idle';
 
-  if (node.type === 'branch' && node.branch) {
-    session = sessions.find(s => s.sessionId === node.branch!.forked_session_id);
+function getBranchStatus(node: { type: string; branch?: { forked_session_id: string } }, sessionStatuses?: Record<string, SessionStatus>): SessionStatus {
+  if (node.type === 'branch' && node.branch && sessionStatuses) {
+    return sessionStatuses[node.branch.forked_session_id] || 'idle';
   }
-
-  if (!session?.modified) return '';
-
-  const modifiedMs = new Date(session.modified).getTime();
-  const twoMinAgo = Date.now() - 2 * 60 * 1000;
-  return modifiedMs > twoMinAgo ? '● ' : '○ ';
-}
-
-function SeparatorRow({ name, maxWidth }: { name: string; maxWidth: number }) {
-  const pad = Math.max(0, maxWidth - name.length - 4);
-  const line = '─'.repeat(Math.floor(pad / 2));
-  return (
-    <Box>
-      <Text dimColor> {line} {name} {line}{pad % 2 === 1 ? '─' : ''}</Text>
-    </Box>
-  );
+  return 'idle';
 }
 
 function SessionRow({ flatNode, selected, focused, maxWidth }: { flatNode: FlatNode; selected: boolean; focused: boolean; maxWidth: number }) {
@@ -67,7 +51,7 @@ function SessionRow({ flatNode, selected, focused, maxWidth }: { flatNode: FlatN
   );
 }
 
-function SnapshotRow({ flatNode, selected, focused, maxWidth, sessions }: { flatNode: FlatNode; selected: boolean; focused: boolean; maxWidth: number; sessions?: (ClaudeSessionEntry & { _projectDir: string })[] }) {
+function SnapshotRow({ flatNode, selected, focused, maxWidth, sessionStatuses }: { flatNode: FlatNode; selected: boolean; focused: boolean; maxWidth: number; sessionStatuses?: Record<string, SessionStatus> }) {
   const { node, depth, isLast, hasChildren, isCollapsed, parentPrefixes } = flatNode;
 
   // Build prefix with tree-line characters
@@ -88,14 +72,17 @@ function SnapshotRow({ flatNode, selected, focused, maxWidth, sessions }: { flat
     indicator = isCollapsed ? '▶ ' : '▼ ';
   }
 
+  // Branch status
+  const branchStatus = getBranchStatus(node, sessionStatuses);
+  const branchDot = branchStatus === 'idle' ? '○' : '●';
+
   // Format suffix based on type
-  const statusIcon = getStatusIcon(node, sessions);
   let suffix = '';
   if (node.type === 'snapshot' && node.snapshot) {
     const msgs = node.snapshot.message_count;
     suffix = msgs ? ` ${msgs}m` : '';
   } else if (node.type === 'branch') {
-    suffix = ` ${statusIcon}(br)`;
+    suffix = ` ${branchDot} (br)`;
   }
 
   // Truncate name if needed
@@ -117,6 +104,10 @@ function SnapshotRow({ flatNode, selected, focused, maxWidth, sessions }: { flat
     );
   }
 
+  // Non-selected: render branch dot with status color
+  const isBranch = node.type === 'branch';
+  const dotColor = branchStatus === 'active' ? 'green' : branchStatus === 'busy' ? 'yellow' : undefined;
+
   return (
     <Box>
       <Text>{depth === 0 ? '' : '  '}</Text>
@@ -127,48 +118,97 @@ function SnapshotRow({ flatNode, selected, focused, maxWidth, sessions }: { flat
       ) : (
         <Text dimColor>{displayName}</Text>
       )}
-      <Text dimColor>{suffix}</Text>
+      {isBranch ? (
+        <>
+          <Text> </Text>
+          <Text color={dotColor} dimColor={branchStatus === 'idle'}>{branchDot}</Text>
+          <Text dimColor> (br)</Text>
+        </>
+      ) : (
+        <Text dimColor>{suffix}</Text>
+      )}
     </Box>
   );
 }
 
-export function TreePane({ flatNodes, selectedIndex, focused, height, width, projectName, sessions }: TreePaneProps) {
-  const visibleCount = Math.max(1, height - 2);
+function scrollWindow(items: FlatNode[], selectedOriginalIndex: number, visibleCount: number, flatNodes: FlatNode[]): { startIndex: number; endIndex: number } {
+  // Find which item in this subset is selected
+  const localIndex = items.findIndex(fn => flatNodes.indexOf(fn) === selectedOriginalIndex);
+  if (localIndex < 0) {
+    // Selection not in this pane, show from top
+    return { startIndex: 0, endIndex: Math.min(items.length, visibleCount) };
+  }
   const halfWindow = Math.floor(visibleCount / 2);
-  let startIndex = Math.max(0, selectedIndex - halfWindow);
-  const endIndex = Math.min(flatNodes.length, startIndex + visibleCount);
+  let startIndex = Math.max(0, localIndex - halfWindow);
+  const endIndex = Math.min(items.length, startIndex + visibleCount);
   if (endIndex - startIndex < visibleCount) {
     startIndex = Math.max(0, endIndex - visibleCount);
   }
+  return { startIndex, endIndex };
+}
 
-  const visibleNodes = flatNodes.slice(startIndex, endIndex);
+export function TreePane({ flatNodes, selectedIndex, focused, snapshotBoxHeight, sessionBoxHeight, width, sessionStatuses }: TreePaneProps) {
   const maxWidth = width - 4;
 
+  // Split flatNodes into snapshot items and session items (skip separators)
+  const sessionSepIdx = flatNodes.findIndex(fn => fn.node.type === 'separator' && fn.node.name === 'Sessions');
+  const snapshotItems = flatNodes.filter((fn, i) => fn.node.type !== 'separator' && (sessionSepIdx < 0 || i < sessionSepIdx));
+  const sessionItems = flatNodes.filter((fn, i) => fn.node.type !== 'separator' && sessionSepIdx >= 0 && i > sessionSepIdx);
+
+  // Derive content heights from box heights (box = content + 2 border + 1 header)
+  const snapshotContentHeight = snapshotBoxHeight - 3;
+  const sessionContentHeight = sessionBoxHeight - 3;
+
+  // Scroll windows (visible count = content height)
+  const snapScroll = scrollWindow(snapshotItems, selectedIndex, snapshotContentHeight, flatNodes);
+  const sessScroll = scrollWindow(sessionItems, selectedIndex, sessionContentHeight, flatNodes);
+
+  const visibleSnapshots = snapshotItems.slice(snapScroll.startIndex, snapScroll.endIndex);
+  const visibleSessions = sessionItems.slice(sessScroll.startIndex, sessScroll.endIndex);
+
+  // Is selection in snapshots or sessions?
+  const selInSnapshots = snapshotItems.some(fn => flatNodes.indexOf(fn) === selectedIndex);
+
   return (
-    <Box flexDirection="column" width={width} borderStyle="single" borderColor={focused ? 'cyan' : 'gray'}>
-      <Box paddingX={1}>
-        <Text bold> {projectName || 'Snapshots / Sessions'}</Text>
-      </Box>
-      {flatNodes.length === 0 ? (
+    <Box flexDirection="column" width={width}>
+      {/* Snapshots container */}
+      <Box flexDirection="column" width={width} height={snapshotBoxHeight} borderStyle="single" borderColor={focused && selInSnapshots ? 'cyan' : 'gray'}>
         <Box paddingX={1}>
-          <Text dimColor>No snapshots or sessions</Text>
+          <Text bold> Snapshots</Text>
+          <Text dimColor> ({snapshotItems.length})</Text>
         </Box>
-      ) : (
-        visibleNodes.map((flatNode, i) => {
-          const key = `${flatNode.node.type}:${flatNode.node.name}:${i}`;
-          const isSelected = startIndex + i === selectedIndex;
-
-          if (flatNode.node.type === 'separator') {
-            return <SeparatorRow key={key} name={flatNode.node.name} maxWidth={maxWidth} />;
-          }
-
-          if (flatNode.node.type === 'session') {
+        {snapshotItems.length === 0 ? (
+          <Box paddingX={1}>
+            <Text dimColor>No snapshots</Text>
+          </Box>
+        ) : (
+          visibleSnapshots.map((flatNode, i) => {
+            const originalIndex = flatNodes.indexOf(flatNode);
+            const isSelected = originalIndex === selectedIndex;
+            const key = `snap:${flatNode.node.type}:${flatNode.node.name}:${i}`;
+            return <SnapshotRow key={key} flatNode={flatNode} selected={isSelected} focused={focused} maxWidth={maxWidth} sessionStatuses={sessionStatuses} />;
+          })
+        )}
+      </Box>
+      {/* Sessions container */}
+      <Box flexDirection="column" width={width} height={sessionBoxHeight} borderStyle="single" borderColor={focused && !selInSnapshots ? 'cyan' : 'gray'}>
+        <Box paddingX={1}>
+          <Text bold> Sessions</Text>
+          <Text dimColor> ({sessionItems.length})</Text>
+        </Box>
+        {sessionItems.length === 0 ? (
+          <Box paddingX={1}>
+            <Text dimColor>No sessions</Text>
+          </Box>
+        ) : (
+          visibleSessions.map((flatNode, i) => {
+            const originalIndex = flatNodes.indexOf(flatNode);
+            const isSelected = originalIndex === selectedIndex;
+            const key = `sess:${flatNode.node.session?.sessionId}:${i}`;
             return <SessionRow key={key} flatNode={flatNode} selected={isSelected} focused={focused} maxWidth={maxWidth} />;
-          }
-
-          return <SnapshotRow key={key} flatNode={flatNode} selected={isSelected} focused={focused} maxWidth={maxWidth} sessions={sessions} />;
-        })
-      )}
+          })
+        )}
+      </Box>
     </Box>
   );
 }
