@@ -28,7 +28,22 @@ Build up context once, reuse it whenever you need it.
 |:---:|:---:|
 | ![High context](assets/high_context.png) | ![Low context](assets/low_context.png) |
 
-> **Note:** The "Messages" token count in `/context` includes tool results, tool calls, and system entries — not just your conversation. The drop from 132k to 2.3k is the tool result bloat being stripped. Every user and assistant message is still there verbatim.
+What's actually happening inside:
+
+```
+Before trim                                          After trim
+─────────────────────────────────────────            ─────────────────────────────────────────
+User: "read auth.ts"                                 User: "read auth.ts"
+Claude: [calls Read on src/auth.ts]                  Claude: [calls Read on src/auth.ts]
+Result: [847 lines of raw TypeScript]    ← gone      Result: [File read: src/auth.ts, 847 lines]  ← stub
+Claude: "The auth module uses JWT with               Claude: "The auth module uses JWT with
+         refresh tokens in httpOnly                            refresh tokens in httpOnly
+         cookies..."                     ← kept               cookies..."                     ← kept
+```
+
+Claude's synthesis — the part with actual understanding — stays. The raw file dumps, tool outputs, thinking signatures, and image blocks are gone. If Claude needs a file again, it re-reads it.
+
+> **Note:** The "Messages" token count in `/context` includes tool results, tool calls, and system entries — not just your conversation. The drop from 132k to 2.3k is the tool result bloat being stripped. Every user and assistant message is still there verbatim. For details on what gets removed, see the [FAQ](#faq). For how trimming interacts with prompt caching, see the [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
 
 ## Install
 
@@ -152,8 +167,6 @@ cmv trim --latest
 cmv trim --latest --threshold 200    # lower threshold = more aggressive trimming
 ```
 
-More on this [below](#trim).
-
 ### `cmv list`
 
 All snapshots. Filter by tag, sort by name or branch count.
@@ -225,30 +238,6 @@ No. `cmv trim --latest` snapshots, trims, and launches a fresh session in one st
 
 **Pro/Max subscriber vs API user — does this matter for me?**
 Different value propositions. **Subscribers:** no per-token cost, so the win is purely freeing context window space and reducing rate-limit burn from cache misses. **API users:** small one-time cache miss cost, net savings after a few turns from caching a much smaller prefix. Both benefit from fitting more useful conversation into the 200k window.
-
-## Trim
-
-Before trim:
-```
-User: "read auth.ts"
-Claude: [calls Read on src/auth.ts]
-Result: [847 lines of raw TypeScript]                    ← gone
-Claude: "The auth module uses JWT with refresh tokens
-         stored in httpOnly cookies..."                   ← kept
-```
-
-After trim:
-```
-User: "read auth.ts"
-Claude: [calls Read on src/auth.ts]
-Result: [File read: src/auth.ts, 847 lines]              ← stub
-Claude: "The auth module uses JWT with refresh tokens
-         stored in httpOnly cookies..."                   ← kept
-```
-
-Claude's synthesis — the part with the actual understanding — stays. The 847 lines of raw source are gone. If Claude needs the file again later, it can just re-read it.
-
-For what exactly gets removed, see the [FAQ](#faq). For how trimming interacts with prompt caching, see the [Cache Impact Analysis](docs/CACHE_IMPACT_ANALYSIS.md).
 
 ## Workflows
 
