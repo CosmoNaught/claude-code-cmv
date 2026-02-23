@@ -97,7 +97,12 @@ export function spawnClaudeInNewWindow(sessionId: string, cliPath?: string, cwd?
     // Linux: try common terminal emulators with --title support
     const terminals = [
       `x-terminal-emulator -T '${windowTitle}' -e ${cmd} --resume ${sessionId}`,
+      `kitty -T '${windowTitle}' ${cmd} --resume ${sessionId}`,
       `gnome-terminal --title='${windowTitle}' -- ${cmd} --resume ${sessionId}`,
+      `alacritty -T '${windowTitle}' -e ${cmd} --resume ${sessionId}`,
+      `wezterm start --cwd '${effectiveCwd || '.'}' -- ${cmd} --resume ${sessionId}`,
+      `foot -T '${windowTitle}' ${cmd} --resume ${sessionId}`,
+      `ghostty -e ${cmd} --resume ${sessionId}`,
       `konsole -p tabtitle='${windowTitle}' -e ${cmd} --resume ${sessionId}`,
       `xfce4-terminal -T '${windowTitle}' -e '${cmd} --resume ${sessionId}'`,
       `xterm -T '${windowTitle}' -e ${cmd} --resume ${sessionId}`,
