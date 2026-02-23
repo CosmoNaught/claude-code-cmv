@@ -4,6 +4,14 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [2.0.1] — 2026-02-23
+
+### Fixed
+
+- **Linux terminal detection** — kitty, alacritty, wezterm, foot, and ghostty added to the terminal emulator detection list. Previously only gnome-terminal, konsole, xfce4-terminal, and xterm were checked, causing sessions to spawn headlessly on modern terminals.
+
+---
+
 ## [2.0.0] — 2026-02-22
 
 ### Added
