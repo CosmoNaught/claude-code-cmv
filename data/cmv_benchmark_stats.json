@@ -1,0 +1,59 @@
+{
+  "generated": "2026-02-25T18:22:27.297138",
+  "model": "Sonnet 4",
+  "cache_hit_rate": 0.9,
+  "session_count": 76,
+  "tiers": {
+    "tool_heavy": {
+      "count": 0,
+      "label": "Heavy tool use (>40%)"
+    },
+    "mixed": {
+      "count": 12,
+      "label": "Moderate tool use (15-40%)",
+      "mean_reduction_pct": 39.0,
+      "median_reduction_pct": 33.5,
+      "min_reduction_pct": 22.0,
+      "max_reduction_pct": 67.0,
+      "mean_breakeven": 10.0,
+      "median_breakeven": 10.0,
+      "mean_tokens": 97063
+    },
+    "conversational": {
+      "count": 64,
+      "label": "Light tool use (<15%)",
+      "mean_reduction_pct": 16.9,
+      "median_reduction_pct": 10.0,
+      "min_reduction_pct": 0.0,
+      "max_reduction_pct": 86.0,
+      "mean_breakeven": 40.0,
+      "median_breakeven": 43.0,
+      "mean_tokens": 82708
+    }
+  },
+  "overall": {
+    "reduction": {
+      "mean_pct": 20.4,
+      "median_pct": 12.0,
+      "min_pct": 0.0,
+      "max_pct": 86.0,
+      "sessions_above_30pct": 18
+    },
+    "tokens": {
+      "mean_pre_trim": 84974,
+      "mean_post_trim": 63753
+    },
+    "breakeven": {
+      "mean_turns": 35.0,
+      "median_turns": 38.0,
+      "min_turns": 1,
+      "max_turns": 60
+    },
+    "cost": {
+      "mean_cache_miss_penalty": 0.1843,
+      "median_cache_miss_penalty": 0.189,
+      "min_cache_miss_penalty": -0.0144,
+      "max_cache_miss_penalty": 0.4863
+    }
+  }
+}

@@ -1,5 +1,9 @@
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { analyzeSession } from './analyzer.js';
-import type { SessionAnalysis } from '../types/index.js';
+import { trimJsonl } from './trimmer.js';
+import type { SessionAnalysis, TrimMetrics } from '../types/index.js';
 
 // Anthropic prompt caching pricing (per million tokens)
 // https://platform.claude.com/docs/en/docs/build-with-claude/prompt-caching
@@ -168,6 +172,98 @@ export async function analyzeCacheImpact(
     breakEvenTurns: breakEven,
     projections,
     breakdown: analysis.breakdown,
+  };
+}
+
+export interface RealTrimResult {
+  report: CacheImpactReport;
+  trimMetrics: TrimMetrics;
+  analysis: SessionAnalysis;
+}
+
+/**
+ * Run cache impact analysis using the REAL trimmer instead of estimation.
+ *
+ * Trims the session to a temp file, measures actual byte reduction,
+ * computes the token reduction ratio from real trimmer output, then
+ * cleans up. Much more accurate than estimatePostTrimTokens().
+ */
+export async function analyzeCacheImpactWithRealTrim(
+  jsonlPath: string,
+  model: ModelKey = 'sonnet',
+  cacheHitRate: number = 0.90,
+): Promise<RealTrimResult> {
+  const analysis = await analyzeSession(jsonlPath);
+  const pricing = PRICING[model];
+
+  const preTrimTokens = analysis.estimatedTokens;
+
+  // Run the real trimmer to a temp file
+  const tmpDir = await fs.mkdtemp(path.join(os.tmpdir(), 'cmv-bench-'));
+  const tmpDest = path.join(tmpDir, 'trimmed.jsonl');
+  let postTrimTokens: number;
+  let trimMetrics: TrimMetrics;
+
+  try {
+    trimMetrics = await trimJsonl(jsonlPath, tmpDest);
+
+    // Compute token reduction using real byte ratio
+    if (trimMetrics.originalBytes > 0) {
+      const byteReduction = 1 - (trimMetrics.trimmedBytes / trimMetrics.originalBytes);
+      const SYSTEM_OVERHEAD = 20_000;
+      const contentTokens = Math.max(0, preTrimTokens - SYSTEM_OVERHEAD);
+      postTrimTokens = Math.round(contentTokens * (1 - byteReduction)) + SYSTEM_OVERHEAD;
+    } else {
+      postTrimTokens = preTrimTokens;
+    }
+  } finally {
+    // Clean up temp files
+    await fs.rm(tmpDir, { recursive: true, force: true }).catch(() => {});
+  }
+
+  // Ensure post-trim can't exceed pre-trim
+  postTrimTokens = Math.min(postTrimTokens, preTrimTokens);
+
+  const preTrimCost = steadyStateCost(preTrimTokens, cacheHitRate, pricing);
+  const postTrimFirstCost = coldCacheCost(postTrimTokens, pricing);
+  const postTrimSteadyCost = steadyStateCost(postTrimTokens, cacheHitRate, pricing);
+
+  const penalty = postTrimFirstCost - preTrimCost;
+  const savings = preTrimCost - postTrimSteadyCost;
+  const breakEven = savings > 0 ? Math.ceil(penalty / savings) + 1 : Infinity;
+
+  const projectionTurns = [5, 10, 20, 50];
+  const projections = projectionTurns.map(turns => {
+    const withoutTrim = preTrimCost * turns;
+    const withTrim = postTrimFirstCost + postTrimSteadyCost * (turns - 1);
+    const savedPercent = withoutTrim > 0
+      ? Math.round(((withoutTrim - withTrim) / withoutTrim) * 100)
+      : 0;
+    return { turns, withoutTrim, withTrim, savedPercent };
+  });
+
+  return {
+    report: {
+      model,
+      modelDisplayName: pricing.name,
+      inputPricePerMTok: pricing.input,
+      preTrimTokens,
+      postTrimTokens,
+      reductionPercent: preTrimTokens > 0
+        ? Math.round(((preTrimTokens - postTrimTokens) / preTrimTokens) * 100)
+        : 0,
+      cacheHitRate,
+      preTrimCostPerTurn: preTrimCost,
+      postTrimFirstTurnCost: postTrimFirstCost,
+      postTrimSteadyCostPerTurn: postTrimSteadyCost,
+      cacheMissPenalty: penalty,
+      savingsPerTurn: savings,
+      breakEvenTurns: breakEven,
+      projections,
+      breakdown: analysis.breakdown,
+    },
+    trimMetrics: trimMetrics!,
+    analysis,
   };
 }
 
