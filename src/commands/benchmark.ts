@@ -1,7 +1,10 @@
+import * as fs from 'node:fs/promises';
+import * as path from 'node:path';
 import { Command } from 'commander';
 import chalk from 'chalk';
-import { analyzeCacheImpact, type CacheImpactReport, type ModelKey } from '../core/cache-analyzer.js';
-import { findSession, getLatestSession, getSessionJsonlPath } from '../core/session-reader.js';
+import { analyzeCacheImpact, analyzeCacheImpactWithRealTrim, PRICING, type CacheImpactReport, type RealTrimResult, type ModelKey } from '../core/cache-analyzer.js';
+import { analyzeSession } from '../core/analyzer.js';
+import { findSession, getLatestSession, getSessionJsonlPath, listAllSessions, isSessionActive } from '../core/session-reader.js';
 import { handleError } from '../utils/errors.js';
 import { info, dim } from '../utils/display.js';
 
@@ -180,28 +183,203 @@ function renderJson(r: CacheImpactReport): void {
   console.log(JSON.stringify(r, null, 2));
 }
 
+// ── Batch (--all) mode ───────────────────────────────────────────
+
+const MIN_MESSAGES = 10;
+const MIN_TOKENS = 5_000;
+
+interface BatchSessionResult {
+  sessionId: string;
+  project: string;
+  // Session metadata
+  messageCount: number;
+  userMessages: number;
+  assistantMessages: number;
+  toolResultCount: number;
+  // Token analysis
+  estimatedTokens: number;
+  postTrimTokens: number;
+  reductionPercent: number;
+  contextUsedPercent: number;
+  // Cost analysis
+  breakEvenTurns: number;
+  cacheMissPenalty: number;
+  savingsPerTurn: number;
+  preTrimCostPerTurn: number;
+  postTrimSteadyCostPerTurn: number;
+  postTrimFirstTurnCost: number;
+  projections: CacheImpactReport['projections'];
+  // Content breakdown (bytes + percentages)
+  breakdown: CacheImpactReport['breakdown'];
+  totalBytes: number;
+  toolResultBytePct: number;
+  // Real trim metrics (ground truth from v2.0 trimmer)
+  trimMetrics: {
+    originalBytes: number;
+    trimmedBytes: number;
+    byteReductionPct: number;
+    toolResultsStubbed: number;
+    signaturesStripped: number;
+    fileHistoryRemoved: number;
+    imagesStripped: number;
+    toolUseInputsStubbed: number;
+    preCompactionLinesSkipped: number;
+    queueOperationsRemoved: number;
+    trimmedUserMessages: number;
+    trimmedAssistantResponses: number;
+    trimmedToolUseRequests: number;
+  };
+}
+
+async function runBatchBenchmark(
+  model: ModelKey,
+  cacheRate: number,
+  outPath?: string,
+): Promise<void> {
+  const allSessions = await listAllSessions();
+
+  console.error(`Found ${allSessions.length} total sessions. Filtering...`);
+
+  // Filter: ≥10 messages, not subagent, not active
+  const candidates = [];
+  for (const s of allSessions) {
+    // Exclude subagent dirs
+    if (s._projectDir.includes('subagents')) continue;
+
+    // Exclude sessions with too few messages
+    if (!s.messageCount || s.messageCount < MIN_MESSAGES) continue;
+
+    // Exclude currently active session
+    if (await isSessionActive(s)) continue;
+
+    candidates.push(s);
+  }
+
+  console.error(`${candidates.length} candidates after message/subagent filter.`);
+  console.error(`Analyzing with real trimmer (${model} pricing, ${Math.round(cacheRate * 100)}% cache hit)...`);
+
+  const results: BatchSessionResult[] = [];
+  let processed = 0;
+  let skippedTokens = 0;
+  let errors = 0;
+
+  for (const s of candidates) {
+    const jsonlPath = getSessionJsonlPath(s);
+
+    try {
+      // Run real trim analysis (includes analyzeSession internally)
+      const { report, trimMetrics, analysis } = await analyzeCacheImpactWithRealTrim(jsonlPath, model, cacheRate);
+
+      // Apply token filter after analysis (we need to analyze to know token count)
+      if (analysis.estimatedTokens < MIN_TOKENS) {
+        skippedTokens++;
+        processed++;
+        continue;
+      }
+
+      const toolResultBytePct = analysis.totalBytes > 0
+        ? Math.round((analysis.breakdown.toolResults.bytes / analysis.totalBytes) * 100)
+        : 0;
+
+      const byteReductionPct = trimMetrics.originalBytes > 0
+        ? Math.round((1 - trimMetrics.trimmedBytes / trimMetrics.originalBytes) * 100)
+        : 0;
+
+      results.push({
+        sessionId: s.sessionId,
+        project: s.projectPath || path.basename(s._projectDir),
+        messageCount: analysis.messageCount.user + analysis.messageCount.assistant,
+        userMessages: analysis.messageCount.user,
+        assistantMessages: analysis.messageCount.assistant,
+        toolResultCount: analysis.messageCount.toolResults,
+        estimatedTokens: report.preTrimTokens,
+        postTrimTokens: report.postTrimTokens,
+        reductionPercent: report.reductionPercent,
+        contextUsedPercent: analysis.contextUsedPercent,
+        breakEvenTurns: report.breakEvenTurns === Infinity ? 999 : report.breakEvenTurns,
+        cacheMissPenalty: report.cacheMissPenalty,
+        savingsPerTurn: report.savingsPerTurn,
+        preTrimCostPerTurn: report.preTrimCostPerTurn,
+        postTrimSteadyCostPerTurn: report.postTrimSteadyCostPerTurn,
+        postTrimFirstTurnCost: report.postTrimFirstTurnCost,
+        projections: report.projections,
+        breakdown: report.breakdown,
+        totalBytes: analysis.totalBytes,
+        toolResultBytePct,
+        trimMetrics: {
+          originalBytes: trimMetrics.originalBytes,
+          trimmedBytes: trimMetrics.trimmedBytes,
+          byteReductionPct,
+          toolResultsStubbed: trimMetrics.toolResultsStubbed,
+          signaturesStripped: trimMetrics.signaturesStripped,
+          fileHistoryRemoved: trimMetrics.fileHistoryRemoved,
+          imagesStripped: trimMetrics.imagesStripped,
+          toolUseInputsStubbed: trimMetrics.toolUseInputsStubbed,
+          preCompactionLinesSkipped: trimMetrics.preCompactionLinesSkipped,
+          queueOperationsRemoved: trimMetrics.queueOperationsRemoved,
+          trimmedUserMessages: trimMetrics.userMessages,
+          trimmedAssistantResponses: trimMetrics.assistantResponses,
+          trimmedToolUseRequests: trimMetrics.toolUseRequests,
+        },
+      });
+    } catch {
+      errors++;
+    }
+
+    processed++;
+    if (processed % 10 === 0) {
+      console.error(`  ...processed ${processed}/${candidates.length} (${results.length} qualifying)`);
+    }
+  }
+
+  console.error(`\nDone. ${results.length} qualifying sessions (≥${MIN_MESSAGES} msgs, ≥${MIN_TOKENS} tokens).`);
+  console.error(`  Skipped: ${skippedTokens} below token threshold, ${errors} errors.`);
+
+  const output = JSON.stringify({
+    generated: new Date().toISOString(),
+    model,
+    modelDisplayName: PRICING[model].name,
+    cacheHitRate: cacheRate,
+    filterCriteria: {
+      minMessages: MIN_MESSAGES,
+      minTokens: MIN_TOKENS,
+      excludeSubagents: true,
+      excludeActive: true,
+    },
+    sessionCount: results.length,
+    sessions: results,
+  }, null, 2);
+
+  if (outPath) {
+    await fs.mkdir(path.dirname(path.resolve(outPath)), { recursive: true });
+    await fs.writeFile(outPath, output, 'utf-8');
+    console.error(`Results written to ${outPath}`);
+  } else {
+    process.stdout.write(output + '\n');
+  }
+}
+
 export function registerBenchmarkCommand(program: Command): void {
   program
     .command('benchmark')
     .description('Analyze cache impact of trimming a session')
     .option('-s, --session <id>', 'Session ID to analyze')
     .option('--latest', 'Analyze the most recently modified session')
+    .option('--all', 'Analyze ALL qualifying sessions (batch mode)')
     .option('-m, --model <model>', 'Pricing model: sonnet, opus, opus-4, haiku', 'sonnet')
     .option('-c, --cache-rate <percent>', 'Cache hit rate 0-100 (default: 90)', '90')
     .option('--json', 'Output raw JSON')
+    .option('-o, --out <path>', 'Write JSON output to file (batch mode)')
     .action(async (opts: {
       session?: string;
       latest?: boolean;
+      all?: boolean;
       model?: string;
       cacheRate?: string;
       json?: boolean;
+      out?: string;
     }) => {
       try {
-        if (!opts.session && !opts.latest) {
-          console.error('Must provide --session <id> or --latest');
-          process.exit(1);
-        }
-
         const model = (opts.model || 'sonnet') as ModelKey;
         if (!['sonnet', 'opus', 'opus-4', 'haiku'].includes(model)) {
           console.error(`Invalid model "${model}". Use: sonnet, opus, opus-4, haiku`);
@@ -209,6 +387,18 @@ export function registerBenchmarkCommand(program: Command): void {
         }
 
         const cacheRate = Math.max(0, Math.min(100, parseInt(opts.cacheRate || '90', 10))) / 100;
+
+        // ── Batch mode ──
+        if (opts.all) {
+          await runBatchBenchmark(model, cacheRate, opts.out);
+          return;
+        }
+
+        // ── Single session mode ──
+        if (!opts.session && !opts.latest) {
+          console.error('Must provide --session <id>, --latest, or --all');
+          process.exit(1);
+        }
 
         // Resolve session
         let session;

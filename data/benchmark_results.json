@@ -1,0 +1,6931 @@
+{
+  "generated": "2026-02-25T17:59:16.615Z",
+  "model": "sonnet",
+  "modelDisplayName": "Sonnet 4",
+  "cacheHitRate": 0.9,
+  "filterCriteria": {
+    "minMessages": 10,
+    "minTokens": 5000,
+    "excludeSubagents": true,
+    "excludeActive": true
+  },
+  "sessionCount": 76,
+  "sessions": [
+    {
+      "sessionId": "7eca8080-739a-4d53-bc32-32c1c6e36ddd",
+      "project": "d:\\VMC",
+      "messageCount": 41,
+      "userMessages": 15,
+      "assistantMessages": 26,
+      "toolResultCount": 12,
+      "estimatedTokens": 79711,
+      "postTrimTokens": 79682,
+      "reductionPercent": 0,
+      "contextUsedPercent": 40,
+      "breakEvenTurns": 13228,
+      "cacheMissPenalty": 0.24739390500000003,
+      "savingsPerTurn": 0.000018704999999993865,
+      "preTrimCostPerTurn": 0.05141359499999999,
+      "postTrimSteadyCostPerTurn": 0.05139489,
+      "postTrimFirstTurnCost": 0.2988075,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.25706797499999995,
+          "withTrim": 0.50438706,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5141359499999999,
+          "withTrim": 0.76136151,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0282718999999998,
+          "withTrim": 1.27531041,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.5706797499999996,
+          "withTrim": 2.81715711,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 1650,
+          "count": 12,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 276478,
+          "percent": 25
+        },
+        "toolUseRequests": {
+          "bytes": 3235,
+          "count": 12,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 826853,
+          "percent": 75
+        }
+      },
+      "totalBytes": 1108216,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 1108451,
+        "trimmedBytes": 1107921,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 2,
+        "trimmedUserMessages": 15,
+        "trimmedAssistantResponses": 26,
+        "trimmedToolUseRequests": 12
+      }
+    },
+    {
+      "sessionId": "23125980-05f6-4080-bbeb-20a66062e313",
+      "project": "d:\\LASI",
+      "messageCount": 91,
+      "userMessages": 42,
+      "assistantMessages": 49,
+      "toolResultCount": 30,
+      "estimatedTokens": 68884,
+      "postTrimTokens": 64072,
+      "reductionPercent": 7,
+      "contextUsedPercent": 34,
+      "breakEvenTurns": 65,
+      "cacheMissPenalty": 0.19583982000000003,
+      "savingsPerTurn": 0.0031037400000000007,
+      "preTrimCostPerTurn": 0.04443017999999999,
+      "postTrimSteadyCostPerTurn": 0.04132643999999999,
+      "postTrimFirstTurnCost": 0.24027,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.22215089999999996,
+          "withTrim": 0.40557575999999995,
+          "savedPercent": -83
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.4443017999999999,
+          "withTrim": 0.6122079599999999,
+          "savedPercent": -38
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.8886035999999998,
+          "withTrim": 1.02547236,
+          "savedPercent": -15
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.2215089999999997,
+          "withTrim": 2.26526556,
+          "savedPercent": -2
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 135020,
+          "count": 30,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 1062,
+          "count": 3,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 745614,
+          "percent": 55
+        },
+        "toolUseRequests": {
+          "bytes": 5888,
+          "count": 30,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 469151,
+          "percent": 35
+        }
+      },
+      "totalBytes": 1356735,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1357271,
+        "trimmedBytes": 1223671,
+        "byteReductionPct": 10,
+        "toolResultsStubbed": 1,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 3,
+        "imagesStripped": 1,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 6,
+        "trimmedUserMessages": 42,
+        "trimmedAssistantResponses": 49,
+        "trimmedToolUseRequests": 30
+      }
+    },
+    {
+      "sessionId": "58940650-2d7e-42b4-a386-cc277e42404c",
+      "project": "d:\\LASI",
+      "messageCount": 330,
+      "userMessages": 138,
+      "assistantMessages": 192,
+      "toolResultCount": 110,
+      "estimatedTokens": 61457,
+      "postTrimTokens": 61453,
+      "reductionPercent": 0,
+      "contextUsedPercent": 31,
+      "breakEvenTurns": 73958,
+      "cacheMissPenalty": 0.19080898500000001,
+      "savingsPerTurn": 0.000002580000000002025,
+      "preTrimCostPerTurn": 0.039639764999999993,
+      "postTrimSteadyCostPerTurn": 0.03963718499999999,
+      "postTrimFirstTurnCost": 0.23044875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.19819882499999997,
+          "withTrim": 0.38899748999999995,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.39639764999999993,
+          "withTrim": 0.5871834149999999,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.7927952999999999,
+          "withTrim": 0.9835552649999998,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.9819882499999997,
+          "withTrim": 2.1726708149999996,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 22212,
+          "count": 110,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 731393,
+          "percent": 32
+        },
+        "toolUseRequests": {
+          "bytes": 36976,
+          "count": 110,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1511292,
+          "percent": 66
+        }
+      },
+      "totalBytes": 2301873,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 2304007,
+        "trimmedBytes": 2303757,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 138,
+        "trimmedAssistantResponses": 192,
+        "trimmedToolUseRequests": 110
+      }
+    },
+    {
+      "sessionId": "2c99c00b-bb25-4bb0-86a8-d3f58de0cb67",
+      "project": "d:\\LASI",
+      "messageCount": 340,
+      "userMessages": 140,
+      "assistantMessages": 200,
+      "toolResultCount": 109,
+      "estimatedTokens": 89657,
+      "postTrimTokens": 89648,
+      "reductionPercent": 0,
+      "contextUsedPercent": 45,
+      "breakEvenTurns": 47952,
+      "cacheMissPenalty": 0.27835123500000003,
+      "savingsPerTurn": 0.000005805000000011495,
+      "preTrimCostPerTurn": 0.057828765,
+      "postTrimSteadyCostPerTurn": 0.057822959999999986,
+      "postTrimFirstTurnCost": 0.33618000000000003,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.28914382499999997,
+          "withTrim": 0.56747184,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5782876499999999,
+          "withTrim": 0.85658664,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.1565752999999999,
+          "withTrim": 1.43481624,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.8914382499999998,
+          "withTrim": 3.1695050399999993,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 20737,
+          "count": 109,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 778667,
+          "percent": 39
+        },
+        "toolUseRequests": {
+          "bytes": 37511,
+          "count": 109,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1150786,
+          "percent": 58
+        }
+      },
+      "totalBytes": 1987701,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1989213,
+        "trimmedBytes": 1988963,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 140,
+        "trimmedAssistantResponses": 200,
+        "trimmedToolUseRequests": 109
+      }
+    },
+    {
+      "sessionId": "ae6095fb-5ab3-4b47-983b-1c15c91a9e33",
+      "project": "d:\\LASI",
+      "messageCount": 287,
+      "userMessages": 118,
+      "assistantMessages": 169,
+      "toolResultCount": 95,
+      "estimatedTokens": 34697,
+      "postTrimTokens": 34697,
+      "reductionPercent": 0,
+      "contextUsedPercent": 17,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.10773418500000001,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.022379564999999997,
+      "postTrimSteadyCostPerTurn": 0.022379564999999997,
+      "postTrimFirstTurnCost": 0.13011375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.11189782499999998,
+          "withTrim": 0.21963201,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.22379564999999996,
+          "withTrim": 0.331529835,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.4475912999999999,
+          "withTrim": 0.5553254849999999,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.1189782499999998,
+          "withTrim": 1.2267124349999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 18594,
+          "count": 95,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 663229,
+          "percent": 36
+        },
+        "toolUseRequests": {
+          "bytes": 33596,
+          "count": 95,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1130132,
+          "percent": 61
+        }
+      },
+      "totalBytes": 1845551,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1846972,
+        "trimmedBytes": 1846972,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 118,
+        "trimmedAssistantResponses": 169,
+        "trimmedToolUseRequests": 95
+      }
+    },
+    {
+      "sessionId": "089686cf-5c82-4b7e-85f5-a78c7a605aaf",
+      "project": "d:\\LASI",
+      "messageCount": 286,
+      "userMessages": 117,
+      "assistantMessages": 169,
+      "toolResultCount": 95,
+      "estimatedTokens": 154035,
+      "postTrimTokens": 153968,
+      "reductionPercent": 0,
+      "contextUsedPercent": 77,
+      "breakEvenTurns": 11063,
+      "cacheMissPenalty": 0.478027425,
+      "savingsPerTurn": 0.000043214999999999226,
+      "preTrimCostPerTurn": 0.09935257499999998,
+      "postTrimSteadyCostPerTurn": 0.09930935999999999,
+      "postTrimFirstTurnCost": 0.57738,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.49676287499999994,
+          "withTrim": 0.97461744,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9935257499999999,
+          "withTrim": 1.4711642399999998,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9870514999999997,
+          "withTrim": 2.4642578399999997,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.967628749999999,
+          "withTrim": 5.443538639999999,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 18594,
+          "count": 95,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 663556,
+          "percent": 36
+        },
+        "toolUseRequests": {
+          "bytes": 33596,
+          "count": 95,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1130544,
+          "percent": 61
+        }
+      },
+      "totalBytes": 1846290,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1847713,
+        "trimmedBytes": 1846794,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 3,
+        "trimmedUserMessages": 117,
+        "trimmedAssistantResponses": 169,
+        "trimmedToolUseRequests": 95
+      }
+    },
+    {
+      "sessionId": "b78c1fa4-20c2-4b05-8ff5-31dedff59732",
+      "project": "d:\\hiddenstate",
+      "messageCount": 172,
+      "userMessages": 69,
+      "assistantMessages": 103,
+      "toolResultCount": 64,
+      "estimatedTokens": 80748,
+      "postTrimTokens": 27673,
+      "reductionPercent": 66,
+      "contextUsedPercent": 40,
+      "breakEvenTurns": 3,
+      "cacheMissPenalty": 0.05169129,
+      "savingsPerTurn": 0.034233374999999996,
+      "preTrimCostPerTurn": 0.05208246,
+      "postTrimSteadyCostPerTurn": 0.017849084999999997,
+      "postTrimFirstTurnCost": 0.10377375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2604123,
+          "withTrim": 0.17517009,
+          "savedPercent": 33
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5208246,
+          "withTrim": 0.26441551499999993,
+          "savedPercent": 49
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0416492,
+          "withTrim": 0.44290636499999997,
+          "savedPercent": 57
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.604123,
+          "withTrim": 0.9783789149999998,
+          "savedPercent": 62
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 108710,
+          "count": 64,
+          "percent": 19
+        },
+        "thinkingSignatures": {
+          "bytes": 6062,
+          "count": 3,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 5352,
+          "count": 6,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 352014,
+          "percent": 60
+        },
+        "toolUseRequests": {
+          "bytes": 32833,
+          "count": 64,
+          "percent": 6
+        },
+        "other": {
+          "bytes": 81893,
+          "percent": 14
+        }
+      },
+      "totalBytes": 586864,
+      "toolResultBytePct": 19,
+      "trimMetrics": {
+        "originalBytes": 3555638,
+        "trimmedBytes": 449097,
+        "byteReductionPct": 87,
+        "toolResultsStubbed": 28,
+        "signaturesStripped": 3,
+        "fileHistoryRemoved": 6,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 1,
+        "preCompactionLinesSkipped": 537,
+        "queueOperationsRemoved": 10,
+        "trimmedUserMessages": 69,
+        "trimmedAssistantResponses": 103,
+        "trimmedToolUseRequests": 64
+      }
+    },
+    {
+      "sessionId": "d3b21c14-972f-4b82-9495-7b3be62daf59",
+      "project": "d:\\hiddenstate",
+      "messageCount": 297,
+      "userMessages": 118,
+      "assistantMessages": 179,
+      "toolResultCount": 91,
+      "estimatedTokens": 129991,
+      "postTrimTokens": 124967,
+      "reductionPercent": 4,
+      "contextUsedPercent": 65,
+      "breakEvenTurns": 120,
+      "cacheMissPenalty": 0.38478205499999996,
+      "savingsPerTurn": 0.00324047999999999,
+      "preTrimCostPerTurn": 0.08384419499999998,
+      "postTrimSteadyCostPerTurn": 0.08060371499999999,
+      "postTrimFirstTurnCost": 0.46862624999999997,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4192209749999999,
+          "withTrim": 0.7910411099999999,
+          "savedPercent": -89
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.8384419499999998,
+          "withTrim": 1.1940596849999998,
+          "savedPercent": -42
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.6768838999999995,
+          "withTrim": 2.000096835,
+          "savedPercent": -19
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.192209749999999,
+          "withTrim": 4.4182082849999995,
+          "savedPercent": -5
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 83060,
+          "count": 91,
+          "percent": 3
+        },
+        "thinkingSignatures": {
+          "bytes": 9352,
+          "count": 6,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 7546,
+          "count": 14,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1839470,
+          "percent": 69
+        },
+        "toolUseRequests": {
+          "bytes": 51069,
+          "count": 91,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 686094,
+          "percent": 26
+        }
+      },
+      "totalBytes": 2676591,
+      "toolResultBytePct": 3,
+      "trimMetrics": {
+        "originalBytes": 2677264,
+        "trimmedBytes": 2554968,
+        "byteReductionPct": 5,
+        "toolResultsStubbed": 22,
+        "signaturesStripped": 6,
+        "fileHistoryRemoved": 14,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 6,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 4,
+        "trimmedUserMessages": 118,
+        "trimmedAssistantResponses": 179,
+        "trimmedToolUseRequests": 91
+      }
+    },
+    {
+      "sessionId": "7dcb4772-bd42-4642-9667-4b97018265af",
+      "project": "d:\\VMC",
+      "messageCount": 22,
+      "userMessages": 10,
+      "assistantMessages": 12,
+      "toolResultCount": 5,
+      "estimatedTokens": 93433,
+      "postTrimTokens": 70758,
+      "reductionPercent": 24,
+      "contextUsedPercent": 47,
+      "breakEvenTurns": 16,
+      "cacheMissPenalty": 0.205078215,
+      "savingsPerTurn": 0.014625374999999989,
+      "preTrimCostPerTurn": 0.06026428499999999,
+      "postTrimSteadyCostPerTurn": 0.04563891,
+      "postTrimFirstTurnCost": 0.2653425,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.3013214249999999,
+          "withTrim": 0.44789813999999994,
+          "savedPercent": -49
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.6026428499999998,
+          "withTrim": 0.6760926899999999,
+          "savedPercent": -12
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.2052856999999997,
+          "withTrim": 1.13248179,
+          "savedPercent": 6
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.0132142499999994,
+          "withTrim": 2.50164909,
+          "savedPercent": 17
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 5257,
+          "count": 5,
+          "percent": 13
+        },
+        "thinkingSignatures": {
+          "bytes": 1222,
+          "count": 1,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 1695,
+          "count": 5,
+          "percent": 4
+        },
+        "conversation": {
+          "bytes": 24699,
+          "percent": 63
+        },
+        "toolUseRequests": {
+          "bytes": 1136,
+          "count": 5,
+          "percent": 3
+        },
+        "other": {
+          "bytes": 4978,
+          "percent": 13
+        }
+      },
+      "totalBytes": 38987,
+      "toolResultBytePct": 13,
+      "trimMetrics": {
+        "originalBytes": 39024,
+        "trimmedBytes": 26974,
+        "byteReductionPct": 31,
+        "toolResultsStubbed": 1,
+        "signaturesStripped": 1,
+        "fileHistoryRemoved": 5,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 2,
+        "trimmedUserMessages": 10,
+        "trimmedAssistantResponses": 12,
+        "trimmedToolUseRequests": 5
+      }
+    },
+    {
+      "sessionId": "fa79c50e-39f7-42c5-acf0-9ed3e6f9d90a",
+      "project": "d:\\hiddenstate",
+      "messageCount": 198,
+      "userMessages": 80,
+      "assistantMessages": 118,
+      "toolResultCount": 57,
+      "estimatedTokens": 119267,
+      "postTrimTokens": 100288,
+      "reductionPercent": 16,
+      "contextUsedPercent": 60,
+      "breakEvenTurns": 26,
+      "cacheMissPenalty": 0.29915278500000003,
+      "savingsPerTurn": 0.012241455000000012,
+      "preTrimCostPerTurn": 0.076927215,
+      "postTrimSteadyCostPerTurn": 0.06468575999999998,
+      "postTrimFirstTurnCost": 0.37608,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.38463607499999997,
+          "withTrim": 0.6348230399999999,
+          "savedPercent": -65
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7692721499999999,
+          "withTrim": 0.9582518399999997,
+          "savedPercent": -25
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.5385442999999999,
+          "withTrim": 1.6051094399999997,
+          "savedPercent": -4
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.8463607499999997,
+          "withTrim": 3.545682239999999,
+          "savedPercent": 8
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 177130,
+          "count": 57,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 77210,
+          "count": 19,
+          "percent": 4
+        },
+        "fileHistory": {
+          "bytes": 18134,
+          "count": 26,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 411466,
+          "percent": 23
+        },
+        "toolUseRequests": {
+          "bytes": 37187,
+          "count": 57,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1089061,
+          "percent": 60
+        }
+      },
+      "totalBytes": 1810188,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1810673,
+        "trimmedBytes": 1464491,
+        "byteReductionPct": 19,
+        "toolResultsStubbed": 28,
+        "signaturesStripped": 19,
+        "fileHistoryRemoved": 26,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 21,
+        "trimmedUserMessages": 80,
+        "trimmedAssistantResponses": 118,
+        "trimmedToolUseRequests": 57
+      }
+    },
+    {
+      "sessionId": "78f2ae8d-ef22-41a4-869e-d02e46ac0836",
+      "project": "d:\\VMC",
+      "messageCount": 199,
+      "userMessages": 80,
+      "assistantMessages": 119,
+      "toolResultCount": 70,
+      "estimatedTokens": 97349,
+      "postTrimTokens": 76032,
+      "reductionPercent": 22,
+      "contextUsedPercent": 49,
+      "breakEvenTurns": 18,
+      "cacheMissPenalty": 0.222329895,
+      "savingsPerTurn": 0.013749464999999995,
+      "preTrimCostPerTurn": 0.06279010499999998,
+      "postTrimSteadyCostPerTurn": 0.04904063999999999,
+      "postTrimFirstTurnCost": 0.28512,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.3139505249999999,
+          "withTrim": 0.4812825599999999,
+          "savedPercent": -53
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.6279010499999998,
+          "withTrim": 0.7264857599999999,
+          "savedPercent": -16
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.2558020999999997,
+          "withTrim": 1.2168921599999998,
+          "savedPercent": 3
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.139505249999999,
+          "withTrim": 2.6881113599999997,
+          "savedPercent": 14
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 183481,
+          "count": 70,
+          "percent": 19
+        },
+        "thinkingSignatures": {
+          "bytes": 20546,
+          "count": 11,
+          "percent": 2
+        },
+        "fileHistory": {
+          "bytes": 4814,
+          "count": 11,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 498394,
+          "percent": 52
+        },
+        "toolUseRequests": {
+          "bytes": 45537,
+          "count": 70,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 203890,
+          "percent": 21
+        }
+      },
+      "totalBytes": 956662,
+      "toolResultBytePct": 19,
+      "trimMetrics": {
+        "originalBytes": 957044,
+        "trimmedBytes": 693283,
+        "byteReductionPct": 28,
+        "toolResultsStubbed": 26,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 11,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 4,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 14,
+        "trimmedUserMessages": 80,
+        "trimmedAssistantResponses": 119,
+        "trimmedToolUseRequests": 70
+      }
+    },
+    {
+      "sessionId": "10aa501e-2bfa-41cb-88a3-d0ab4d611053",
+      "project": "d:\\VMC",
+      "messageCount": 236,
+      "userMessages": 90,
+      "assistantMessages": 146,
+      "toolResultCount": 80,
+      "estimatedTokens": 34406,
+      "postTrimTokens": 34406,
+      "reductionPercent": 0,
+      "contextUsedPercent": 17,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.10683062999999998,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.022191869999999995,
+      "postTrimSteadyCostPerTurn": 0.022191869999999995,
+      "postTrimFirstTurnCost": 0.12902249999999998,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.11095934999999998,
+          "withTrim": 0.21778997999999997,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.22191869999999997,
+          "withTrim": 0.32874932999999995,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.44383739999999994,
+          "withTrim": 0.55066803,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.1095934999999997,
+          "withTrim": 1.2164241299999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 13793,
+          "count": 80,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 961430,
+          "percent": 75
+        },
+        "toolUseRequests": {
+          "bytes": 27820,
+          "count": 80,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 272950,
+          "percent": 21
+        }
+      },
+      "totalBytes": 1275993,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1276532,
+        "trimmedBytes": 1276532,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 90,
+        "trimmedAssistantResponses": 146,
+        "trimmedToolUseRequests": 80
+      }
+    },
+    {
+      "sessionId": "5b5e4b91-01ba-4801-9a92-a1d845f59bf2",
+      "project": "d:\\VMC",
+      "messageCount": 236,
+      "userMessages": 90,
+      "assistantMessages": 146,
+      "toolResultCount": 80,
+      "estimatedTokens": 159544,
+      "postTrimTokens": 157117,
+      "reductionPercent": 2,
+      "contextUsedPercent": 80,
+      "breakEvenTurns": 312,
+      "cacheMissPenalty": 0.48628287000000003,
+      "savingsPerTurn": 0.0015654150000000006,
+      "preTrimCostPerTurn": 0.10290587999999999,
+      "postTrimSteadyCostPerTurn": 0.10134046499999999,
+      "postTrimFirstTurnCost": 0.58918875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.5145293999999999,
+          "withTrim": 0.99455061,
+          "savedPercent": -93
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 1.0290587999999998,
+          "withTrim": 1.5012529350000001,
+          "savedPercent": -46
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 2.0581175999999997,
+          "withTrim": 2.5146575849999997,
+          "savedPercent": -22
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 5.145294,
+          "withTrim": 5.554871534999999,
+          "savedPercent": -8
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 36134,
+          "count": 80,
+          "percent": 3
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 961683,
+          "percent": 74
+        },
+        "toolUseRequests": {
+          "bytes": 27820,
+          "count": 80,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 272950,
+          "percent": 21
+        }
+      },
+      "totalBytes": 1298587,
+      "toolResultBytePct": 3,
+      "trimMetrics": {
+        "originalBytes": 1299126,
+        "trimmedBytes": 1276532,
+        "byteReductionPct": 2,
+        "toolResultsStubbed": 1,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 90,
+        "trimmedAssistantResponses": 146,
+        "trimmedToolUseRequests": 80
+      }
+    },
+    {
+      "sessionId": "11a5b352-8174-452d-a5e9-17eb6da308ce",
+      "project": "d:\\VMC",
+      "messageCount": 62,
+      "userMessages": 24,
+      "assistantMessages": 38,
+      "toolResultCount": 20,
+      "estimatedTokens": 62991,
+      "postTrimTokens": 43396,
+      "reductionPercent": 31,
+      "contextUsedPercent": 31,
+      "breakEvenTurns": 11,
+      "cacheMissPenalty": 0.122105805,
+      "savingsPerTurn": 0.012638774999999994,
+      "preTrimCostPerTurn": 0.04062919499999999,
+      "postTrimSteadyCostPerTurn": 0.02799042,
+      "postTrimFirstTurnCost": 0.162735,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.20314597499999998,
+          "withTrim": 0.27469667999999997,
+          "savedPercent": -35
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.40629194999999996,
+          "withTrim": 0.41464877999999994,
+          "savedPercent": -2
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.8125838999999999,
+          "withTrim": 0.69455298,
+          "savedPercent": 15
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.03145975,
+          "withTrim": 1.53426558,
+          "savedPercent": 24
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 116367,
+          "count": 20,
+          "percent": 35
+        },
+        "thinkingSignatures": {
+          "bytes": 10100,
+          "count": 6,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 1522,
+          "count": 5,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 167320,
+          "percent": 51
+        },
+        "toolUseRequests": {
+          "bytes": 12229,
+          "count": 20,
+          "percent": 4
+        },
+        "other": {
+          "bytes": 21597,
+          "percent": 7
+        }
+      },
+      "totalBytes": 329135,
+      "toolResultBytePct": 35,
+      "trimMetrics": {
+        "originalBytes": 329247,
+        "trimmedBytes": 179176,
+        "byteReductionPct": 46,
+        "toolResultsStubbed": 14,
+        "signaturesStripped": 6,
+        "fileHistoryRemoved": 5,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 3,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 8,
+        "trimmedUserMessages": 24,
+        "trimmedAssistantResponses": 38,
+        "trimmedToolUseRequests": 20
+      }
+    },
+    {
+      "sessionId": "a103e6fe-0ca5-4ba4-914a-c1dc7a73b419",
+      "project": "D:\\VMC",
+      "messageCount": 244,
+      "userMessages": 96,
+      "assistantMessages": 148,
+      "toolResultCount": 82,
+      "estimatedTokens": 32306,
+      "postTrimTokens": 32288,
+      "reductionPercent": 0,
+      "contextUsedPercent": 16,
+      "breakEvenTurns": 8636,
+      "cacheMissPenalty": 0.10024263,
+      "savingsPerTurn": 0.000011609999999998705,
+      "preTrimCostPerTurn": 0.020837369999999997,
+      "postTrimSteadyCostPerTurn": 0.02082576,
+      "postTrimFirstTurnCost": 0.12108,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.10418684999999998,
+          "withTrim": 0.20438304,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.20837369999999997,
+          "withTrim": 0.30851184,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.41674739999999993,
+          "withTrim": 0.5167694399999999,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.0418684999999999,
+          "withTrim": 1.14154224,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 12405,
+          "count": 82,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 705,
+          "count": 3,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 807985,
+          "percent": 69
+        },
+        "toolUseRequests": {
+          "bytes": 20401,
+          "count": 81,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 324466,
+          "percent": 28
+        }
+      },
+      "totalBytes": 1165962,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1166460,
+        "trimmedBytes": 1164783,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 3,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 96,
+        "trimmedAssistantResponses": 148,
+        "trimmedToolUseRequests": 81
+      }
+    },
+    {
+      "sessionId": "339a6c3f-a1b9-4f5f-b8bc-9d47ae8f10c9",
+      "project": "D:\\VMC",
+      "messageCount": 239,
+      "userMessages": 93,
+      "assistantMessages": 146,
+      "toolResultCount": 82,
+      "estimatedTokens": 98447,
+      "postTrimTokens": 98392,
+      "reductionPercent": 0,
+      "contextUsedPercent": 49,
+      "breakEvenTurns": 8612,
+      "cacheMissPenalty": 0.305471685,
+      "savingsPerTurn": 0.00003547500000000703,
+      "preTrimCostPerTurn": 0.063498315,
+      "postTrimSteadyCostPerTurn": 0.06346283999999999,
+      "postTrimFirstTurnCost": 0.36896999999999996,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.317491575,
+          "withTrim": 0.6228213599999999,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.63498315,
+          "withTrim": 0.9401355599999999,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.2699663,
+          "withTrim": 1.5747639599999999,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.17491575,
+          "withTrim": 3.47864916,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 12405,
+          "count": 82,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 235,
+          "count": 1,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 804969,
+          "percent": 69
+        },
+        "toolUseRequests": {
+          "bytes": 20401,
+          "count": 81,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 324466,
+          "percent": 28
+        }
+      },
+      "totalBytes": 1162476,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1162967,
+        "trimmedBytes": 1162158,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 1,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 93,
+        "trimmedAssistantResponses": 146,
+        "trimmedToolUseRequests": 81
+      }
+    },
+    {
+      "sessionId": "e31c329b-b79a-45a7-a913-1b2b4404b5f5",
+      "project": "D:\\VMC",
+      "messageCount": 279,
+      "userMessages": 110,
+      "assistantMessages": 169,
+      "toolResultCount": 86,
+      "estimatedTokens": 64428,
+      "postTrimTokens": 64399,
+      "reductionPercent": 0,
+      "contextUsedPercent": 32,
+      "breakEvenTurns": 10691,
+      "cacheMissPenalty": 0.19994019000000002,
+      "savingsPerTurn": 0.000018704999999993865,
+      "preTrimCostPerTurn": 0.04155605999999999,
+      "postTrimSteadyCostPerTurn": 0.041537355,
+      "postTrimFirstTurnCost": 0.24149625,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.20778029999999997,
+          "withTrim": 0.40764566999999996,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.41556059999999995,
+          "withTrim": 0.615332445,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.8311211999999999,
+          "withTrim": 1.030705995,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.0778029999999994,
+          "withTrim": 2.276826645,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 14167,
+          "count": 86,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 235,
+          "count": 1,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1073304,
+          "percent": 89
+        },
+        "toolUseRequests": {
+          "bytes": 26830,
+          "count": 86,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 85109,
+          "percent": 7
+        }
+      },
+      "totalBytes": 1199645,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1200082,
+        "trimmedBytes": 1199303,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 1,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 2,
+        "trimmedUserMessages": 110,
+        "trimmedAssistantResponses": 169,
+        "trimmedToolUseRequests": 86
+      }
+    },
+    {
+      "sessionId": "0fa427d5-6f17-4cf0-af2d-0d70de67f4b1",
+      "project": "D:\\VMC",
+      "messageCount": 271,
+      "userMessages": 105,
+      "assistantMessages": 166,
+      "toolResultCount": 84,
+      "estimatedTokens": 63383,
+      "postTrimTokens": 63126,
+      "reductionPercent": 0,
+      "contextUsedPercent": 32,
+      "breakEvenTurns": 1183,
+      "cacheMissPenalty": 0.19584046500000002,
+      "savingsPerTurn": 0.00016576499999999827,
+      "preTrimCostPerTurn": 0.040882035,
+      "postTrimSteadyCostPerTurn": 0.04071627,
+      "postTrimFirstTurnCost": 0.2367225,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.20441017499999997,
+          "withTrim": 0.39958758,
+          "savedPercent": -95
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.40882034999999994,
+          "withTrim": 0.60316893,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.8176406999999999,
+          "withTrim": 1.01033163,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.04410175,
+          "withTrim": 2.23181973,
+          "savedPercent": -9
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 13490,
+          "count": 84,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 3752,
+          "count": 2,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 470,
+          "count": 2,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1071229,
+          "percent": 89
+        },
+        "toolUseRequests": {
+          "bytes": 26531,
+          "count": 84,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 83712,
+          "percent": 7
+        }
+      },
+      "totalBytes": 1199184,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1199610,
+        "trimmedBytes": 1192506,
+        "byteReductionPct": 1,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 2,
+        "fileHistoryRemoved": 2,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 105,
+        "trimmedAssistantResponses": 166,
+        "trimmedToolUseRequests": 84
+      }
+    },
+    {
+      "sessionId": "92f167e7-745f-4148-aed6-1d09afee741b",
+      "project": "D:\\VMC",
+      "messageCount": 116,
+      "userMessages": 47,
+      "assistantMessages": 69,
+      "toolResultCount": 30,
+      "estimatedTokens": 68827,
+      "postTrimTokens": 67387,
+      "reductionPercent": 2,
+      "contextUsedPercent": 34,
+      "breakEvenTurns": 226,
+      "cacheMissPenalty": 0.208307835,
+      "savingsPerTurn": 0.0009287999999999935,
+      "preTrimCostPerTurn": 0.04439341499999999,
+      "postTrimSteadyCostPerTurn": 0.043464615,
+      "postTrimFirstTurnCost": 0.25270125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.22196707499999996,
+          "withTrim": 0.42655971,
+          "savedPercent": -92
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.4439341499999999,
+          "withTrim": 0.643882785,
+          "savedPercent": -45
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.8878682999999998,
+          "withTrim": 1.078528935,
+          "savedPercent": -21
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.2196707499999997,
+          "withTrim": 2.382467385,
+          "savedPercent": -7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 4633,
+          "count": 30,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 5704,
+          "count": 2,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 470,
+          "count": 2,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 335585,
+          "percent": 87
+        },
+        "toolUseRequests": {
+          "bytes": 9430,
+          "count": 31,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 28941,
+          "percent": 8
+        }
+      },
+      "totalBytes": 384763,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 384937,
+        "trimmedBytes": 373588,
+        "byteReductionPct": 3,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 2,
+        "fileHistoryRemoved": 2,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 4,
+        "trimmedUserMessages": 47,
+        "trimmedAssistantResponses": 69,
+        "trimmedToolUseRequests": 31
+      }
+    },
+    {
+      "sessionId": "7598a6f3-092e-41f8-bb0d-fc4fe64d6008",
+      "project": "D:\\VMC",
+      "messageCount": 265,
+      "userMessages": 103,
+      "assistantMessages": 162,
+      "toolResultCount": 84,
+      "estimatedTokens": 30410,
+      "postTrimTokens": 30410,
+      "reductionPercent": 0,
+      "contextUsedPercent": 15,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.09442305000000001,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.01961445,
+      "postTrimSteadyCostPerTurn": 0.01961445,
+      "postTrimFirstTurnCost": 0.1140375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.09807225,
+          "withTrim": 0.19249529999999998,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.1961445,
+          "withTrim": 0.29056755,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.392289,
+          "withTrim": 0.48671205,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.9807224999999999,
+          "withTrim": 1.0751455499999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 13490,
+          "count": 84,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1063605,
+          "percent": 90
+        },
+        "toolUseRequests": {
+          "bytes": 26531,
+          "count": 84,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 83712,
+          "percent": 7
+        }
+      },
+      "totalBytes": 1187338,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1187756,
+        "trimmedBytes": 1187756,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 103,
+        "trimmedAssistantResponses": 162,
+        "trimmedToolUseRequests": 84
+      }
+    },
+    {
+      "sessionId": "fdc32b46-85f4-436d-a2f6-00b6973d9f56",
+      "project": "d:\\mamba2-jax",
+      "messageCount": 313,
+      "userMessages": 123,
+      "assistantMessages": 190,
+      "toolResultCount": 110,
+      "estimatedTokens": 80751,
+      "postTrimTokens": 79021,
+      "reductionPercent": 2,
+      "contextUsedPercent": 40,
+      "breakEvenTurns": 220,
+      "cacheMissPenalty": 0.24424435499999997,
+      "savingsPerTurn": 0.0011158499999999877,
+      "preTrimCostPerTurn": 0.05208439499999999,
+      "postTrimSteadyCostPerTurn": 0.050968545000000004,
+      "postTrimFirstTurnCost": 0.29632875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.26042197499999997,
+          "withTrim": 0.5002029299999999,
+          "savedPercent": -92
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5208439499999999,
+          "withTrim": 0.755045655,
+          "savedPercent": -45
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0416878999999999,
+          "withTrim": 1.264731105,
+          "savedPercent": -21
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.6042197499999995,
+          "withTrim": 2.793787455,
+          "savedPercent": -7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 46236,
+          "count": 110,
+          "percent": 2
+        },
+        "thinkingSignatures": {
+          "bytes": 1088,
+          "count": 2,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 9246,
+          "count": 21,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1087782,
+          "percent": 57
+        },
+        "toolUseRequests": {
+          "bytes": 41464,
+          "count": 110,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 722938,
+          "percent": 38
+        }
+      },
+      "totalBytes": 1908754,
+      "toolResultBytePct": 2,
+      "trimMetrics": {
+        "originalBytes": 1909504,
+        "trimmedBytes": 1855127,
+        "byteReductionPct": 3,
+        "toolResultsStubbed": 5,
+        "signaturesStripped": 2,
+        "fileHistoryRemoved": 21,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 10,
+        "trimmedUserMessages": 123,
+        "trimmedAssistantResponses": 190,
+        "trimmedToolUseRequests": 110
+      }
+    },
+    {
+      "sessionId": "25ce2f4f-df5b-447a-a448-c91c91edb32b",
+      "project": "D:\\VMC",
+      "messageCount": 36,
+      "userMessages": 16,
+      "assistantMessages": 20,
+      "toolResultCount": 9,
+      "estimatedTokens": 153156,
+      "postTrimTokens": 115980,
+      "reductionPercent": 24,
+      "contextUsedPercent": 77,
+      "breakEvenTurns": 16,
+      "cacheMissPenalty": 0.33613938,
+      "savingsPerTurn": 0.023978520000000003,
+      "preTrimCostPerTurn": 0.09878561999999999,
+      "postTrimSteadyCostPerTurn": 0.07480709999999999,
+      "postTrimFirstTurnCost": 0.434925,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4939281,
+          "withTrim": 0.7341534,
+          "savedPercent": -49
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9878562,
+          "withTrim": 1.1081889,
+          "savedPercent": -12
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9757124,
+          "withTrim": 1.8562598999999997,
+          "savedPercent": 6
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.939280999999999,
+          "withTrim": 4.1004729,
+          "savedPercent": 17
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 12284,
+          "count": 9,
+          "percent": 8
+        },
+        "thinkingSignatures": {
+          "bytes": 3594,
+          "count": 3,
+          "percent": 2
+        },
+        "fileHistory": {
+          "bytes": 20688,
+          "count": 8,
+          "percent": 13
+        },
+        "conversation": {
+          "bytes": 111681,
+          "percent": 68
+        },
+        "toolUseRequests": {
+          "bytes": 5695,
+          "count": 9,
+          "percent": 3
+        },
+        "other": {
+          "bytes": 9263,
+          "percent": 6
+        }
+      },
+      "totalBytes": 163205,
+      "toolResultBytePct": 8,
+      "trimMetrics": {
+        "originalBytes": 163266,
+        "trimmedBytes": 117683,
+        "byteReductionPct": 28,
+        "toolResultsStubbed": 4,
+        "signaturesStripped": 3,
+        "fileHistoryRemoved": 8,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 1,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 16,
+        "trimmedAssistantResponses": 20,
+        "trimmedToolUseRequests": 9
+      }
+    },
+    {
+      "sessionId": "f519b3f9-f650-4b36-9af3-dde7ea590334",
+      "project": "d:\\VMC",
+      "messageCount": 601,
+      "userMessages": 260,
+      "assistantMessages": 341,
+      "toolResultCount": 204,
+      "estimatedTokens": 120853,
+      "postTrimTokens": 113492,
+      "reductionPercent": 6,
+      "contextUsedPercent": 60,
+      "breakEvenTurns": 75,
+      "cacheMissPenalty": 0.347644815,
+      "savingsPerTurn": 0.004747844999999987,
+      "preTrimCostPerTurn": 0.07795018499999998,
+      "postTrimSteadyCostPerTurn": 0.07320233999999999,
+      "postTrimFirstTurnCost": 0.425595,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.38975092499999986,
+          "withTrim": 0.71840436,
+          "savedPercent": -84
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7795018499999997,
+          "withTrim": 1.08441606,
+          "savedPercent": -39
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.5590036999999994,
+          "withTrim": 1.8164394599999998,
+          "savedPercent": -17
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.897509249999999,
+          "withTrim": 4.01250966,
+          "savedPercent": -3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 143173,
+          "count": 204,
+          "percent": 5
+        },
+        "thinkingSignatures": {
+          "bytes": 15746,
+          "count": 5,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 2971,
+          "count": 8,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1439647,
+          "percent": 51
+        },
+        "toolUseRequests": {
+          "bytes": 133351,
+          "count": 205,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 1088481,
+          "percent": 39
+        }
+      },
+      "totalBytes": 2823369,
+      "toolResultBytePct": 5,
+      "trimMetrics": {
+        "originalBytes": 2824328,
+        "trimmedBytes": 2618200,
+        "byteReductionPct": 7,
+        "toolResultsStubbed": 8,
+        "signaturesStripped": 5,
+        "fileHistoryRemoved": 8,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 13,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 3,
+        "trimmedUserMessages": 260,
+        "trimmedAssistantResponses": 341,
+        "trimmedToolUseRequests": 205
+      }
+    },
+    {
+      "sessionId": "f2ff4218-1be3-4892-82c9-8f265272e2e9",
+      "project": "d:\\VMC",
+      "messageCount": 601,
+      "userMessages": 260,
+      "assistantMessages": 341,
+      "toolResultCount": 204,
+      "estimatedTokens": 54186,
+      "postTrimTokens": 54186,
+      "reductionPercent": 0,
+      "contextUsedPercent": 27,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.16824753,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.03494997,
+      "postTrimSteadyCostPerTurn": 0.03494997,
+      "postTrimFirstTurnCost": 0.2031975,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.17474984999999998,
+          "withTrim": 0.34299738,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.34949969999999997,
+          "withTrim": 0.51774723,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.6989993999999999,
+          "withTrim": 0.86724693,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.7474984999999998,
+          "withTrim": 1.9157460299999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 36661,
+          "count": 204,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1419656,
+          "percent": 54
+        },
+        "toolUseRequests": {
+          "bytes": 73417,
+          "count": 205,
+          "percent": 3
+        },
+        "other": {
+          "bytes": 1087518,
+          "percent": 42
+        }
+      },
+      "totalBytes": 2617252,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 2618200,
+        "trimmedBytes": 2618200,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 260,
+        "trimmedAssistantResponses": 341,
+        "trimmedToolUseRequests": 205
+      }
+    },
+    {
+      "sessionId": "648bea59-e204-4109-8192-d98aa5b54a5a",
+      "project": "d:\\BG3SAVER",
+      "messageCount": 210,
+      "userMessages": 90,
+      "assistantMessages": 120,
+      "toolResultCount": 64,
+      "estimatedTokens": 44657,
+      "postTrimTokens": 44627,
+      "reductionPercent": 0,
+      "contextUsedPercent": 22,
+      "breakEvenTurns": 7162,
+      "cacheMissPenalty": 0.13854748500000003,
+      "savingsPerTurn": 0.00001935000000000131,
+      "preTrimCostPerTurn": 0.028803764999999995,
+      "postTrimSteadyCostPerTurn": 0.028784414999999994,
+      "postTrimFirstTurnCost": 0.16735125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.14401882499999996,
+          "withTrim": 0.28248891,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.2880376499999999,
+          "withTrim": 0.42641098499999996,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.5760752999999998,
+          "withTrim": 0.7142551349999999,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.4401882499999998,
+          "withTrim": 1.5777875849999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 13435,
+          "count": 64,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 310,
+          "count": 1,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 235,
+          "count": 1,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 492206,
+          "percent": 51
+        },
+        "toolUseRequests": {
+          "bytes": 19712,
+          "count": 65,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 443263,
+          "percent": 46
+        }
+      },
+      "totalBytes": 969161,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 969550,
+        "trimmedBytes": 968390,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 1,
+        "fileHistoryRemoved": 1,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 90,
+        "trimmedAssistantResponses": 120,
+        "trimmedToolUseRequests": 65
+      }
+    },
+    {
+      "sessionId": "bfad6114-8be2-45a8-9297-594a2ac3f954",
+      "project": "d:\\BG3SAVER",
+      "messageCount": 207,
+      "userMessages": 89,
+      "assistantMessages": 118,
+      "toolResultCount": 64,
+      "estimatedTokens": 28473,
+      "postTrimTokens": 28473,
+      "reductionPercent": 0,
+      "contextUsedPercent": 14,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.088408665,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.018365084999999996,
+      "postTrimSteadyCostPerTurn": 0.018365084999999996,
+      "postTrimFirstTurnCost": 0.10677375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.09182542499999999,
+          "withTrim": 0.18023408999999999,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.18365084999999998,
+          "withTrim": 0.272059515,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.36730169999999995,
+          "withTrim": 0.45571036499999995,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.9182542499999998,
+          "withTrim": 1.0066629149999997,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 13435,
+          "count": 64,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 487891,
+          "percent": 51
+        },
+        "toolUseRequests": {
+          "bytes": 19712,
+          "count": 65,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 443263,
+          "percent": 46
+        }
+      },
+      "totalBytes": 964301,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 964686,
+        "trimmedBytes": 964686,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 89,
+        "trimmedAssistantResponses": 118,
+        "trimmedToolUseRequests": 65
+      }
+    },
+    {
+      "sessionId": "c8305525-e7d5-4cb6-b0c1-bcf8d75ce31f",
+      "project": "d:\\BG3SAVER",
+      "messageCount": 207,
+      "userMessages": 89,
+      "assistantMessages": 118,
+      "toolResultCount": 64,
+      "estimatedTokens": 28473,
+      "postTrimTokens": 28473,
+      "reductionPercent": 0,
+      "contextUsedPercent": 14,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.088408665,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.018365084999999996,
+      "postTrimSteadyCostPerTurn": 0.018365084999999996,
+      "postTrimFirstTurnCost": 0.10677375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.09182542499999999,
+          "withTrim": 0.18023408999999999,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.18365084999999998,
+          "withTrim": 0.272059515,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.36730169999999995,
+          "withTrim": 0.45571036499999995,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.9182542499999998,
+          "withTrim": 1.0066629149999997,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 13435,
+          "count": 64,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 487891,
+          "percent": 51
+        },
+        "toolUseRequests": {
+          "bytes": 19712,
+          "count": 65,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 443263,
+          "percent": 46
+        }
+      },
+      "totalBytes": 964301,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 964686,
+        "trimmedBytes": 964686,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 89,
+        "trimmedAssistantResponses": 118,
+        "trimmedToolUseRequests": 65
+      }
+    },
+    {
+      "sessionId": "21b201f6-d936-4c4c-bb3f-6f033c839fbf",
+      "project": "d:\\VMC",
+      "messageCount": 551,
+      "userMessages": 242,
+      "assistantMessages": 309,
+      "toolResultCount": 184,
+      "estimatedTokens": 86127,
+      "postTrimTokens": 85302,
+      "reductionPercent": 1,
+      "contextUsedPercent": 43,
+      "breakEvenTurns": 498,
+      "cacheMissPenalty": 0.264330585,
+      "savingsPerTurn": 0.0005321249999999944,
+      "preTrimCostPerTurn": 0.05555191499999999,
+      "postTrimSteadyCostPerTurn": 0.05501979,
+      "postTrimFirstTurnCost": 0.3198825,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.277759575,
+          "withTrim": 0.53996166,
+          "savedPercent": -94
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.55551915,
+          "withTrim": 0.81506061,
+          "savedPercent": -47
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.1110383,
+          "withTrim": 1.36525851,
+          "savedPercent": -23
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.7775957499999997,
+          "withTrim": 3.01585221,
+          "savedPercent": -9
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 36568,
+          "count": 184,
+          "percent": 2
+        },
+        "thinkingSignatures": {
+          "bytes": 8004,
+          "count": 4,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 1410,
+          "count": 6,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1153736,
+          "percent": 73
+        },
+        "toolUseRequests": {
+          "bytes": 63822,
+          "count": 184,
+          "percent": 4
+        },
+        "other": {
+          "bytes": 325160,
+          "percent": 20
+        }
+      },
+      "totalBytes": 1588700,
+      "toolResultBytePct": 2,
+      "trimMetrics": {
+        "originalBytes": 1589451,
+        "trimmedBytes": 1569622,
+        "byteReductionPct": 1,
+        "toolResultsStubbed": 1,
+        "signaturesStripped": 4,
+        "fileHistoryRemoved": 6,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 242,
+        "trimmedAssistantResponses": 309,
+        "trimmedToolUseRequests": 184
+      }
+    },
+    {
+      "sessionId": "a39f3087-a8b3-46a2-98d4-74eb7cd561e2",
+      "project": "d:\\VMC",
+      "messageCount": 533,
+      "userMessages": 235,
+      "assistantMessages": 298,
+      "toolResultCount": 183,
+      "estimatedTokens": 90902,
+      "postTrimTokens": 89165,
+      "reductionPercent": 2,
+      "contextUsedPercent": 45,
+      "breakEvenTurns": 248,
+      "cacheMissPenalty": 0.27573696000000003,
+      "savingsPerTurn": 0.0011203649999999982,
+      "preTrimCostPerTurn": 0.05863178999999999,
+      "postTrimSteadyCostPerTurn": 0.05751142499999999,
+      "postTrimFirstTurnCost": 0.33436875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2931589499999999,
+          "withTrim": 0.5644144499999999,
+          "savedPercent": -93
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5863178999999998,
+          "withTrim": 0.8519715749999999,
+          "savedPercent": -45
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.1726357999999997,
+          "withTrim": 1.4270858249999998,
+          "savedPercent": -22
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.9315894999999994,
+          "withTrim": 3.1524285749999996,
+          "savedPercent": -8
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 47355,
+          "count": 183,
+          "percent": 3
+        },
+        "thinkingSignatures": {
+          "bytes": 2698,
+          "count": 1,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 1147,
+          "count": 4,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1133553,
+          "percent": 71
+        },
+        "toolUseRequests": {
+          "bytes": 78540,
+          "count": 183,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 325160,
+          "percent": 20
+        }
+      },
+      "totalBytes": 1588453,
+      "toolResultBytePct": 3,
+      "trimMetrics": {
+        "originalBytes": 1589184,
+        "trimmedBytes": 1550254,
+        "byteReductionPct": 2,
+        "toolResultsStubbed": 2,
+        "signaturesStripped": 1,
+        "fileHistoryRemoved": 4,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 3,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 235,
+        "trimmedAssistantResponses": 298,
+        "trimmedToolUseRequests": 183
+      }
+    },
+    {
+      "sessionId": "09bb2e6d-770f-4889-8124-5cc25a506a96",
+      "project": "d:\\VMC",
+      "messageCount": 507,
+      "userMessages": 224,
+      "assistantMessages": 283,
+      "toolResultCount": 174,
+      "estimatedTokens": 152954,
+      "postTrimTokens": 130873,
+      "reductionPercent": 14,
+      "contextUsedPercent": 76,
+      "breakEvenTurns": 29,
+      "cacheMissPenalty": 0.39211841999999997,
+      "savingsPerTurn": 0.014242244999999987,
+      "preTrimCostPerTurn": 0.09865532999999999,
+      "postTrimSteadyCostPerTurn": 0.084413085,
+      "postTrimFirstTurnCost": 0.49077374999999995,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4932766499999999,
+          "withTrim": 0.82842609,
+          "savedPercent": -68
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9865532999999999,
+          "withTrim": 1.250491515,
+          "savedPercent": -27
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9731065999999997,
+          "withTrim": 2.0946223649999998,
+          "savedPercent": -6
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.9327665,
+          "withTrim": 4.627014914999999,
+          "savedPercent": 6
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 203929,
+          "count": 174,
+          "percent": 13
+        },
+        "thinkingSignatures": {
+          "bytes": 17502,
+          "count": 5,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 10075,
+          "count": 31,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 978475,
+          "percent": 60
+        },
+        "toolUseRequests": {
+          "bytes": 97730,
+          "count": 174,
+          "percent": 6
+        },
+        "other": {
+          "bytes": 322303,
+          "percent": 20
+        }
+      },
+      "totalBytes": 1630014,
+      "toolResultBytePct": 13,
+      "trimMetrics": {
+        "originalBytes": 1630749,
+        "trimmedBytes": 1359915,
+        "byteReductionPct": 17,
+        "toolResultsStubbed": 30,
+        "signaturesStripped": 5,
+        "fileHistoryRemoved": 31,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 9,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 12,
+        "trimmedUserMessages": 224,
+        "trimmedAssistantResponses": 283,
+        "trimmedToolUseRequests": 174
+      }
+    },
+    {
+      "sessionId": "92dc8548-602f-43bf-bcbe-7e939867b161",
+      "project": "d:\\VMC",
+      "messageCount": 356,
+      "userMessages": 156,
+      "assistantMessages": 200,
+      "toolResultCount": 120,
+      "estimatedTokens": 118765,
+      "postTrimTokens": 36646,
+      "reductionPercent": 69,
+      "contextUsedPercent": 59,
+      "breakEvenTurns": 3,
+      "cacheMissPenalty": 0.060819075000000014,
+      "savingsPerTurn": 0.05296675499999999,
+      "preTrimCostPerTurn": 0.07660342499999999,
+      "postTrimSteadyCostPerTurn": 0.02363667,
+      "postTrimFirstTurnCost": 0.1374225,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.38301712499999996,
+          "withTrim": 0.23196918,
+          "savedPercent": 39
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7660342499999999,
+          "withTrim": 0.35015253,
+          "savedPercent": 54
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.5320684999999998,
+          "withTrim": 0.58651923,
+          "savedPercent": 62
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.8301712499999994,
+          "withTrim": 1.2956193299999998,
+          "savedPercent": 66
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 143301,
+          "count": 120,
+          "percent": 14
+        },
+        "thinkingSignatures": {
+          "bytes": 40638,
+          "count": 21,
+          "percent": 4
+        },
+        "fileHistory": {
+          "bytes": 184841,
+          "count": 97,
+          "percent": 19
+        },
+        "conversation": {
+          "bytes": 497228,
+          "percent": 50
+        },
+        "toolUseRequests": {
+          "bytes": 68557,
+          "count": 120,
+          "percent": 7
+        },
+        "other": {
+          "bytes": 62584,
+          "percent": 6
+        }
+      },
+      "totalBytes": 997149,
+      "toolResultBytePct": 14,
+      "trimMetrics": {
+        "originalBytes": 3249317,
+        "trimmedBytes": 547636,
+        "byteReductionPct": 83,
+        "toolResultsStubbed": 40,
+        "signaturesStripped": 21,
+        "fileHistoryRemoved": 97,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 5,
+        "preCompactionLinesSkipped": 678,
+        "queueOperationsRemoved": 61,
+        "trimmedUserMessages": 156,
+        "trimmedAssistantResponses": 200,
+        "trimmedToolUseRequests": 120
+      }
+    },
+    {
+      "sessionId": "d6ba75a9-863c-42b5-9101-701ad372a8d3",
+      "project": "d:\\VMC",
+      "messageCount": 282,
+      "userMessages": 123,
+      "assistantMessages": 159,
+      "toolResultCount": 92,
+      "estimatedTokens": 37412,
+      "postTrimTokens": 37412,
+      "reductionPercent": 0,
+      "contextUsedPercent": 19,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.11616426,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.024130739999999998,
+      "postTrimSteadyCostPerTurn": 0.024130739999999998,
+      "postTrimFirstTurnCost": 0.140295,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.12065369999999999,
+          "withTrim": 0.23681796,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.24130739999999998,
+          "withTrim": 0.35747165999999997,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.48261479999999995,
+          "withTrim": 0.59877906,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.206537,
+          "withTrim": 1.3227012599999999,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 17467,
+          "count": 92,
+          "percent": 4
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 340646,
+          "percent": 82
+        },
+        "toolUseRequests": {
+          "bytes": 34121,
+          "count": 93,
+          "percent": 8
+        },
+        "other": {
+          "bytes": 23977,
+          "percent": 6
+        }
+      },
+      "totalBytes": 416211,
+      "toolResultBytePct": 4,
+      "trimMetrics": {
+        "originalBytes": 416536,
+        "trimmedBytes": 416536,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 123,
+        "trimmedAssistantResponses": 159,
+        "trimmedToolUseRequests": 93
+      }
+    },
+    {
+      "sessionId": "1fb72d4f-74ca-4ef9-a41b-572774e94e0e",
+      "project": "d:\\BG3SAVER",
+      "messageCount": 206,
+      "userMessages": 88,
+      "assistantMessages": 118,
+      "toolResultCount": 64,
+      "estimatedTokens": 95730,
+      "postTrimTokens": 82785,
+      "reductionPercent": 14,
+      "contextUsedPercent": 48,
+      "breakEvenTurns": 31,
+      "cacheMissPenalty": 0.24869790000000003,
+      "savingsPerTurn": 0.008349524999999997,
+      "preTrimCostPerTurn": 0.06174584999999999,
+      "postTrimSteadyCostPerTurn": 0.053396324999999994,
+      "postTrimFirstTurnCost": 0.31044375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.30872924999999996,
+          "withTrim": 0.52402905,
+          "savedPercent": -70
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.6174584999999999,
+          "withTrim": 0.791010675,
+          "savedPercent": -28
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.2349169999999998,
+          "withTrim": 1.324973925,
+          "savedPercent": -7
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.0872924999999993,
+          "withTrim": 2.926863675,
+          "savedPercent": 5
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 75512,
+          "count": 64,
+          "percent": 6
+        },
+        "thinkingSignatures": {
+          "bytes": 19010,
+          "count": 11,
+          "percent": 2
+        },
+        "fileHistory": {
+          "bytes": 16061,
+          "count": 29,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 528343,
+          "percent": 45
+        },
+        "toolUseRequests": {
+          "bytes": 74676,
+          "count": 65,
+          "percent": 6
+        },
+        "other": {
+          "bytes": 449335,
+          "percent": 39
+        }
+      },
+      "totalBytes": 1162937,
+      "toolResultBytePct": 6,
+      "trimMetrics": {
+        "originalBytes": 1163394,
+        "trimmedBytes": 964531,
+        "byteReductionPct": 17,
+        "toolResultsStubbed": 21,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 29,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 12,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 44,
+        "trimmedUserMessages": 88,
+        "trimmedAssistantResponses": 118,
+        "trimmedToolUseRequests": 65
+      }
+    },
+    {
+      "sessionId": "2bd15131-7516-42af-8d18-bb2a3fe087ea",
+      "project": "d:\\mamba2-jax",
+      "messageCount": 238,
+      "userMessages": 94,
+      "assistantMessages": 144,
+      "toolResultCount": 90,
+      "estimatedTokens": 91328,
+      "postTrimTokens": 55720,
+      "reductionPercent": 39,
+      "contextUsedPercent": 46,
+      "breakEvenTurns": 8,
+      "cacheMissPenalty": 0.15004344,
+      "savingsPerTurn": 0.02296716,
+      "preTrimCostPerTurn": 0.05890656,
+      "postTrimSteadyCostPerTurn": 0.035939399999999996,
+      "postTrimFirstTurnCost": 0.20895,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2945328,
+          "withTrim": 0.3527076,
+          "savedPercent": -20
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5890656,
+          "withTrim": 0.5324046,
+          "savedPercent": 10
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.1781312,
+          "withTrim": 0.8917985999999999,
+          "savedPercent": 24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.945328,
+          "withTrim": 1.9699805999999997,
+          "savedPercent": 33
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 88796,
+          "count": 90,
+          "percent": 7
+        },
+        "thinkingSignatures": {
+          "bytes": 11766,
+          "count": 9,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 7765,
+          "count": 5,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 792317,
+          "percent": 58
+        },
+        "toolUseRequests": {
+          "bytes": 68336,
+          "count": 90,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 386859,
+          "percent": 29
+        }
+      },
+      "totalBytes": 1355839,
+      "toolResultBytePct": 7,
+      "trimMetrics": {
+        "originalBytes": 2363360,
+        "trimmedBytes": 1183538,
+        "byteReductionPct": 50,
+        "toolResultsStubbed": 28,
+        "signaturesStripped": 9,
+        "fileHistoryRemoved": 5,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 7,
+        "preCompactionLinesSkipped": 116,
+        "queueOperationsRemoved": 27,
+        "trimmedUserMessages": 94,
+        "trimmedAssistantResponses": 144,
+        "trimmedToolUseRequests": 90
+      }
+    },
+    {
+      "sessionId": "320a4ba4-5aa4-41f2-b69c-2631c7f99a56",
+      "project": "d:\\mamba2-jax",
+      "messageCount": 216,
+      "userMessages": 79,
+      "assistantMessages": 137,
+      "toolResultCount": 77,
+      "estimatedTokens": 150504,
+      "postTrimTokens": 120186,
+      "reductionPercent": 20,
+      "contextUsedPercent": 75,
+      "breakEvenTurns": 20,
+      "cacheMissPenalty": 0.35362242000000005,
+      "savingsPerTurn": 0.019555109999999987,
+      "preTrimCostPerTurn": 0.09707507999999998,
+      "postTrimSteadyCostPerTurn": 0.07751997,
+      "postTrimFirstTurnCost": 0.45069750000000003,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4853753999999999,
+          "withTrim": 0.76077738,
+          "savedPercent": -57
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9707507999999998,
+          "withTrim": 1.14837723,
+          "savedPercent": -18
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9415015999999996,
+          "withTrim": 1.9235769299999999,
+          "savedPercent": 1
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.853753999999999,
+          "withTrim": 4.24917603,
+          "savedPercent": 12
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 246561,
+          "count": 77,
+          "percent": 14
+        },
+        "thinkingSignatures": {
+          "bytes": 26354,
+          "count": 17,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 11715,
+          "count": 13,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 751377,
+          "percent": 42
+        },
+        "toolUseRequests": {
+          "bytes": 123591,
+          "count": 77,
+          "percent": 7
+        },
+        "other": {
+          "bytes": 619122,
+          "percent": 35
+        }
+      },
+      "totalBytes": 1778720,
+      "toolResultBytePct": 14,
+      "trimMetrics": {
+        "originalBytes": 1779262,
+        "trimmedBytes": 1365908,
+        "byteReductionPct": 23,
+        "toolResultsStubbed": 25,
+        "signaturesStripped": 17,
+        "fileHistoryRemoved": 13,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 13,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 18,
+        "trimmedUserMessages": 79,
+        "trimmedAssistantResponses": 137,
+        "trimmedToolUseRequests": 77
+      }
+    },
+    {
+      "sessionId": "72c243f4-e5de-4740-b9aa-c2ba0659448a",
+      "project": "d:\\VMC",
+      "messageCount": 202,
+      "userMessages": 77,
+      "assistantMessages": 125,
+      "toolResultCount": 71,
+      "estimatedTokens": 29844,
+      "postTrimTokens": 29844,
+      "reductionPercent": 0,
+      "contextUsedPercent": 15,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.09266562,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.019249379999999996,
+      "postTrimSteadyCostPerTurn": 0.019249379999999996,
+      "postTrimFirstTurnCost": 0.111915,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.09624689999999998,
+          "withTrim": 0.18891251999999997,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.19249379999999996,
+          "withTrim": 0.28515941999999994,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.38498759999999993,
+          "withTrim": 0.47765321999999993,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.9624689999999998,
+          "withTrim": 1.0551346199999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 12244,
+          "count": 71,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 521726,
+          "percent": 34
+        },
+        "toolUseRequests": {
+          "bytes": 26037,
+          "count": 72,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 960000,
+          "percent": 63
+        }
+      },
+      "totalBytes": 1520007,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1520520,
+        "trimmedBytes": 1520520,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 77,
+        "trimmedAssistantResponses": 125,
+        "trimmedToolUseRequests": 72
+      }
+    },
+    {
+      "sessionId": "e72c1e76-0950-480b-a87e-bffa07d432bb",
+      "project": "d:\\VMC",
+      "messageCount": 144,
+      "userMessages": 54,
+      "assistantMessages": 90,
+      "toolResultCount": 51,
+      "estimatedTokens": 27007,
+      "postTrimTokens": 27007,
+      "reductionPercent": 0,
+      "contextUsedPercent": 14,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.083856735,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.017419514999999997,
+      "postTrimSteadyCostPerTurn": 0.017419514999999997,
+      "postTrimFirstTurnCost": 0.10127625,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.08709757499999998,
+          "withTrim": 0.17095431,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.17419514999999997,
+          "withTrim": 0.258051885,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.34839029999999993,
+          "withTrim": 0.43224703499999995,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.8709757499999998,
+          "withTrim": 0.9548324849999998,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 8497,
+          "count": 51,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 419856,
+          "percent": 30
+        },
+        "toolUseRequests": {
+          "bytes": 20156,
+          "count": 51,
+          "percent": 1
+        },
+        "other": {
+          "bytes": 936190,
+          "percent": 68
+        }
+      },
+      "totalBytes": 1384699,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1385110,
+        "trimmedBytes": 1385110,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 54,
+        "trimmedAssistantResponses": 90,
+        "trimmedToolUseRequests": 51
+      }
+    },
+    {
+      "sessionId": "35342612-4a24-4026-bc9b-5704d985313f",
+      "project": "d:\\mamba2-jax",
+      "messageCount": 75,
+      "userMessages": 29,
+      "assistantMessages": 46,
+      "toolResultCount": 28,
+      "estimatedTokens": 21891,
+      "postTrimTokens": 21891,
+      "reductionPercent": 0,
+      "contextUsedPercent": 11,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.067971555,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.014119694999999998,
+      "postTrimSteadyCostPerTurn": 0.014119694999999998,
+      "postTrimFirstTurnCost": 0.08209125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.070598475,
+          "withTrim": 0.13857003,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.14119695,
+          "withTrim": 0.20916850499999998,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.2823939,
+          "withTrim": 0.350365455,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.7059847499999999,
+          "withTrim": 0.773956305,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 3260,
+          "count": 28,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 277284,
+          "percent": 96
+        },
+        "toolUseRequests": {
+          "bytes": 7815,
+          "count": 28,
+          "percent": 3
+        },
+        "other": {
+          "bytes": 0,
+          "percent": 0
+        }
+      },
+      "totalBytes": 288359,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 288434,
+        "trimmedBytes": 288434,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 29,
+        "trimmedAssistantResponses": 46,
+        "trimmedToolUseRequests": 28
+      }
+    },
+    {
+      "sessionId": "3b52e060-52f7-4d03-9166-b51a78d05167",
+      "project": "d:\\VMC",
+      "messageCount": 121,
+      "userMessages": 45,
+      "assistantMessages": 76,
+      "toolResultCount": 43,
+      "estimatedTokens": 26355,
+      "postTrimTokens": 26355,
+      "reductionPercent": 0,
+      "contextUsedPercent": 13,
+      "breakEvenTurns": 999,
+      "cacheMissPenalty": 0.081832275,
+      "savingsPerTurn": 0,
+      "preTrimCostPerTurn": 0.016998975,
+      "postTrimSteadyCostPerTurn": 0.016998975,
+      "postTrimFirstTurnCost": 0.09883125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.084994875,
+          "withTrim": 0.16682714999999998,
+          "savedPercent": -96
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.16998975,
+          "withTrim": 0.251822025,
+          "savedPercent": -48
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.3399795,
+          "withTrim": 0.42181177499999994,
+          "savedPercent": -24
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 0.84994875,
+          "withTrim": 0.931781025,
+          "savedPercent": -10
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 7443,
+          "count": 43,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 386308,
+          "percent": 29
+        },
+        "toolUseRequests": {
+          "bytes": 18324,
+          "count": 43,
+          "percent": 1
+        },
+        "other": {
+          "bytes": 936190,
+          "percent": 69
+        }
+      },
+      "totalBytes": 1348265,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1348653,
+        "trimmedBytes": 1348653,
+        "byteReductionPct": 0,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 45,
+        "trimmedAssistantResponses": 76,
+        "trimmedToolUseRequests": 43
+      }
+    },
+    {
+      "sessionId": "c1ddc2d1-6fec-4fae-a692-bb7eeedd00e1",
+      "project": "d:\\VMC",
+      "messageCount": 107,
+      "userMessages": 40,
+      "assistantMessages": 67,
+      "toolResultCount": 36,
+      "estimatedTokens": 44244,
+      "postTrimTokens": 40128,
+      "reductionPercent": 9,
+      "contextUsedPercent": 22,
+      "breakEvenTurns": 47,
+      "cacheMissPenalty": 0.12194262,
+      "savingsPerTurn": 0.0026548199999999952,
+      "preTrimCostPerTurn": 0.028537379999999994,
+      "postTrimSteadyCostPerTurn": 0.02588256,
+      "postTrimFirstTurnCost": 0.15048,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.14268689999999998,
+          "withTrim": 0.25401024,
+          "savedPercent": -78
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.28537379999999996,
+          "withTrim": 0.38342304,
+          "savedPercent": -34
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.5707475999999999,
+          "withTrim": 0.64224864,
+          "savedPercent": -13
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.4268689999999997,
+          "withTrim": 1.4187254399999998,
+          "savedPercent": 1
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 51584,
+          "count": 36,
+          "percent": 13
+        },
+        "thinkingSignatures": {
+          "bytes": 912,
+          "count": 2,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 1260,
+          "count": 4,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 224914,
+          "percent": 56
+        },
+        "toolUseRequests": {
+          "bytes": 19862,
+          "count": 37,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 102947,
+          "percent": 26
+        }
+      },
+      "totalBytes": 401479,
+      "toolResultBytePct": 13,
+      "trimMetrics": {
+        "originalBytes": 401711,
+        "trimmedBytes": 333519,
+        "byteReductionPct": 17,
+        "toolResultsStubbed": 6,
+        "signaturesStripped": 2,
+        "fileHistoryRemoved": 4,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 4,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 8,
+        "trimmedUserMessages": 40,
+        "trimmedAssistantResponses": 67,
+        "trimmedToolUseRequests": 37
+      }
+    },
+    {
+      "sessionId": "a0882d77-3c45-4d76-b82c-7eea93aba43b",
+      "project": "d:\\VMC",
+      "messageCount": 271,
+      "userMessages": 101,
+      "assistantMessages": 170,
+      "toolResultCount": 78,
+      "estimatedTokens": 66067,
+      "postTrimTokens": 46051,
+      "reductionPercent": 30,
+      "contextUsedPercent": 33,
+      "breakEvenTurns": 12,
+      "cacheMissPenalty": 0.13007803500000004,
+      "savingsPerTurn": 0.012910320000000003,
+      "preTrimCostPerTurn": 0.042613214999999996,
+      "postTrimSteadyCostPerTurn": 0.029702894999999993,
+      "postTrimFirstTurnCost": 0.17269125000000002,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.21306607499999997,
+          "withTrim": 0.29150283,
+          "savedPercent": -37
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.42613214999999993,
+          "withTrim": 0.44001730499999997,
+          "savedPercent": -3
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.8522642999999999,
+          "withTrim": 0.7370462549999999,
+          "savedPercent": 14
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.1306607499999997,
+          "withTrim": 1.6281331049999996,
+          "savedPercent": 24
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 12000,
+          "count": 78,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 2862,
+          "count": 1,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 235,
+          "count": 1,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 1120811,
+          "percent": 64
+        },
+        "toolUseRequests": {
+          "bytes": 49302,
+          "count": 78,
+          "percent": 3
+        },
+        "other": {
+          "bytes": 568502,
+          "percent": 32
+        }
+      },
+      "totalBytes": 1753712,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 3043171,
+        "trimmedBytes": 1720935,
+        "byteReductionPct": 43,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 1,
+        "fileHistoryRemoved": 1,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 11,
+        "preCompactionLinesSkipped": 425,
+        "queueOperationsRemoved": 26,
+        "trimmedUserMessages": 101,
+        "trimmedAssistantResponses": 170,
+        "trimmedToolUseRequests": 78
+      }
+    },
+    {
+      "sessionId": "d23be05b-d8ff-493d-a007-0c8d2d1a2fa7",
+      "project": "d:\\VMC",
+      "messageCount": 267,
+      "userMessages": 100,
+      "assistantMessages": 167,
+      "toolResultCount": 78,
+      "estimatedTokens": 143663,
+      "postTrimTokens": 76964,
+      "reductionPercent": 46,
+      "contextUsedPercent": 72,
+      "breakEvenTurns": 6,
+      "cacheMissPenalty": 0.19595236500000002,
+      "savingsPerTurn": 0.04302085499999998,
+      "preTrimCostPerTurn": 0.09266263499999998,
+      "postTrimSteadyCostPerTurn": 0.049641779999999996,
+      "postTrimFirstTurnCost": 0.288615,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4633131749999999,
+          "withTrim": 0.48718212,
+          "savedPercent": -5
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9266263499999998,
+          "withTrim": 0.73539102,
+          "savedPercent": 21
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.8532526999999996,
+          "withTrim": 1.23180882,
+          "savedPercent": 34
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.633131749999999,
+          "withTrim": 2.72106222,
+          "savedPercent": 41
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 150528,
+          "count": 78,
+          "percent": 8
+        },
+        "thinkingSignatures": {
+          "bytes": 31498,
+          "count": 19,
+          "percent": 2
+        },
+        "fileHistory": {
+          "bytes": 25351,
+          "count": 25,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 1170804,
+          "percent": 59
+        },
+        "toolUseRequests": {
+          "bytes": 49302,
+          "count": 78,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 568107,
+          "percent": 28
+        }
+      },
+      "totalBytes": 1995590,
+      "toolResultBytePct": 8,
+      "trimMetrics": {
+        "originalBytes": 3722138,
+        "trimmedBytes": 1714559,
+        "byteReductionPct": 54,
+        "toolResultsStubbed": 27,
+        "signaturesStripped": 19,
+        "fileHistoryRemoved": 25,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 11,
+        "preCompactionLinesSkipped": 442,
+        "queueOperationsRemoved": 26,
+        "trimmedUserMessages": 100,
+        "trimmedAssistantResponses": 167,
+        "trimmedToolUseRequests": 78
+      }
+    },
+    {
+      "sessionId": "d19b618c-d916-481f-afb3-5ab92f078275",
+      "project": "d:\\VMC",
+      "messageCount": 356,
+      "userMessages": 139,
+      "assistantMessages": 217,
+      "toolResultCount": 112,
+      "estimatedTokens": 55783,
+      "postTrimTokens": 42110,
+      "reductionPercent": 25,
+      "contextUsedPercent": 28,
+      "breakEvenTurns": 15,
+      "cacheMissPenalty": 0.12193246500000002,
+      "savingsPerTurn": 0.008819084999999994,
+      "preTrimCostPerTurn": 0.035980034999999994,
+      "postTrimSteadyCostPerTurn": 0.02716095,
+      "postTrimFirstTurnCost": 0.1579125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.17990017499999997,
+          "withTrim": 0.2665563,
+          "savedPercent": -48
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.35980034999999994,
+          "withTrim": 0.40236105,
+          "savedPercent": -12
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.7196006999999999,
+          "withTrim": 0.6739705500000001,
+          "savedPercent": 6
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.7990017499999997,
+          "withTrim": 1.48879905,
+          "savedPercent": 17
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 1986963,
+          "count": 112,
+          "percent": 37
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 470,
+          "count": 2,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 2642165,
+          "percent": 49
+        },
+        "toolUseRequests": {
+          "bytes": 110212,
+          "count": 112,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 630919,
+          "percent": 12
+        }
+      },
+      "totalBytes": 5370729,
+      "toolResultBytePct": 37,
+      "trimMetrics": {
+        "originalBytes": 5371219,
+        "trimmedBytes": 3318804,
+        "byteReductionPct": 38,
+        "toolResultsStubbed": 4,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 2,
+        "imagesStripped": 4,
+        "toolUseInputsStubbed": 16,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 23,
+        "trimmedUserMessages": 139,
+        "trimmedAssistantResponses": 217,
+        "trimmedToolUseRequests": 112
+      }
+    },
+    {
+      "sessionId": "a2313e42-8626-4d09-bf4b-8875a0e73fc1",
+      "project": "d:\\VMC",
+      "messageCount": 356,
+      "userMessages": 139,
+      "assistantMessages": 217,
+      "toolResultCount": 112,
+      "estimatedTokens": 148902,
+      "postTrimTokens": 94809,
+      "reductionPercent": 36,
+      "contextUsedPercent": 74,
+      "breakEvenTurns": 9,
+      "cacheMissPenalty": 0.2594919600000001,
+      "savingsPerTurn": 0.034889985,
+      "preTrimCostPerTurn": 0.09604178999999999,
+      "postTrimSteadyCostPerTurn": 0.06115180499999999,
+      "postTrimFirstTurnCost": 0.35553375000000004,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.48020894999999997,
+          "withTrim": 0.60014097,
+          "savedPercent": -25
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9604178999999999,
+          "withTrim": 0.905899995,
+          "savedPercent": 6
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9208357999999999,
+          "withTrim": 1.5174180449999999,
+          "savedPercent": 21
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.802089499999999,
+          "withTrim": 3.3519721949999997,
+          "savedPercent": 30
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 2194100,
+          "count": 112,
+          "percent": 38
+        },
+        "thinkingSignatures": {
+          "bytes": 41276,
+          "count": 26,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 22272,
+          "count": 29,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 2719230,
+          "percent": 48
+        },
+        "toolUseRequests": {
+          "bytes": 110212,
+          "count": 112,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 630919,
+          "percent": 11
+        }
+      },
+      "totalBytes": 5718009,
+      "toolResultBytePct": 38,
+      "trimMetrics": {
+        "originalBytes": 5718526,
+        "trimmedBytes": 3318798,
+        "byteReductionPct": 42,
+        "toolResultsStubbed": 34,
+        "signaturesStripped": 26,
+        "fileHistoryRemoved": 29,
+        "imagesStripped": 4,
+        "toolUseInputsStubbed": 16,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 23,
+        "trimmedUserMessages": 139,
+        "trimmedAssistantResponses": 217,
+        "trimmedToolUseRequests": 112
+      }
+    },
+    {
+      "sessionId": "b879b3c0-115a-4742-b2f5-5ff3433326e2",
+      "project": "d:\\VMC",
+      "messageCount": 167,
+      "userMessages": 69,
+      "assistantMessages": 98,
+      "toolResultCount": 54,
+      "estimatedTokens": 84705,
+      "postTrimTokens": 73039,
+      "reductionPercent": 14,
+      "contextUsedPercent": 42,
+      "breakEvenTurns": 31,
+      "cacheMissPenalty": 0.219261525,
+      "savingsPerTurn": 0.007524570000000001,
+      "preTrimCostPerTurn": 0.054634724999999995,
+      "postTrimSteadyCostPerTurn": 0.047110154999999994,
+      "postTrimFirstTurnCost": 0.27389625,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.273173625,
+          "withTrim": 0.46233687,
+          "savedPercent": -69
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.54634725,
+          "withTrim": 0.697887645,
+          "savedPercent": -28
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0926945,
+          "withTrim": 1.168989195,
+          "savedPercent": -7
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.73173625,
+          "withTrim": 2.5822938449999997,
+          "savedPercent": 5
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 111452,
+          "count": 54,
+          "percent": 12
+        },
+        "thinkingSignatures": {
+          "bytes": 5916,
+          "count": 8,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 10613,
+          "count": 22,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 332368,
+          "percent": 36
+        },
+        "toolUseRequests": {
+          "bytes": 28756,
+          "count": 54,
+          "percent": 3
+        },
+        "other": {
+          "bytes": 422951,
+          "percent": 46
+        }
+      },
+      "totalBytes": 912056,
+      "toolResultBytePct": 12,
+      "trimMetrics": {
+        "originalBytes": 912443,
+        "trimmedBytes": 747940,
+        "byteReductionPct": 18,
+        "toolResultsStubbed": 15,
+        "signaturesStripped": 8,
+        "fileHistoryRemoved": 22,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 6,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 17,
+        "trimmedUserMessages": 69,
+        "trimmedAssistantResponses": 98,
+        "trimmedToolUseRequests": 54
+      }
+    },
+    {
+      "sessionId": "9eea44ad-c322-4892-a444-4c7e71731fe1",
+      "project": "d:\\VMC",
+      "messageCount": 379,
+      "userMessages": 136,
+      "assistantMessages": 243,
+      "toolResultCount": 128,
+      "estimatedTokens": 165863,
+      "postTrimTokens": 116512,
+      "reductionPercent": 30,
+      "contextUsedPercent": 83,
+      "breakEvenTurns": 12,
+      "cacheMissPenalty": 0.32993836500000007,
+      "savingsPerTurn": 0.03183139500000001,
+      "preTrimCostPerTurn": 0.10698163499999999,
+      "postTrimSteadyCostPerTurn": 0.07515023999999998,
+      "postTrimFirstTurnCost": 0.43692000000000003,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.534908175,
+          "withTrim": 0.7375209599999999,
+          "savedPercent": -38
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 1.06981635,
+          "withTrim": 1.1132721599999997,
+          "savedPercent": -4
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 2.1396327,
+          "withTrim": 1.8647745599999996,
+          "savedPercent": 13
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 5.34908175,
+          "withTrim": 4.119281759999999,
+          "savedPercent": 23
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 2287045,
+          "count": 128,
+          "percent": 31
+        },
+        "thinkingSignatures": {
+          "bytes": 43498,
+          "count": 29,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 12272,
+          "count": 19,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 2919061,
+          "percent": 39
+        },
+        "toolUseRequests": {
+          "bytes": 131180,
+          "count": 128,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 2020672,
+          "percent": 27
+        }
+      },
+      "totalBytes": 7413728,
+      "toolResultBytePct": 31,
+      "trimMetrics": {
+        "originalBytes": 7414902,
+        "trimmedBytes": 4906177,
+        "byteReductionPct": 34,
+        "toolResultsStubbed": 38,
+        "signaturesStripped": 29,
+        "fileHistoryRemoved": 19,
+        "imagesStripped": 5,
+        "toolUseInputsStubbed": 18,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 32,
+        "trimmedUserMessages": 136,
+        "trimmedAssistantResponses": 243,
+        "trimmedToolUseRequests": 128
+      }
+    },
+    {
+      "sessionId": "6ff0af2d-d112-4df7-a9eb-a9a9d3714f4e",
+      "project": "d:\\VMC",
+      "messageCount": 219,
+      "userMessages": 78,
+      "assistantMessages": 141,
+      "toolResultCount": 71,
+      "estimatedTokens": 133779,
+      "postTrimTokens": 56259,
+      "reductionPercent": 58,
+      "contextUsedPercent": 67,
+      "breakEvenTurns": 4,
+      "cacheMissPenalty": 0.12468379500000001,
+      "savingsPerTurn": 0.05000039999999999,
+      "preTrimCostPerTurn": 0.08628745499999999,
+      "postTrimSteadyCostPerTurn": 0.03628705499999999,
+      "postTrimFirstTurnCost": 0.21097125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.43143727499999995,
+          "withTrim": 0.35611947,
+          "savedPercent": 17
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.8628745499999999,
+          "withTrim": 0.537554745,
+          "savedPercent": 38
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.7257490999999998,
+          "withTrim": 0.9004252949999998,
+          "savedPercent": 48
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.3143727499999995,
+          "withTrim": 1.9890369449999996,
+          "savedPercent": 54
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 139362,
+          "count": 71,
+          "percent": 8
+        },
+        "thinkingSignatures": {
+          "bytes": 101896,
+          "count": 20,
+          "percent": 6
+        },
+        "fileHistory": {
+          "bytes": 10778,
+          "count": 11,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 1175521,
+          "percent": 70
+        },
+        "toolUseRequests": {
+          "bytes": 33808,
+          "count": 71,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 216006,
+          "percent": 13
+        }
+      },
+      "totalBytes": 1677371,
+      "toolResultBytePct": 8,
+      "trimMetrics": {
+        "originalBytes": 4220705,
+        "trimmedBytes": 1345060,
+        "byteReductionPct": 68,
+        "toolResultsStubbed": 23,
+        "signaturesStripped": 20,
+        "fileHistoryRemoved": 11,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 9,
+        "preCompactionLinesSkipped": 530,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 78,
+        "trimmedAssistantResponses": 141,
+        "trimmedToolUseRequests": 71
+      }
+    },
+    {
+      "sessionId": "0f7a4cad-e580-41f0-9fe1-0fcc56e9ed26",
+      "project": "d:\\VMC",
+      "messageCount": 85,
+      "userMessages": 30,
+      "assistantMessages": 55,
+      "toolResultCount": 28,
+      "estimatedTokens": 35682,
+      "postTrimTokens": 35036,
+      "reductionPercent": 2,
+      "contextUsedPercent": 18,
+      "breakEvenTurns": 262,
+      "cacheMissPenalty": 0.10837011,
+      "savingsPerTurn": 0.00041667000000000093,
+      "preTrimCostPerTurn": 0.023014889999999996,
+      "postTrimSteadyCostPerTurn": 0.022598219999999995,
+      "postTrimFirstTurnCost": 0.131385,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.11507444999999998,
+          "withTrim": 0.22177787999999998,
+          "savedPercent": -93
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.23014889999999996,
+          "withTrim": 0.33476898,
+          "savedPercent": -45
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.4602977999999999,
+          "withTrim": 0.5607511799999999,
+          "savedPercent": -22
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.1507444999999998,
+          "withTrim": 1.2386977799999999,
+          "savedPercent": -8
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 4353,
+          "count": 28,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 269094,
+          "percent": 29
+        },
+        "toolUseRequests": {
+          "bytes": 43476,
+          "count": 28,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 625483,
+          "percent": 66
+        }
+      },
+      "totalBytes": 942406,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 942605,
+        "trimmedBytes": 903793,
+        "byteReductionPct": 4,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 9,
+        "trimmedUserMessages": 30,
+        "trimmedAssistantResponses": 55,
+        "trimmedToolUseRequests": 28
+      }
+    },
+    {
+      "sessionId": "e92b9428-bfb5-4615-aa89-7b93476a5c9c",
+      "project": "d:\\VMC",
+      "messageCount": 85,
+      "userMessages": 30,
+      "assistantMessages": 55,
+      "toolResultCount": 28,
+      "estimatedTokens": 70023,
+      "postTrimTokens": 61970,
+      "reductionPercent": 12,
+      "contextUsedPercent": 35,
+      "breakEvenTurns": 38,
+      "cacheMissPenalty": 0.187222665,
+      "savingsPerTurn": 0.005194184999999997,
+      "preTrimCostPerTurn": 0.04516483499999999,
+      "postTrimSteadyCostPerTurn": 0.039970649999999996,
+      "postTrimFirstTurnCost": 0.2323875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.22582417499999996,
+          "withTrim": 0.39227009999999995,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.4516483499999999,
+          "withTrim": 0.5921233499999999,
+          "savedPercent": -31
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.9032966999999998,
+          "withTrim": 0.9918298499999999,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.25824175,
+          "withTrim": 2.19094935,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 112596,
+          "count": 28,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 6810,
+          "count": 7,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 1594,
+          "count": 4,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 287054,
+          "percent": 27
+        },
+        "toolUseRequests": {
+          "bytes": 43476,
+          "count": 28,
+          "percent": 4
+        },
+        "other": {
+          "bytes": 625483,
+          "percent": 58
+        }
+      },
+      "totalBytes": 1077013,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1077216,
+        "trimmedBytes": 903793,
+        "byteReductionPct": 16,
+        "toolResultsStubbed": 9,
+        "signaturesStripped": 7,
+        "fileHistoryRemoved": 4,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 9,
+        "trimmedUserMessages": 30,
+        "trimmedAssistantResponses": 55,
+        "trimmedToolUseRequests": 28
+      }
+    },
+    {
+      "sessionId": "1fecc239-b40a-4a4e-abec-0cd37d217df6",
+      "project": "d:\\VMC",
+      "messageCount": 348,
+      "userMessages": 133,
+      "assistantMessages": 215,
+      "toolResultCount": 112,
+      "estimatedTokens": 148092,
+      "postTrimTokens": 94327,
+      "reductionPercent": 36,
+      "contextUsedPercent": 74,
+      "breakEvenTurns": 9,
+      "cacheMissPenalty": 0.25820690999999996,
+      "savingsPerTurn": 0.034678424999999985,
+      "preTrimCostPerTurn": 0.09551933999999998,
+      "postTrimSteadyCostPerTurn": 0.060840914999999995,
+      "postTrimFirstTurnCost": 0.35372624999999996,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4775966999999999,
+          "withTrim": 0.59708991,
+          "savedPercent": -25
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9551933999999997,
+          "withTrim": 0.901294485,
+          "savedPercent": 6
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9103867999999995,
+          "withTrim": 1.509703635,
+          "savedPercent": 21
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.775966999999999,
+          "withTrim": 3.3349310849999996,
+          "savedPercent": 30
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 2194100,
+          "count": 112,
+          "percent": 38
+        },
+        "thinkingSignatures": {
+          "bytes": 41276,
+          "count": 26,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 18272,
+          "count": 25,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 2710805,
+          "percent": 48
+        },
+        "toolUseRequests": {
+          "bytes": 110212,
+          "count": 112,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 630919,
+          "percent": 11
+        }
+      },
+      "totalBytes": 5705584,
+      "toolResultBytePct": 38,
+      "trimMetrics": {
+        "originalBytes": 5706089,
+        "trimmedBytes": 3311011,
+        "byteReductionPct": 42,
+        "toolResultsStubbed": 34,
+        "signaturesStripped": 26,
+        "fileHistoryRemoved": 25,
+        "imagesStripped": 4,
+        "toolUseInputsStubbed": 16,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 23,
+        "trimmedUserMessages": 133,
+        "trimmedAssistantResponses": 215,
+        "trimmedToolUseRequests": 112
+      }
+    },
+    {
+      "sessionId": "d0cbe852-9d39-437b-80cf-af64a15449f3",
+      "project": "d:\\VMC",
+      "messageCount": 334,
+      "userMessages": 121,
+      "assistantMessages": 213,
+      "toolResultCount": 112,
+      "estimatedTokens": 59088,
+      "postTrimTokens": 43998,
+      "reductionPercent": 26,
+      "contextUsedPercent": 30,
+      "breakEvenTurns": 15,
+      "cacheMissPenalty": 0.12688074000000002,
+      "savingsPerTurn": 0.009733049999999997,
+      "preTrimCostPerTurn": 0.038111759999999995,
+      "postTrimSteadyCostPerTurn": 0.028378709999999998,
+      "postTrimFirstTurnCost": 0.16499250000000001,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.19055879999999997,
+          "withTrim": 0.27850734,
+          "savedPercent": -46
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.38111759999999995,
+          "withTrim": 0.42040089,
+          "savedPercent": -10
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.7622351999999999,
+          "withTrim": 0.70418799,
+          "savedPercent": 8
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.9055879999999998,
+          "withTrim": 1.55554929,
+          "savedPercent": 18
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 1986963,
+          "count": 112,
+          "percent": 37
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 470,
+          "count": 2,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 2644920,
+          "percent": 49
+        },
+        "toolUseRequests": {
+          "bytes": 110212,
+          "count": 112,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 630919,
+          "percent": 12
+        }
+      },
+      "totalBytes": 5373484,
+      "toolResultBytePct": 37,
+      "trimMetrics": {
+        "originalBytes": 5373952,
+        "trimmedBytes": 3299374,
+        "byteReductionPct": 39,
+        "toolResultsStubbed": 4,
+        "signaturesStripped": 26,
+        "fileHistoryRemoved": 2,
+        "imagesStripped": 4,
+        "toolUseInputsStubbed": 16,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 23,
+        "trimmedUserMessages": 121,
+        "trimmedAssistantResponses": 213,
+        "trimmedToolUseRequests": 112
+      }
+    },
+    {
+      "sessionId": "9f0c2c6c-29bb-4f1c-98b7-1671d071c3d4",
+      "project": "d:\\VMC",
+      "messageCount": 337,
+      "userMessages": 124,
+      "assistantMessages": 213,
+      "toolResultCount": 112,
+      "estimatedTokens": 59462,
+      "postTrimTokens": 44236,
+      "reductionPercent": 26,
+      "contextUsedPercent": 30,
+      "breakEvenTurns": 14,
+      "cacheMissPenalty": 0.12753201,
+      "savingsPerTurn": 0.009820769999999996,
+      "preTrimCostPerTurn": 0.038352989999999997,
+      "postTrimSteadyCostPerTurn": 0.02853222,
+      "postTrimFirstTurnCost": 0.165885,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.19176495,
+          "withTrim": 0.28001388,
+          "savedPercent": -46
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.3835299,
+          "withTrim": 0.42267498000000003,
+          "savedPercent": -10
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.7670598,
+          "withTrim": 0.70799718,
+          "savedPercent": 8
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.9176494999999998,
+          "withTrim": 1.5639637800000001,
+          "savedPercent": 18
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 1986963,
+          "count": 112,
+          "percent": 37
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 705,
+          "count": 3,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 2648045,
+          "percent": 49
+        },
+        "toolUseRequests": {
+          "bytes": 110212,
+          "count": 112,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 630919,
+          "percent": 12
+        }
+      },
+      "totalBytes": 5376844,
+      "toolResultBytePct": 37,
+      "trimMetrics": {
+        "originalBytes": 5377316,
+        "trimmedBytes": 3302502,
+        "byteReductionPct": 39,
+        "toolResultsStubbed": 4,
+        "signaturesStripped": 26,
+        "fileHistoryRemoved": 3,
+        "imagesStripped": 4,
+        "toolUseInputsStubbed": 16,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 23,
+        "trimmedUserMessages": 124,
+        "trimmedAssistantResponses": 213,
+        "trimmedToolUseRequests": 112
+      }
+    },
+    {
+      "sessionId": "4a14fc90-f64a-451e-95ed-431438f3f031",
+      "project": "d:\\VMC",
+      "messageCount": 197,
+      "userMessages": 71,
+      "assistantMessages": 126,
+      "toolResultCount": 66,
+      "estimatedTokens": 44568,
+      "postTrimTokens": 43228,
+      "reductionPercent": 3,
+      "contextUsedPercent": 22,
+      "breakEvenTurns": 156,
+      "cacheMissPenalty": 0.13335864,
+      "savingsPerTurn": 0.0008642999999999984,
+      "preTrimCostPerTurn": 0.02874636,
+      "postTrimSteadyCostPerTurn": 0.02788206,
+      "postTrimFirstTurnCost": 0.162105,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.1437318,
+          "withTrim": 0.27363324,
+          "savedPercent": -90
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.2874636,
+          "withTrim": 0.41304354,
+          "savedPercent": -44
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.5749272,
+          "withTrim": 0.6918641400000001,
+          "savedPercent": -20
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.4373179999999999,
+          "withTrim": 1.52832594,
+          "savedPercent": -6
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 12368,
+          "count": 66,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 396444,
+          "percent": 36
+        },
+        "toolUseRequests": {
+          "bytes": 63037,
+          "count": 67,
+          "percent": 6
+        },
+        "other": {
+          "bytes": 629161,
+          "percent": 57
+        }
+      },
+      "totalBytes": 1101010,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 1101331,
+        "trimmedBytes": 1041246,
+        "byteReductionPct": 5,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 15,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 12,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 15,
+        "trimmedUserMessages": 71,
+        "trimmedAssistantResponses": 126,
+        "trimmedToolUseRequests": 67
+      }
+    },
+    {
+      "sessionId": "aea33f50-a9a3-41b2-8406-f48024ca6f7d",
+      "project": "d:\\VMC",
+      "messageCount": 197,
+      "userMessages": 71,
+      "assistantMessages": 126,
+      "toolResultCount": 66,
+      "estimatedTokens": 93922,
+      "postTrimTokens": 79424,
+      "reductionPercent": 15,
+      "contextUsedPercent": 47,
+      "breakEvenTurns": 27,
+      "cacheMissPenalty": 0.23726031,
+      "savingsPerTurn": 0.009351209999999999,
+      "preTrimCostPerTurn": 0.06057968999999999,
+      "postTrimSteadyCostPerTurn": 0.05122847999999999,
+      "postTrimFirstTurnCost": 0.29784,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.30289844999999993,
+          "withTrim": 0.50275392,
+          "savedPercent": -66
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.6057968999999999,
+          "withTrim": 0.75889632,
+          "savedPercent": -25
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.2115937999999997,
+          "withTrim": 1.2711811199999998,
+          "savedPercent": -5
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.0289844999999995,
+          "withTrim": 2.8080355199999993,
+          "savedPercent": 7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 146581,
+          "count": 66,
+          "percent": 11
+        },
+        "thinkingSignatures": {
+          "bytes": 22602,
+          "count": 15,
+          "percent": 2
+        },
+        "fileHistory": {
+          "bytes": 5272,
+          "count": 10,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 428299,
+          "percent": 33
+        },
+        "toolUseRequests": {
+          "bytes": 63037,
+          "count": 67,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 629161,
+          "percent": 49
+        }
+      },
+      "totalBytes": 1294952,
+      "toolResultBytePct": 11,
+      "trimMetrics": {
+        "originalBytes": 1295283,
+        "trimmedBytes": 1041246,
+        "byteReductionPct": 20,
+        "toolResultsStubbed": 16,
+        "signaturesStripped": 15,
+        "fileHistoryRemoved": 10,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 12,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 15,
+        "trimmedUserMessages": 71,
+        "trimmedAssistantResponses": 126,
+        "trimmedToolUseRequests": 67
+      }
+    },
+    {
+      "sessionId": "13d27827-144a-4f8f-be6f-8c6b27553f28",
+      "project": "d:\\VMC",
+      "messageCount": 197,
+      "userMessages": 71,
+      "assistantMessages": 126,
+      "toolResultCount": 66,
+      "estimatedTokens": 93922,
+      "postTrimTokens": 79424,
+      "reductionPercent": 15,
+      "contextUsedPercent": 47,
+      "breakEvenTurns": 27,
+      "cacheMissPenalty": 0.23726031,
+      "savingsPerTurn": 0.009351209999999999,
+      "preTrimCostPerTurn": 0.06057968999999999,
+      "postTrimSteadyCostPerTurn": 0.05122847999999999,
+      "postTrimFirstTurnCost": 0.29784,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.30289844999999993,
+          "withTrim": 0.50275392,
+          "savedPercent": -66
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.6057968999999999,
+          "withTrim": 0.75889632,
+          "savedPercent": -25
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.2115937999999997,
+          "withTrim": 1.2711811199999998,
+          "savedPercent": -5
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.0289844999999995,
+          "withTrim": 2.8080355199999993,
+          "savedPercent": 7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 146581,
+          "count": 66,
+          "percent": 11
+        },
+        "thinkingSignatures": {
+          "bytes": 22602,
+          "count": 15,
+          "percent": 2
+        },
+        "fileHistory": {
+          "bytes": 5272,
+          "count": 10,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 428299,
+          "percent": 33
+        },
+        "toolUseRequests": {
+          "bytes": 63037,
+          "count": 67,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 629161,
+          "percent": 49
+        }
+      },
+      "totalBytes": 1294952,
+      "toolResultBytePct": 11,
+      "trimMetrics": {
+        "originalBytes": 1295283,
+        "trimmedBytes": 1041246,
+        "byteReductionPct": 20,
+        "toolResultsStubbed": 16,
+        "signaturesStripped": 15,
+        "fileHistoryRemoved": 10,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 12,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 15,
+        "trimmedUserMessages": 71,
+        "trimmedAssistantResponses": 126,
+        "trimmedToolUseRequests": 67
+      }
+    },
+    {
+      "sessionId": "4c16145a-ce6e-41d7-8938-a4bdb06afbe4",
+      "project": "d:\\VMC",
+      "messageCount": 85,
+      "userMessages": 30,
+      "assistantMessages": 55,
+      "toolResultCount": 28,
+      "estimatedTokens": 36613,
+      "postTrimTokens": 35861,
+      "reductionPercent": 2,
+      "contextUsedPercent": 18,
+      "breakEvenTurns": 230,
+      "cacheMissPenalty": 0.11086336499999998,
+      "savingsPerTurn": 0.00048504000000000255,
+      "preTrimCostPerTurn": 0.023615385,
+      "postTrimSteadyCostPerTurn": 0.023130344999999997,
+      "postTrimFirstTurnCost": 0.13447874999999998,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.118076925,
+          "withTrim": 0.22700012999999997,
+          "savedPercent": -92
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.23615385,
+          "withTrim": 0.34265185499999995,
+          "savedPercent": -45
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.4723077,
+          "withTrim": 0.5739553049999999,
+          "savedPercent": -22
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.18076925,
+          "withTrim": 1.2678656549999998,
+          "savedPercent": -7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 4353,
+          "count": 28,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 273108,
+          "percent": 29
+        },
+        "toolUseRequests": {
+          "bytes": 43476,
+          "count": 28,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 625483,
+          "percent": 66
+        }
+      },
+      "totalBytes": 946420,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 946619,
+        "trimmedBytes": 903793,
+        "byteReductionPct": 5,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 7,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 9,
+        "trimmedUserMessages": 30,
+        "trimmedAssistantResponses": 55,
+        "trimmedToolUseRequests": 28
+      }
+    },
+    {
+      "sessionId": "67cb5780-bea4-4a3f-8b23-ea16bd5367f1",
+      "project": "d:\\VMC",
+      "messageCount": 85,
+      "userMessages": 30,
+      "assistantMessages": 55,
+      "toolResultCount": 28,
+      "estimatedTokens": 70023,
+      "postTrimTokens": 61970,
+      "reductionPercent": 12,
+      "contextUsedPercent": 35,
+      "breakEvenTurns": 38,
+      "cacheMissPenalty": 0.187222665,
+      "savingsPerTurn": 0.005194184999999997,
+      "preTrimCostPerTurn": 0.04516483499999999,
+      "postTrimSteadyCostPerTurn": 0.039970649999999996,
+      "postTrimFirstTurnCost": 0.2323875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.22582417499999996,
+          "withTrim": 0.39227009999999995,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.4516483499999999,
+          "withTrim": 0.5921233499999999,
+          "savedPercent": -31
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.9032966999999998,
+          "withTrim": 0.9918298499999999,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.25824175,
+          "withTrim": 2.19094935,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 112596,
+          "count": 28,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 6810,
+          "count": 7,
+          "percent": 1
+        },
+        "fileHistory": {
+          "bytes": 1594,
+          "count": 4,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 287054,
+          "percent": 27
+        },
+        "toolUseRequests": {
+          "bytes": 43476,
+          "count": 28,
+          "percent": 4
+        },
+        "other": {
+          "bytes": 625483,
+          "percent": 58
+        }
+      },
+      "totalBytes": 1077013,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1077216,
+        "trimmedBytes": 903793,
+        "byteReductionPct": 16,
+        "toolResultsStubbed": 9,
+        "signaturesStripped": 7,
+        "fileHistoryRemoved": 4,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 9,
+        "trimmedUserMessages": 30,
+        "trimmedAssistantResponses": 55,
+        "trimmedToolUseRequests": 28
+      }
+    },
+    {
+      "sessionId": "86c8ac37-d909-42f4-9f52-6f02ab05735c",
+      "project": "d:\\hiddenstate",
+      "messageCount": 3,
+      "userMessages": 3,
+      "assistantMessages": 0,
+      "toolResultCount": 0,
+      "estimatedTokens": 138907,
+      "postTrimTokens": 20041,
+      "reductionPercent": 86,
+      "contextUsedPercent": 69,
+      "breakEvenTurns": 1,
+      "cacheMissPenalty": -0.014441264999999981,
+      "savingsPerTurn": 0.07666856999999999,
+      "preTrimCostPerTurn": 0.08959501499999999,
+      "postTrimSteadyCostPerTurn": 0.012926444999999998,
+      "postTrimFirstTurnCost": 0.07515375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.44797507499999994,
+          "withTrim": 0.12685953,
+          "savedPercent": 72
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.8959501499999999,
+          "withTrim": 0.19149175499999999,
+          "savedPercent": 79
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.7919002999999998,
+          "withTrim": 0.32075620499999996,
+          "savedPercent": 82
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.479750749999999,
+          "withTrim": 0.7085495549999999,
+          "savedPercent": 84
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 18394,
+          "count": 10,
+          "percent": 84
+        },
+        "conversation": {
+          "bytes": 3420,
+          "percent": 16
+        },
+        "toolUseRequests": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 0,
+          "percent": 0
+        }
+      },
+      "totalBytes": 21814,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 9855383,
+        "trimmedBytes": 3424,
+        "byteReductionPct": 100,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 10,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 1743,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 3,
+        "trimmedAssistantResponses": 0,
+        "trimmedToolUseRequests": 0
+      }
+    },
+    {
+      "sessionId": "82e897a4-4559-4daa-a386-1d352f69681c",
+      "project": "d:\\hiddenstate",
+      "messageCount": 3,
+      "userMessages": 3,
+      "assistantMessages": 0,
+      "toolResultCount": 0,
+      "estimatedTokens": 53665,
+      "postTrimTokens": 20013,
+      "reductionPercent": 63,
+      "contextUsedPercent": 27,
+      "breakEvenTurns": 3,
+      "cacheMissPenalty": 0.040434825,
+      "savingsPerTurn": 0.02170554,
+      "preTrimCostPerTurn": 0.034613925,
+      "postTrimSteadyCostPerTurn": 0.012908384999999998,
+      "postTrimFirstTurnCost": 0.07504875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.17306962499999998,
+          "withTrim": 0.12668228999999998,
+          "savedPercent": 27
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.34613924999999995,
+          "withTrim": 0.19122421499999998,
+          "savedPercent": 45
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.6922784999999999,
+          "withTrim": 0.320308065,
+          "savedPercent": 54
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.7306962499999998,
+          "withTrim": 0.7075596149999999,
+          "savedPercent": 59
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 708,
+          "count": 2,
+          "percent": 17
+        },
+        "conversation": {
+          "bytes": 3373,
+          "percent": 83
+        },
+        "toolUseRequests": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 0,
+          "percent": 0
+        }
+      },
+      "totalBytes": 4081,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 9040756,
+        "trimmedBytes": 3377,
+        "byteReductionPct": 100,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 2,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 2461,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 3,
+        "trimmedAssistantResponses": 0,
+        "trimmedToolUseRequests": 0
+      }
+    },
+    {
+      "sessionId": "b3fe233c-0556-4398-92e0-8d330ce21652",
+      "project": "d:\\hiddenstate",
+      "messageCount": 123,
+      "userMessages": 47,
+      "assistantMessages": 76,
+      "toolResultCount": 41,
+      "estimatedTokens": 82406,
+      "postTrimTokens": 73122,
+      "reductionPercent": 11,
+      "contextUsedPercent": 41,
+      "breakEvenTurns": 38,
+      "cacheMissPenalty": 0.22105563000000006,
+      "savingsPerTurn": 0.005988180000000003,
+      "preTrimCostPerTurn": 0.05315187,
+      "postTrimSteadyCostPerTurn": 0.047163689999999994,
+      "postTrimFirstTurnCost": 0.27420750000000005,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.26575935,
+          "withTrim": 0.46286226,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5315187,
+          "withTrim": 0.69868071,
+          "savedPercent": -31
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0630374,
+          "withTrim": 1.17031761,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.6575935,
+          "withTrim": 2.5852283099999998,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 136151,
+          "count": 41,
+          "percent": 9
+        },
+        "thinkingSignatures": {
+          "bytes": 41862,
+          "count": 11,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 5410,
+          "count": 10,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 262096,
+          "percent": 17
+        },
+        "toolUseRequests": {
+          "bytes": 27135,
+          "count": 41,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1076091,
+          "percent": 69
+        }
+      },
+      "totalBytes": 1548745,
+      "toolResultBytePct": 9,
+      "trimMetrics": {
+        "originalBytes": 1549108,
+        "trimmedBytes": 1318658,
+        "byteReductionPct": 15,
+        "toolResultsStubbed": 19,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 10,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 7,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 47,
+        "trimmedAssistantResponses": 76,
+        "trimmedToolUseRequests": 41
+      }
+    },
+    {
+      "sessionId": "3b416db7-f5f3-44e3-b0b7-377e518b178a",
+      "project": "d:\\VMC",
+      "messageCount": 184,
+      "userMessages": 74,
+      "assistantMessages": 110,
+      "toolResultCount": 48,
+      "estimatedTokens": 53121,
+      "postTrimTokens": 30616,
+      "reductionPercent": 42,
+      "contextUsedPercent": 27,
+      "breakEvenTurns": 7,
+      "cacheMissPenalty": 0.08054695500000002,
+      "savingsPerTurn": 0.014515724999999993,
+      "preTrimCostPerTurn": 0.03426304499999999,
+      "postTrimSteadyCostPerTurn": 0.01974732,
+      "postTrimFirstTurnCost": 0.11481000000000001,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.17131522499999996,
+          "withTrim": 0.19379928000000002,
+          "savedPercent": -13
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.3426304499999999,
+          "withTrim": 0.29253588,
+          "savedPercent": 15
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.6852608999999998,
+          "withTrim": 0.49000908,
+          "savedPercent": 28
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.7131522499999996,
+          "withTrim": 1.08242868,
+          "savedPercent": 37
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 6876,
+          "count": 48,
+          "percent": 1
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 571879,
+          "percent": 75
+        },
+        "toolUseRequests": {
+          "bytes": 50741,
+          "count": 48,
+          "percent": 7
+        },
+        "other": {
+          "bytes": 127963,
+          "percent": 17
+        }
+      },
+      "totalBytes": 757459,
+      "toolResultBytePct": 1,
+      "trimMetrics": {
+        "originalBytes": 2148089,
+        "trimmedBytes": 688487,
+        "byteReductionPct": 68,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 17,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 6,
+        "preCompactionLinesSkipped": 607,
+        "queueOperationsRemoved": 15,
+        "trimmedUserMessages": 74,
+        "trimmedAssistantResponses": 110,
+        "trimmedToolUseRequests": 48
+      }
+    },
+    {
+      "sessionId": "1cffe83f-dd76-4dac-ae70-60996d1e2318",
+      "project": "d:\\VMC",
+      "messageCount": 205,
+      "userMessages": 92,
+      "assistantMessages": 113,
+      "toolResultCount": 48,
+      "estimatedTokens": 151536,
+      "postTrimTokens": 50957,
+      "reductionPercent": 66,
+      "contextUsedPercent": 76,
+      "breakEvenTurns": 3,
+      "cacheMissPenalty": 0.09334803000000003,
+      "savingsPerTurn": 0.06487345499999997,
+      "preTrimCostPerTurn": 0.09774071999999998,
+      "postTrimSteadyCostPerTurn": 0.032867265,
+      "postTrimFirstTurnCost": 0.19108875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4887035999999999,
+          "withTrim": 0.32255781,
+          "savedPercent": 34
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9774071999999998,
+          "withTrim": 0.486894135,
+          "savedPercent": 50
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.9548143999999996,
+          "withTrim": 0.815566785,
+          "savedPercent": 58
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.887035999999998,
+          "withTrim": 1.801584735,
+          "savedPercent": 63
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 271669,
+          "count": 48,
+          "percent": 22
+        },
+        "thinkingSignatures": {
+          "bytes": 56510,
+          "count": 17,
+          "percent": 5
+        },
+        "fileHistory": {
+          "bytes": 83754,
+          "count": 24,
+          "percent": 7
+        },
+        "conversation": {
+          "bytes": 618690,
+          "percent": 51
+        },
+        "toolUseRequests": {
+          "bytes": 50741,
+          "count": 48,
+          "percent": 4
+        },
+        "other": {
+          "bytes": 127963,
+          "percent": 11
+        }
+      },
+      "totalBytes": 1209327,
+      "toolResultBytePct": 22,
+      "trimMetrics": {
+        "originalBytes": 3001480,
+        "trimmedBytes": 706394,
+        "byteReductionPct": 76,
+        "toolResultsStubbed": 21,
+        "signaturesStripped": 17,
+        "fileHistoryRemoved": 24,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 6,
+        "preCompactionLinesSkipped": 636,
+        "queueOperationsRemoved": 15,
+        "trimmedUserMessages": 92,
+        "trimmedAssistantResponses": 113,
+        "trimmedToolUseRequests": 48
+      }
+    },
+    {
+      "sessionId": "feeb6fa1-c87e-4b3e-bed9-2e679c94e7dd",
+      "project": "d:\\VMC",
+      "messageCount": 66,
+      "userMessages": 31,
+      "assistantMessages": 35,
+      "toolResultCount": 16,
+      "estimatedTokens": 75210,
+      "postTrimTokens": 25094,
+      "reductionPercent": 67,
+      "contextUsedPercent": 38,
+      "breakEvenTurns": 3,
+      "cacheMissPenalty": 0.04559205000000001,
+      "savingsPerTurn": 0.03232482,
+      "preTrimCostPerTurn": 0.04851045,
+      "postTrimSteadyCostPerTurn": 0.01618563,
+      "postTrimFirstTurnCost": 0.0941025,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.24255224999999997,
+          "withTrim": 0.15884502,
+          "savedPercent": 35
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.48510449999999994,
+          "withTrim": 0.23977317,
+          "savedPercent": 51
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.9702089999999999,
+          "withTrim": 0.40162947000000004,
+          "savedPercent": 59
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.4255225,
+          "withTrim": 0.8871983699999999,
+          "savedPercent": 63
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 110553,
+          "count": 16,
+          "percent": 29
+        },
+        "thinkingSignatures": {
+          "bytes": 25404,
+          "count": 6,
+          "percent": 7
+        },
+        "fileHistory": {
+          "bytes": 23415,
+          "count": 7,
+          "percent": 6
+        },
+        "conversation": {
+          "bytes": 205691,
+          "percent": 54
+        },
+        "toolUseRequests": {
+          "bytes": 4643,
+          "count": 16,
+          "percent": 1
+        },
+        "other": {
+          "bytes": 9044,
+          "percent": 2
+        }
+      },
+      "totalBytes": 378750,
+      "toolResultBytePct": 29,
+      "trimMetrics": {
+        "originalBytes": 2170661,
+        "trimmedBytes": 200259,
+        "byteReductionPct": 91,
+        "toolResultsStubbed": 7,
+        "signaturesStripped": 6,
+        "fileHistoryRemoved": 7,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 636,
+        "queueOperationsRemoved": 3,
+        "trimmedUserMessages": 31,
+        "trimmedAssistantResponses": 35,
+        "trimmedToolUseRequests": 16
+      }
+    },
+    {
+      "sessionId": "9f62bb7c-00e6-438e-b027-fbdf1a3a6dd9",
+      "project": "d:\\VMC",
+      "messageCount": 214,
+      "userMessages": 88,
+      "assistantMessages": 126,
+      "toolResultCount": 76,
+      "estimatedTokens": 145836,
+      "postTrimTokens": 116578,
+      "reductionPercent": 20,
+      "contextUsedPercent": 73,
+      "breakEvenTurns": 20,
+      "cacheMissPenalty": 0.34310328,
+      "savingsPerTurn": 0.01887140999999999,
+      "preTrimCostPerTurn": 0.09406421999999998,
+      "postTrimSteadyCostPerTurn": 0.07519280999999998,
+      "postTrimFirstTurnCost": 0.4371675,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4703210999999999,
+          "withTrim": 0.7379387399999999,
+          "savedPercent": -57
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.9406421999999998,
+          "withTrim": 1.1139027899999998,
+          "savedPercent": -18
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.8812843999999995,
+          "withTrim": 1.8658308899999996,
+          "savedPercent": 1
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.703210999999999,
+          "withTrim": 4.121615189999999,
+          "savedPercent": 12
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 185288,
+          "count": 76,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 107560,
+          "count": 14,
+          "percent": 6
+        },
+        "fileHistory": {
+          "bytes": 22427,
+          "count": 25,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 973187,
+          "percent": 53
+        },
+        "toolUseRequests": {
+          "bytes": 75976,
+          "count": 76,
+          "percent": 4
+        },
+        "other": {
+          "bytes": 467317,
+          "percent": 26
+        }
+      },
+      "totalBytes": 1831755,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1832233,
+        "trimmedBytes": 1406228,
+        "byteReductionPct": 23,
+        "toolResultsStubbed": 24,
+        "signaturesStripped": 14,
+        "fileHistoryRemoved": 25,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 20,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 88,
+        "trimmedAssistantResponses": 126,
+        "trimmedToolUseRequests": 76
+      }
+    },
+    {
+      "sessionId": "51e6ac88-0138-4748-a438-de3697d794eb",
+      "project": "d:\\VMC",
+      "messageCount": 85,
+      "userMessages": 30,
+      "assistantMessages": 55,
+      "toolResultCount": 27,
+      "estimatedTokens": 90447,
+      "postTrimTokens": 34130,
+      "reductionPercent": 62,
+      "contextUsedPercent": 45,
+      "breakEvenTurns": 3,
+      "cacheMissPenalty": 0.06964918500000002,
+      "savingsPerTurn": 0.03632446499999999,
+      "preTrimCostPerTurn": 0.05833831499999999,
+      "postTrimSteadyCostPerTurn": 0.022013849999999995,
+      "postTrimFirstTurnCost": 0.1279875,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2916915749999999,
+          "withTrim": 0.21604289999999998,
+          "savedPercent": 26
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5833831499999999,
+          "withTrim": 0.32611214999999993,
+          "savedPercent": 44
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.1667662999999997,
+          "withTrim": 0.54625065,
+          "savedPercent": 53
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.9169157499999994,
+          "withTrim": 1.2066661499999995,
+          "savedPercent": 59
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 96461,
+          "count": 27,
+          "percent": 8
+        },
+        "thinkingSignatures": {
+          "bytes": 46234,
+          "count": 7,
+          "percent": 4
+        },
+        "fileHistory": {
+          "bytes": 5495,
+          "count": 3,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 629117,
+          "percent": 52
+        },
+        "toolUseRequests": {
+          "bytes": 27606,
+          "count": 27,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 398095,
+          "percent": 33
+        }
+      },
+      "totalBytes": 1203008,
+      "toolResultBytePct": 8,
+      "trimMetrics": {
+        "originalBytes": 5036372,
+        "trimmedBytes": 1010148,
+        "byteReductionPct": 80,
+        "toolResultsStubbed": 7,
+        "signaturesStripped": 7,
+        "fileHistoryRemoved": 3,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 699,
+        "queueOperationsRemoved": 6,
+        "trimmedUserMessages": 30,
+        "trimmedAssistantResponses": 55,
+        "trimmedToolUseRequests": 27
+      }
+    },
+    {
+      "sessionId": "9d657155-0081-4100-9602-9ef3b1a92651",
+      "project": "d:\\hiddenstate",
+      "messageCount": 120,
+      "userMessages": 44,
+      "assistantMessages": 76,
+      "toolResultCount": 41,
+      "estimatedTokens": 82008,
+      "postTrimTokens": 72849,
+      "reductionPercent": 11,
+      "contextUsedPercent": 41,
+      "breakEvenTurns": 39,
+      "cacheMissPenalty": 0.22028859,
+      "savingsPerTurn": 0.005907555000000002,
+      "preTrimCostPerTurn": 0.05289516,
+      "postTrimSteadyCostPerTurn": 0.046987604999999995,
+      "postTrimFirstTurnCost": 0.27318375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2644758,
+          "withTrim": 0.46113417,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5289516,
+          "withTrim": 0.696072195,
+          "savedPercent": -32
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0579032,
+          "withTrim": 1.1659482449999998,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.644758,
+          "withTrim": 2.5755763949999997,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 136151,
+          "count": 41,
+          "percent": 9
+        },
+        "thinkingSignatures": {
+          "bytes": 41862,
+          "count": 11,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 2939,
+          "count": 6,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 258831,
+          "percent": 17
+        },
+        "toolUseRequests": {
+          "bytes": 27135,
+          "count": 41,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1076091,
+          "percent": 70
+        }
+      },
+      "totalBytes": 1543009,
+      "toolResultBytePct": 9,
+      "trimMetrics": {
+        "originalBytes": 1543365,
+        "trimmedBytes": 1315390,
+        "byteReductionPct": 15,
+        "toolResultsStubbed": 19,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 6,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 7,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 44,
+        "trimmedAssistantResponses": 76,
+        "trimmedToolUseRequests": 41
+      }
+    },
+    {
+      "sessionId": "08850225-c9c8-4caa-ad09-115b9cad264f",
+      "project": "d:\\hiddenstate",
+      "messageCount": 120,
+      "userMessages": 44,
+      "assistantMessages": 76,
+      "toolResultCount": 41,
+      "estimatedTokens": 82008,
+      "postTrimTokens": 72849,
+      "reductionPercent": 11,
+      "contextUsedPercent": 41,
+      "breakEvenTurns": 39,
+      "cacheMissPenalty": 0.22028859,
+      "savingsPerTurn": 0.005907555000000002,
+      "preTrimCostPerTurn": 0.05289516,
+      "postTrimSteadyCostPerTurn": 0.046987604999999995,
+      "postTrimFirstTurnCost": 0.27318375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2644758,
+          "withTrim": 0.46113417,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5289516,
+          "withTrim": 0.696072195,
+          "savedPercent": -32
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0579032,
+          "withTrim": 1.1659482449999998,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.644758,
+          "withTrim": 2.5755763949999997,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 136151,
+          "count": 41,
+          "percent": 9
+        },
+        "thinkingSignatures": {
+          "bytes": 41862,
+          "count": 11,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 2939,
+          "count": 6,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 258831,
+          "percent": 17
+        },
+        "toolUseRequests": {
+          "bytes": 27135,
+          "count": 41,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1076091,
+          "percent": 70
+        }
+      },
+      "totalBytes": 1543009,
+      "toolResultBytePct": 9,
+      "trimMetrics": {
+        "originalBytes": 1543365,
+        "trimmedBytes": 1315390,
+        "byteReductionPct": 15,
+        "toolResultsStubbed": 19,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 6,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 7,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 44,
+        "trimmedAssistantResponses": 76,
+        "trimmedToolUseRequests": 41
+      }
+    },
+    {
+      "sessionId": "91ad9a13-810f-4a93-ba6b-ec9c5bbc2d91",
+      "project": "d:\\hiddenstate",
+      "messageCount": 120,
+      "userMessages": 44,
+      "assistantMessages": 76,
+      "toolResultCount": 41,
+      "estimatedTokens": 82008,
+      "postTrimTokens": 72849,
+      "reductionPercent": 11,
+      "contextUsedPercent": 41,
+      "breakEvenTurns": 39,
+      "cacheMissPenalty": 0.22028859,
+      "savingsPerTurn": 0.005907555000000002,
+      "preTrimCostPerTurn": 0.05289516,
+      "postTrimSteadyCostPerTurn": 0.046987604999999995,
+      "postTrimFirstTurnCost": 0.27318375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2644758,
+          "withTrim": 0.46113417,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5289516,
+          "withTrim": 0.696072195,
+          "savedPercent": -32
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0579032,
+          "withTrim": 1.1659482449999998,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.644758,
+          "withTrim": 2.5755763949999997,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 136151,
+          "count": 41,
+          "percent": 9
+        },
+        "thinkingSignatures": {
+          "bytes": 41862,
+          "count": 11,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 2939,
+          "count": 6,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 258831,
+          "percent": 17
+        },
+        "toolUseRequests": {
+          "bytes": 27135,
+          "count": 41,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1076091,
+          "percent": 70
+        }
+      },
+      "totalBytes": 1543009,
+      "toolResultBytePct": 9,
+      "trimMetrics": {
+        "originalBytes": 1543365,
+        "trimmedBytes": 1315390,
+        "byteReductionPct": 15,
+        "toolResultsStubbed": 19,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 6,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 7,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 44,
+        "trimmedAssistantResponses": 76,
+        "trimmedToolUseRequests": 41
+      }
+    },
+    {
+      "sessionId": "ef7b24e2-0dde-4da6-a80a-8322f1bae91f",
+      "project": "d:\\hiddenstate",
+      "messageCount": 174,
+      "userMessages": 68,
+      "assistantMessages": 106,
+      "toolResultCount": 54,
+      "estimatedTokens": 109088,
+      "postTrimTokens": 92731,
+      "reductionPercent": 15,
+      "contextUsedPercent": 55,
+      "breakEvenTurns": 28,
+      "cacheMissPenalty": 0.27737949,
+      "savingsPerTurn": 0.010550264999999996,
+      "preTrimCostPerTurn": 0.07036176,
+      "postTrimSteadyCostPerTurn": 0.059811495,
+      "postTrimFirstTurnCost": 0.34774125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.3518088,
+          "withTrim": 0.58698723,
+          "savedPercent": -67
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7036176,
+          "withTrim": 0.886044705,
+          "savedPercent": -26
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.4072352,
+          "withTrim": 1.484159655,
+          "savedPercent": -5
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.5180879999999997,
+          "withTrim": 3.278504505,
+          "savedPercent": 7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 174921,
+          "count": 54,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 71660,
+          "count": 16,
+          "percent": 4
+        },
+        "fileHistory": {
+          "bytes": 9000,
+          "count": 14,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 387790,
+          "percent": 22
+        },
+        "toolUseRequests": {
+          "bytes": 35438,
+          "count": 54,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1081759,
+          "percent": 61
+        }
+      },
+      "totalBytes": 1760568,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1761000,
+        "trimmedBytes": 1437663,
+        "byteReductionPct": 18,
+        "toolResultsStubbed": 27,
+        "signaturesStripped": 16,
+        "fileHistoryRemoved": 14,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 16,
+        "trimmedUserMessages": 68,
+        "trimmedAssistantResponses": 106,
+        "trimmedToolUseRequests": 54
+      }
+    },
+    {
+      "sessionId": "5df61bb2-0f60-4b8c-b722-c46ec4dc06e8",
+      "project": "d:\\hiddenstate",
+      "messageCount": 174,
+      "userMessages": 68,
+      "assistantMessages": 106,
+      "toolResultCount": 54,
+      "estimatedTokens": 109088,
+      "postTrimTokens": 92731,
+      "reductionPercent": 15,
+      "contextUsedPercent": 55,
+      "breakEvenTurns": 28,
+      "cacheMissPenalty": 0.27737949,
+      "savingsPerTurn": 0.010550264999999996,
+      "preTrimCostPerTurn": 0.07036176,
+      "postTrimSteadyCostPerTurn": 0.059811495,
+      "postTrimFirstTurnCost": 0.34774125,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.3518088,
+          "withTrim": 0.58698723,
+          "savedPercent": -67
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7036176,
+          "withTrim": 0.886044705,
+          "savedPercent": -26
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.4072352,
+          "withTrim": 1.484159655,
+          "savedPercent": -5
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.5180879999999997,
+          "withTrim": 3.278504505,
+          "savedPercent": 7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 174921,
+          "count": 54,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 71660,
+          "count": 16,
+          "percent": 4
+        },
+        "fileHistory": {
+          "bytes": 9000,
+          "count": 14,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 387790,
+          "percent": 22
+        },
+        "toolUseRequests": {
+          "bytes": 35438,
+          "count": 54,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1081759,
+          "percent": 61
+        }
+      },
+      "totalBytes": 1760568,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1761000,
+        "trimmedBytes": 1437663,
+        "byteReductionPct": 18,
+        "toolResultsStubbed": 27,
+        "signaturesStripped": 16,
+        "fileHistoryRemoved": 14,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 16,
+        "trimmedUserMessages": 68,
+        "trimmedAssistantResponses": 106,
+        "trimmedToolUseRequests": 54
+      }
+    },
+    {
+      "sessionId": "fa52938a-2fd2-4fcf-9352-416825aed1e5",
+      "project": "d:\\hiddenstate",
+      "messageCount": 180,
+      "userMessages": 73,
+      "assistantMessages": 107,
+      "toolResultCount": 54,
+      "estimatedTokens": 109494,
+      "postTrimTokens": 93022,
+      "reductionPercent": 15,
+      "contextUsedPercent": 55,
+      "breakEvenTurns": 28,
+      "cacheMissPenalty": 0.27820887,
+      "savingsPerTurn": 0.010624439999999999,
+      "preTrimCostPerTurn": 0.07062362999999999,
+      "postTrimSteadyCostPerTurn": 0.059999189999999994,
+      "postTrimFirstTurnCost": 0.3488325,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.35311814999999996,
+          "withTrim": 0.58882926,
+          "savedPercent": -67
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7062362999999999,
+          "withTrim": 0.8888252099999999,
+          "savedPercent": -26
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.4124725999999999,
+          "withTrim": 1.4888171099999998,
+          "savedPercent": -5
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.5311814999999998,
+          "withTrim": 3.2887928099999995,
+          "savedPercent": 7
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 174921,
+          "count": 54,
+          "percent": 10
+        },
+        "thinkingSignatures": {
+          "bytes": 71660,
+          "count": 16,
+          "percent": 4
+        },
+        "fileHistory": {
+          "bytes": 10726,
+          "count": 16,
+          "percent": 1
+        },
+        "conversation": {
+          "bytes": 392887,
+          "percent": 22
+        },
+        "toolUseRequests": {
+          "bytes": 35438,
+          "count": 54,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1081759,
+          "percent": 61
+        }
+      },
+      "totalBytes": 1767391,
+      "toolResultBytePct": 10,
+      "trimMetrics": {
+        "originalBytes": 1767831,
+        "trimmedBytes": 1442443,
+        "byteReductionPct": 18,
+        "toolResultsStubbed": 27,
+        "signaturesStripped": 16,
+        "fileHistoryRemoved": 16,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 8,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 16,
+        "trimmedUserMessages": 73,
+        "trimmedAssistantResponses": 107,
+        "trimmedToolUseRequests": 54
+      }
+    },
+    {
+      "sessionId": "36d07dbf-3a37-4479-84ab-64c86b134697",
+      "project": "d:\\hiddenstate",
+      "messageCount": 120,
+      "userMessages": 44,
+      "assistantMessages": 76,
+      "toolResultCount": 41,
+      "estimatedTokens": 82008,
+      "postTrimTokens": 72849,
+      "reductionPercent": 11,
+      "contextUsedPercent": 41,
+      "breakEvenTurns": 39,
+      "cacheMissPenalty": 0.22028859,
+      "savingsPerTurn": 0.005907555000000002,
+      "preTrimCostPerTurn": 0.05289516,
+      "postTrimSteadyCostPerTurn": 0.046987604999999995,
+      "postTrimFirstTurnCost": 0.27318375,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.2644758,
+          "withTrim": 0.46113417,
+          "savedPercent": -74
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.5289516,
+          "withTrim": 0.696072195,
+          "savedPercent": -32
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0579032,
+          "withTrim": 1.1659482449999998,
+          "savedPercent": -10
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.644758,
+          "withTrim": 2.5755763949999997,
+          "savedPercent": 3
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 136151,
+          "count": 41,
+          "percent": 9
+        },
+        "thinkingSignatures": {
+          "bytes": 41862,
+          "count": 11,
+          "percent": 3
+        },
+        "fileHistory": {
+          "bytes": 2939,
+          "count": 6,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 258831,
+          "percent": 17
+        },
+        "toolUseRequests": {
+          "bytes": 27135,
+          "count": 41,
+          "percent": 2
+        },
+        "other": {
+          "bytes": 1076091,
+          "percent": 70
+        }
+      },
+      "totalBytes": 1543009,
+      "toolResultBytePct": 9,
+      "trimMetrics": {
+        "originalBytes": 1543365,
+        "trimmedBytes": 1315390,
+        "byteReductionPct": 15,
+        "toolResultsStubbed": 19,
+        "signaturesStripped": 11,
+        "fileHistoryRemoved": 6,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 7,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 11,
+        "trimmedUserMessages": 44,
+        "trimmedAssistantResponses": 76,
+        "trimmedToolUseRequests": 41
+      }
+    },
+    {
+      "sessionId": "c2616404-3fcb-4dda-af53-2553ea49f24e",
+      "project": "d:\\hiddenstate",
+      "messageCount": 40,
+      "userMessages": 13,
+      "assistantMessages": 27,
+      "toolResultCount": 12,
+      "estimatedTokens": 59738,
+      "postTrimTokens": 37862,
+      "reductionPercent": 37,
+      "contextUsedPercent": 30,
+      "breakEvenTurns": 9,
+      "cacheMissPenalty": 0.10345149000000002,
+      "savingsPerTurn": 0.01411001999999999,
+      "preTrimCostPerTurn": 0.03853100999999999,
+      "postTrimSteadyCostPerTurn": 0.02442099,
+      "postTrimFirstTurnCost": 0.1419825,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.19265504999999994,
+          "withTrim": 0.23966646000000003,
+          "savedPercent": -24
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.3853100999999999,
+          "withTrim": 0.36177141,
+          "savedPercent": 6
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 0.7706201999999998,
+          "withTrim": 0.60598131,
+          "savedPercent": 21
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 1.9265504999999996,
+          "withTrim": 1.3386110100000002,
+          "savedPercent": 31
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 102105,
+          "count": 12,
+          "percent": 36
+        },
+        "thinkingSignatures": {
+          "bytes": 24646,
+          "count": 5,
+          "percent": 9
+        },
+        "fileHistory": {
+          "bytes": 610,
+          "count": 2,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 140830,
+          "percent": 50
+        },
+        "toolUseRequests": {
+          "bytes": 13859,
+          "count": 13,
+          "percent": 5
+        },
+        "other": {
+          "bytes": 1166,
+          "percent": 0
+        }
+      },
+      "totalBytes": 283216,
+      "toolResultBytePct": 36,
+      "trimMetrics": {
+        "originalBytes": 283263,
+        "trimmedBytes": 127325,
+        "byteReductionPct": 55,
+        "toolResultsStubbed": 10,
+        "signaturesStripped": 5,
+        "fileHistoryRemoved": 2,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 6,
+        "preCompactionLinesSkipped": 0,
+        "queueOperationsRemoved": 5,
+        "trimmedUserMessages": 13,
+        "trimmedAssistantResponses": 27,
+        "trimmedToolUseRequests": 13
+      }
+    },
+    {
+      "sessionId": "c797d2db-5f22-464a-b3f9-9a7a334d4f48",
+      "project": "d:\\hiddenstate",
+      "messageCount": 0,
+      "userMessages": 0,
+      "assistantMessages": 0,
+      "toolResultCount": 0,
+      "estimatedTokens": 121831,
+      "postTrimTokens": 20002,
+      "reductionPercent": 84,
+      "contextUsedPercent": 61,
+      "breakEvenTurns": 1,
+      "cacheMissPenalty": -0.003573494999999996,
+      "savingsPerTurn": 0.06567970499999999,
+      "preTrimCostPerTurn": 0.07858099499999999,
+      "postTrimSteadyCostPerTurn": 0.01290129,
+      "postTrimFirstTurnCost": 0.07500749999999999,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.39290497499999993,
+          "withTrim": 0.12661266,
+          "savedPercent": 68
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.7858099499999999,
+          "withTrim": 0.19111910999999998,
+          "savedPercent": 76
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.5716198999999997,
+          "withTrim": 0.32013200999999997,
+          "savedPercent": 80
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 3.9290497499999995,
+          "withTrim": 0.70717071,
+          "savedPercent": 82
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 130,
+          "percent": 100
+        },
+        "toolUseRequests": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 0,
+          "percent": 0
+        }
+      },
+      "totalBytes": 130,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 8540172,
+        "trimmedBytes": 131,
+        "byteReductionPct": 100,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 1786,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 0,
+        "trimmedAssistantResponses": 0,
+        "trimmedToolUseRequests": 0
+      }
+    },
+    {
+      "sessionId": "bd537d7e-5994-4368-89bf-b400dd33e39a",
+      "project": "d:\\hiddenstate",
+      "messageCount": 0,
+      "userMessages": 0,
+      "assistantMessages": 0,
+      "toolResultCount": 0,
+      "estimatedTokens": 80327,
+      "postTrimTokens": 20001,
+      "reductionPercent": 75,
+      "contextUsedPercent": 40,
+      "breakEvenTurns": 2,
+      "cacheMissPenalty": 0.02319283500000001,
+      "savingsPerTurn": 0.03891027,
+      "preTrimCostPerTurn": 0.051810915,
+      "postTrimSteadyCostPerTurn": 0.012900644999999999,
+      "postTrimFirstTurnCost": 0.07500375000000001,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.259054575,
+          "withTrim": 0.12660633,
+          "savedPercent": 51
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.51810915,
+          "withTrim": 0.191109555,
+          "savedPercent": 63
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.0362183,
+          "withTrim": 0.320116005,
+          "savedPercent": 69
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 2.59054575,
+          "withTrim": 0.707135355,
+          "savedPercent": 73
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 131,
+          "percent": 100
+        },
+        "toolUseRequests": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 0,
+          "percent": 0
+        }
+      },
+      "totalBytes": 131,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 5948031,
+        "trimmedBytes": 132,
+        "byteReductionPct": 100,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 1114,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 0,
+        "trimmedAssistantResponses": 0,
+        "trimmedToolUseRequests": 0
+      }
+    },
+    {
+      "sessionId": "a71e1ef2-f179-453d-aaf0-7e0bbe9f91be",
+      "project": "d:\\hiddenstate",
+      "messageCount": 0,
+      "userMessages": 0,
+      "assistantMessages": 0,
+      "toolResultCount": 0,
+      "estimatedTokens": 131609,
+      "postTrimTokens": 20001,
+      "reductionPercent": 85,
+      "contextUsedPercent": 66,
+      "breakEvenTurns": 1,
+      "cacheMissPenalty": -0.009884054999999975,
+      "savingsPerTurn": 0.07198715999999998,
+      "preTrimCostPerTurn": 0.08488780499999998,
+      "postTrimSteadyCostPerTurn": 0.012900644999999999,
+      "postTrimFirstTurnCost": 0.07500375000000001,
+      "projections": [
+        {
+          "turns": 5,
+          "withoutTrim": 0.4244390249999999,
+          "withTrim": 0.12660633,
+          "savedPercent": 70
+        },
+        {
+          "turns": 10,
+          "withoutTrim": 0.8488780499999998,
+          "withTrim": 0.191109555,
+          "savedPercent": 77
+        },
+        {
+          "turns": 20,
+          "withoutTrim": 1.6977560999999997,
+          "withTrim": 0.320116005,
+          "savedPercent": 81
+        },
+        {
+          "turns": 50,
+          "withoutTrim": 4.2443902499999995,
+          "withTrim": 0.707135355,
+          "savedPercent": 83
+        }
+      ],
+      "breakdown": {
+        "toolResults": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "thinkingSignatures": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "fileHistory": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "conversation": {
+          "bytes": 148,
+          "percent": 100
+        },
+        "toolUseRequests": {
+          "bytes": 0,
+          "count": 0,
+          "percent": 0
+        },
+        "other": {
+          "bytes": 0,
+          "percent": 0
+        }
+      },
+      "totalBytes": 148,
+      "toolResultBytePct": 0,
+      "trimMetrics": {
+        "originalBytes": 12763419,
+        "trimmedBytes": 149,
+        "byteReductionPct": 100,
+        "toolResultsStubbed": 0,
+        "signaturesStripped": 0,
+        "fileHistoryRemoved": 0,
+        "imagesStripped": 0,
+        "toolUseInputsStubbed": 0,
+        "preCompactionLinesSkipped": 3378,
+        "queueOperationsRemoved": 0,
+        "trimmedUserMessages": 0,
+        "trimmedAssistantResponses": 0,
+        "trimmedToolUseRequests": 0
+      }
+    }
+  ]
+}

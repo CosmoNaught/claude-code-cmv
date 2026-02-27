@@ -4,6 +4,24 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [2.0.2] — 2026-02-27
+
+### Added
+
+- **Ground-truth cache impact analysis** — `cmv benchmark --all` runs the real v2.0 trimmer on all qualifying sessions (76 sessions, up from 33). Results use actual `TrimMetrics` instead of byte-ratio estimates. Mean 20% token reduction, median 12%.
+- **Batch benchmark mode** — `--all` flag processes every session matching filter criteria (≥10 messages, ≥5k tokens, no subagents). `--out <path>` writes comprehensive per-session JSON for reproducibility.
+- **Publication-quality charts** — `benchmark_analysis.py` rewritten with `--input-json` (ground-truth mode), `--theme light/dark`, `--individual` (per-panel PNGs), and `--stats` (JSON + LaTeX tables). Light theme sized for A4 text width at 300 DPI.
+- **Bloat tier segmentation** — sessions classified by tool result byte percentage: heavy (>40%), moderate (15–40%), light (<15%). Per-tier stats in charts, JSON, and LaTeX output.
+- **Benchmark data export** — `data/` directory with `benchmark_results.json`, individual and combined figures, `cmv_benchmark_stats.json`, and `cmv_benchmark_tables.tex`.
+- **arXiv paper link** — badge and inline reference to [arXiv:2602.22402](https://arxiv.org/abs/2602.22402) in README.
+
+### Changed
+
+- Benchmark cost curves highlight a representative session (5–15 turn breakeven) instead of the extreme outlier.
+- Tier labels renamed from "Conversational/Mixed/Tool-heavy" to "Light/Moderate/Heavy tool use" for clarity.
+
+---
+
 ## [2.0.1] — 2026-02-23
 
 ### Fixed
