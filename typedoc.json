@@ -5,7 +5,14 @@
   "out": "docs/api",
   "exclude": ["src/tui/**", "src/commands/**"],
   "readme": "README.md",
-  "name": "CMV API Documentation",
+  "name": "CMV — Contextual Memory Virtualisation",
   "excludePrivate": true,
-  "excludeInternal": true
+  "excludeInternal": true,
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "categorizeByGroup": true,
+  "searchInComments": true,
+  "highlightLanguages": ["typescript", "javascript", "bash", "json", "powershell", "js"]
 }
