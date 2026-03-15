@@ -5,6 +5,7 @@
 [![GitHub stars](https://img.shields.io/github/stars/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/stargazers)
 [![CI](https://github.com/CosmoNaught/claude-code-cmv/actions/workflows/ci.yml/badge.svg)](https://github.com/CosmoNaught/claude-code-cmv/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/CosmoNaught/claude-code-cmv/badge.svg)](https://codecov.io/gh/CosmoNaught/claude-code-cmv)
+[![API Docs](https://img.shields.io/badge/docs-API-blue)](https://cosmonaught.github.io/claude-code-cmv/)
 
 # Claude Code Contextual Memory Virtualisation (CMV)
 
