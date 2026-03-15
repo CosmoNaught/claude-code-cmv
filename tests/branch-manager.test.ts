@@ -117,10 +117,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  if (process.platform === 'win32') await new Promise(r => setTimeout(r, 200));
-  try {
-    await fs.rm(tmpDirRef.value, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
-  } catch { /* cleanup is best-effort on Windows */ }
+  await fs.rm(tmpDirRef.value, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
 });
 
 // ── createBranch ───────────────────────────────────────────────

@@ -11,11 +11,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  // Windows CI: streams from trimJsonl may still hold file locks briefly
-  if (process.platform === 'win32') await new Promise(r => setTimeout(r, 200));
-  try {
-    await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
-  } catch { /* cleanup is best-effort on Windows */ }
+  await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
 });
 
 /** Write lines to a temp JSONL file and return its path. */
