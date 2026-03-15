@@ -11,7 +11,10 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
+  if (process.platform === 'win32') await new Promise(r => setTimeout(r, 200));
+  try {
+    await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 500 });
+  } catch { /* cleanup is best-effort on Windows */ }
 });
 
 async function writeJsonl(dir: string, name: string, lines: any[]): Promise<string> {
