@@ -405,20 +405,23 @@ async function checkHasConversation(jsonlPath: string): Promise<boolean> {
     const fileStream = createReadStream(jsonlPath, { encoding: 'utf-8' });
     const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
 
-    for await (const line of rl) {
-      if (!line.trim()) continue;
-      try {
-        const parsed = JSON.parse(line);
-        if (parsed.type === 'user' || parsed.type === 'assistant' ||
-            parsed.type === 'human' || parsed.role === 'user' || parsed.role === 'assistant') {
-          rl.close();
-          return true;
+    try {
+      for await (const line of rl) {
+        if (!line.trim()) continue;
+        try {
+          const parsed = JSON.parse(line);
+          if (parsed.type === 'user' || parsed.type === 'assistant' ||
+              parsed.type === 'human' || parsed.role === 'user' || parsed.role === 'assistant') {
+            return true;
+          }
+        } catch {
+          // Skip unparseable lines
         }
-      } catch {
-        // Skip unparseable lines
       }
+    } finally {
+      rl.close();
+      fileStream.destroy();
     }
-    rl.close();
   } catch {
     // Can't read file
   }
