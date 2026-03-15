@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import { buildTree, renderTree, treeToJson } from '../core/tree-builder.js';
 import { info } from '../utils/display.js';

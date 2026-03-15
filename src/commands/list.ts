@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import { readIndex } from '../core/metadata-store.js';
 import { formatTable, formatRelativeTime, truncate, dim, bold, info } from '../utils/display.js';

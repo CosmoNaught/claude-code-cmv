@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 
 import { Command } from 'commander';
 import { registerSnapshotCommand } from './commands/snapshot.js';

@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { useState, useEffect } from 'react';
 
 export function useTerminalSize(): { columns: number; rows: number } {
