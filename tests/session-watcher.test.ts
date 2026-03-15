@@ -14,7 +14,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   if (tmpDir) {
-    await fs.rm(tmpDir, { recursive: true, force: true });
+    await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
   }
 });
 

@@ -117,7 +117,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await fs.rm(tmpDirRef.value, { recursive: true, force: true });
+  await fs.rm(tmpDirRef.value, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
 });
 
 // ── createBranch ───────────────────────────────────────────────
