@@ -70,7 +70,7 @@ describe('listProjectDirs', () => {
     expect(Array.isArray(result)).toBe(true);
 
     // Clean up
-    await fs.rm(tmpDir, { recursive: true, force: true });
+    await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
   });
 
   it('returns empty array when directory does not exist', async () => {

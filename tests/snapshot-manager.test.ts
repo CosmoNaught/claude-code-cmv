@@ -67,7 +67,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   vi.restoreAllMocks();
-  await fs.rm(tmpDirRef.value, { recursive: true, force: true });
+  await fs.rm(tmpDirRef.value, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
 });
 
 describe('createSnapshot', () => {
