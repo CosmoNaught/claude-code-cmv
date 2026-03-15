@@ -213,6 +213,7 @@ export async function trimJsonl(
       lineNum++;
     }
     scanRl.close();
+    scanStream.destroy();
   }
 
   // ── Pass 2: Collect tool_use IDs from skipped pre-compaction content ──
@@ -242,6 +243,7 @@ export async function trimJsonl(
       preLineNum++;
     }
     preRl.close();
+    preStream.destroy();
   }
 
   // ── Pass 3: Trim, skipping lines before last compaction boundary ──
@@ -334,6 +336,7 @@ export async function trimJsonl(
   }
 
   rl.close();
+  fileStream.destroy();
 
   await new Promise<void>((resolve, reject) => {
     writer.end(() => resolve());

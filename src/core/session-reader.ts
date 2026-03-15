@@ -139,6 +139,7 @@ async function countConversationMessages(
       }
     }
     rl.close();
+    fileStream.destroy();
   } catch {
     // Can't read file
   }
@@ -350,6 +351,7 @@ export async function extractClaudeVersion(jsonlPath: string): Promise<string | 
         const parsed = JSON.parse(line);
         if (parsed.version) {
           rl.close();
+          fileStream.destroy();
           return parsed.version as string;
         }
       } catch {
@@ -357,6 +359,7 @@ export async function extractClaudeVersion(jsonlPath: string): Promise<string | 
       }
       // Only check the first few lines
       rl.close();
+      fileStream.destroy();
       break;
     }
   } catch {
