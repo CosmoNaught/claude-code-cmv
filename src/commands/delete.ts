@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import { deleteSnapshot } from '../core/snapshot-manager.js';
 import { getSnapshot } from '../core/metadata-store.js';

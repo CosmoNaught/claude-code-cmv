@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { readIndex } from './metadata-store.js';
 import type { CmvSnapshot, CmvBranch, TreeNode } from '../types/index.js';
 import chalk from 'chalk';

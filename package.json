@@ -6,13 +6,22 @@
   "bin": {
     "cmv": "./dist/index.js"
   },
+  "files": [
+    "dist/",
+    "LICENSE",
+    "README.md",
+    "CHANGELOG.md"
+  ],
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "test": "vitest",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "docs": "typedoc",
     "link": "npm run build && npm link",
     "postinstall": "test -f dist/postinstall.js && node dist/postinstall.js || echo \"CMV: run 'npm run build' then 'npm install' to auto-install hooks.\"",
-    "prepublishOnly": "npm run build && npm test"
+    "prepublishOnly": "npm run build && npm run test:run"
   },
   "keywords": [
     "claude",
@@ -41,7 +50,9 @@
   "devDependencies": {
     "@types/node": "^25.2.3",
     "@types/react": "^18.0.0",
-    "typescript": "^5.0.0",
+    "@vitest/coverage-v8": "^1.6.1",
+    "typedoc": "^0.27.9",
+    "typescript": "~5.8.0",
     "vitest": "^1.0.0"
   }
 }

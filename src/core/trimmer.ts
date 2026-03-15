@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import * as readline from 'node:readline';
 import { createReadStream, createWriteStream } from 'node:fs';
 import * as fs from 'node:fs/promises';
@@ -211,6 +213,7 @@ export async function trimJsonl(
       lineNum++;
     }
     scanRl.close();
+    scanStream.destroy();
   }
 
   // ── Pass 2: Collect tool_use IDs from skipped pre-compaction content ──
@@ -240,6 +243,7 @@ export async function trimJsonl(
       preLineNum++;
     }
     preRl.close();
+    preStream.destroy();
   }
 
   // ── Pass 3: Trim, skipping lines before last compaction boundary ──
@@ -332,6 +336,7 @@ export async function trimJsonl(
   }
 
   rl.close();
+  fileStream.destroy();
 
   await new Promise<void>((resolve, reject) => {
     writer.end(() => resolve());

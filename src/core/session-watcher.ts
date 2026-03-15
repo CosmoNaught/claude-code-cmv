@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs';
 import * as fsPromises from 'node:fs/promises';
