@@ -4,7 +4,7 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
-## [Unreleased]
+## [2.1.0] — 2026-03-15
 
 ### Added
 
@@ -16,6 +16,10 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 - **SPDX license headers** — `Apache-2.0` headers on all 51 source files.
 - **CI and Codecov badges** in README.
 - **Postinstall testability** — refactored `src/postinstall.ts` to export `main()`, `buildHookConfig()`, `isCmvHookEntry()` with `import.meta.url` guard for auto-execution.
+
+### Fixed
+
+- **Windows file lock in branch-manager** — `checkHasConversation` now destroys the file stream in a `finally` block, preventing `fs.rm` from hanging during test cleanup on Windows CI (Node 18/20).
 
 ### Changed
 
