@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import { exportSnapshot } from '../core/exporter.js';
 import { success } from '../utils/display.js';

@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { spawn, execFileSync, exec } from 'node:child_process';
 import { promisify } from 'node:util';
 import { openSync, closeSync, accessSync } from 'node:fs';

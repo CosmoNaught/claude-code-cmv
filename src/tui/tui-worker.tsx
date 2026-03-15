@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 /**
  * TUI worker — runs in a forked child process so that Ink's stdin
  * manipulation (raw mode, libuv reader thread on Windows) never

@@ -4,6 +4,26 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [Unreleased]
+
+### Added
+
+- **Comprehensive test suite** — 403 tests across 34 files covering core modules, utilities, and all CLI commands. Up from 42 tests / 11.82% coverage.
+- **Coverage enforcement** — vitest.config.ts with v8 provider, lcov/json-summary reporters, and thresholds: 85% statements, 80% branches, 85% functions, 85% lines.
+- **CI/CD pipeline** — GitHub Actions workflow running on 3 OS (Linux, macOS, Windows) × 3 Node versions (18, 20, 22). Separate type-check job. Codecov integration on ubuntu/node-22.
+- **API documentation** — TypeDoc configuration generating docs from `src/core/`, `src/utils/`, and `src/types/`.
+- **CONTRIBUTING.md** — developer setup, project structure, testing guidelines, code style, PR process.
+- **SPDX license headers** — `Apache-2.0` headers on all 51 source files.
+- **CI and Codecov badges** in README.
+- **Postinstall testability** — refactored `src/postinstall.ts` to export `main()`, `buildHookConfig()`, `isCmvHookEntry()` with `import.meta.url` guard for auto-execution.
+
+### Changed
+
+- `package.json`: added `files` field, `test:run`, `test:coverage`, `docs` scripts, `typedoc` devDep.
+- `.gitignore`: added `coverage/` and `docs/api/`.
+
+---
+
 ## [2.0.2] — 2026-02-27
 
 ### Added

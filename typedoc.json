@@ -1,0 +1,11 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/core", "src/utils", "src/types"],
+  "entryPointStrategy": "expand",
+  "out": "docs/api",
+  "exclude": ["src/tui/**", "src/commands/**"],
+  "readme": "README.md",
+  "name": "CMV API Documentation",
+  "excludePrivate": true,
+  "excludeInternal": true
+}

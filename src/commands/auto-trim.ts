@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';

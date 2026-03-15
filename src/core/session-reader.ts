@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import * as readline from 'node:readline';
