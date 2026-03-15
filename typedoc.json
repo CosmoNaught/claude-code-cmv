@@ -1,0 +1,18 @@
+{
+  "$schema": "https://typedoc.org/schema.json",
+  "entryPoints": ["src/core", "src/utils", "src/types"],
+  "entryPointStrategy": "expand",
+  "out": "docs/api",
+  "exclude": ["src/tui/**", "src/commands/**"],
+  "readme": "README.md",
+  "name": "CMV — Contextual Memory Virtualisation",
+  "excludePrivate": true,
+  "excludeInternal": true,
+  "navigation": {
+    "includeCategories": true,
+    "includeGroups": true
+  },
+  "categorizeByGroup": true,
+  "searchInComments": true,
+  "highlightLanguages": ["typescript", "javascript", "bash", "json", "powershell", "js"]
+}

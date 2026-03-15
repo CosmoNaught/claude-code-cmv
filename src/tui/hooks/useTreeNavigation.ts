@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { useState, useMemo, useCallback, useEffect } from 'react';
 import { useInput } from 'ink';
 import type { TreeNode } from '../../types/index.js';

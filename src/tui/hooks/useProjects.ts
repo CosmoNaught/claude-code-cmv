@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { useState, useEffect, useCallback } from 'react';
 import { listAllSessions } from '../../core/session-reader.js';
 import { readIndex } from '../../core/metadata-store.js';

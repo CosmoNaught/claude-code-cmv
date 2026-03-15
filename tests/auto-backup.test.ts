@@ -17,7 +17,7 @@ beforeEach(async () => {
 
 afterEach(async () => {
   vi.restoreAllMocks();
-  await fs.rm(tmpDir, { recursive: true, force: true });
+  await fs.rm(tmpDir, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
 });
 
 describe('auto-backup', () => {

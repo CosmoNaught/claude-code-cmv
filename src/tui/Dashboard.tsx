@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import React, { useState, useCallback, useEffect, useMemo, useRef } from 'react';
 import { Box, Text, useApp, useInput } from 'ink';
 import { useProjects } from './hooks/useProjects.js';

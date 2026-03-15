@@ -1,3 +1,5 @@
+// Copyright 2025-2026 CMV Contributors
+// SPDX-License-Identifier: Apache-2.0
 import { error as displayError } from './display.js';
 
 export class CmvError extends Error {
