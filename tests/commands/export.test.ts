@@ -53,4 +53,14 @@ describe('export command', () => {
     await program.parseAsync(['node', 'cmv', 'export', 'my-snap', '--output', '/tmp/out.cmv']);
     expect(mockExportSnapshot).toHaveBeenCalledWith('my-snap', '/tmp/out.cmv');
   });
+
+  it('handles error from exportSnapshot', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockExportSnapshot.mockRejectedValueOnce(new Error('export fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerExportCommand(program);
+    await program.parseAsync(['node', 'cmv', 'export', 'my-snap']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
 });

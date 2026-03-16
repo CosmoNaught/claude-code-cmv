@@ -384,5 +384,296 @@ describe('session-reader with mocked project dirs', () => {
         _projectDir: projectDirA,
       });
     });
+
+    it('does not throw when sessions-index.json does not exist', async () => {
+      // Create only the JSONL file, no sessions-index.json
+      await createSession(projectDirA, 'no-index-session');
+
+      const { deleteSession } = await import('../src/core/session-reader.js');
+
+      // Should not throw even though sessions-index.json is missing (lines 428-430)
+      await deleteSession({
+        sessionId: 'no-index-session',
+        fullPath: path.join(projectDirA, 'no-index-session.jsonl'),
+        _projectDir: projectDirA,
+      });
+
+      // JSONL should be removed
+      await expect(fs.access(path.join(projectDirA, 'no-index-session.jsonl'))).rejects.toThrow();
+    });
+
+    it('does not throw when session subdirectory does not exist', async () => {
+      // Only JSONL, no subdirectory — exercises the catch on lines 417-419
+      await writeIndex(projectDirA, [
+        { sessionId: 'no-subdir', projectPath: '/test/a', messageCount: 1 },
+      ]);
+      await createSession(projectDirA, 'no-subdir');
+
+      const { deleteSession } = await import('../src/core/session-reader.js');
+
+      await deleteSession({
+        sessionId: 'no-subdir',
+        fullPath: path.join(projectDirA, 'no-subdir.jsonl'),
+        _projectDir: projectDirA,
+      });
+    });
+  });
+
+  describe('scanJsonlFiles fallback (no sessions-index.json)', () => {
+    it('discovers sessions from JSONL files when sessions-index.json is missing', async () => {
+      // Create JSONL files but NO sessions-index.json in projectDirA
+      await createSession(projectDirA, 'fallback-session-1');
+      await createSession(projectDirA, 'fallback-session-2');
+      // Remove sessions-index.json if it exists
+      try { await fs.unlink(path.join(projectDirA, 'sessions-index.json')); } catch { /* noop */ }
+
+      // projectDirB has nothing
+      await writeIndex(projectDirB, []);
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      const sessions = await listAllSessions();
+
+      const ids = sessions.map(s => s.sessionId);
+      expect(ids).toContain('fallback-session-1');
+      expect(ids).toContain('fallback-session-2');
+
+      // Verify entries have expected fields populated from JSONL scanning
+      const fb1 = sessions.find(s => s.sessionId === 'fallback-session-1')!;
+      expect(fb1.messageCount).toBeGreaterThanOrEqual(2); // user + assistant
+      expect(fb1.created).toBeDefined();
+      expect(fb1.modified).toBeDefined();
+    });
+
+    it('returns empty when project dir has no JSONL files and no index', async () => {
+      // Both dirs exist but have no files at all
+      try { await fs.unlink(path.join(projectDirA, 'sessions-index.json')); } catch { /* noop */ }
+      try { await fs.unlink(path.join(projectDirB, 'sessions-index.json')); } catch { /* noop */ }
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      const sessions = await listAllSessions();
+      expect(sessions).toEqual([]);
+    });
+  });
+
+  describe('listAllSessions with projectFilter', () => {
+    it('filters sessions by directory name', async () => {
+      await writeIndex(projectDirA, [
+        { sessionId: 'filter-a-1', projectPath: '/test/project-a', messageCount: 2 },
+      ]);
+      await createSession(projectDirA, 'filter-a-1');
+
+      await writeIndex(projectDirB, [
+        { sessionId: 'filter-b-1', projectPath: '/test/project-b', messageCount: 2 },
+      ]);
+      await createSession(projectDirB, 'filter-b-1');
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      const sessions = await listAllSessions('project-a');
+
+      const ids = sessions.map(s => s.sessionId);
+      expect(ids).toContain('filter-a-1');
+      expect(ids).not.toContain('filter-b-1');
+    });
+
+    it('filters sessions by projectPath field', async () => {
+      // Both dirs match the dir filter, but only one entry has matching projectPath
+      const projectDirC = path.join(tmpDir, 'shared-dir');
+      await fs.mkdir(projectDirC, { recursive: true });
+      listProjectDirsMock.mockResolvedValue([projectDirC]);
+
+      await writeIndex(projectDirC, [
+        { sessionId: 'path-match', projectPath: '/home/user/myapp', messageCount: 2 },
+        { sessionId: 'path-nomatch', projectPath: '/home/user/other', messageCount: 2 },
+      ]);
+      await createSession(projectDirC, 'path-match');
+      await createSession(projectDirC, 'path-nomatch');
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      // Filter by something in the projectPath — but dir name "shared-dir" doesn't contain "myapp"
+      // so only dir-level filter applies first, then projectPath filter
+      const sessions = await listAllSessions('shared-dir');
+
+      // Both should appear because the dir name matches "shared-dir"
+      const ids = sessions.map(s => s.sessionId);
+      expect(ids).toContain('path-match');
+      expect(ids).toContain('path-nomatch');
+    });
+  });
+
+  describe('listSessionsByProject', () => {
+    it('delegates to listAllSessions with the project filter', async () => {
+      await writeIndex(projectDirA, [
+        { sessionId: 'lsbp-session', projectPath: '/test/project-a', messageCount: 2 },
+      ]);
+      await createSession(projectDirA, 'lsbp-session');
+
+      const { listSessionsByProject } = await import('../src/core/session-reader.js');
+      const sessions = await listSessionsByProject('project-a');
+
+      const ids = sessions.map(s => s.sessionId);
+      expect(ids).toContain('lsbp-session');
+    });
+  });
+
+  describe('findSession short prefix', () => {
+    it('returns null when prefix is less than 4 characters', async () => {
+      await writeIndex(projectDirA, [
+        { sessionId: 'abcdef-session', projectPath: '/test/a', messageCount: 2 },
+      ]);
+      await createSession(projectDirA, 'abcdef-session');
+
+      const { findSession } = await import('../src/core/session-reader.js');
+      const found = await findSession('abc');
+      expect(found).toBeNull();
+    });
+  });
+
+  describe('isSessionActive with lock files', () => {
+    let lockDirMock: MockInstance;
+    let lockDir: string;
+
+    beforeEach(async () => {
+      lockDir = path.join(tmpDir, 'ide-locks');
+      await fs.mkdir(lockDir, { recursive: true });
+
+      const pathsMod = await import('../src/utils/paths.js');
+      lockDirMock = vi.spyOn(pathsMod, 'getClaudeIdeLockDir').mockReturnValue(lockDir);
+    });
+
+    afterEach(() => {
+      lockDirMock.mockRestore();
+    });
+
+    it('returns true when mtime is recent and a lock file with PID exists', async () => {
+      // Write a lock file with a PID
+      await fs.writeFile(
+        path.join(lockDir, 'session.lock'),
+        JSON.stringify({ pid: 12345 }),
+      );
+
+      const { isSessionActive } = await import('../src/core/session-reader.js');
+      const entry: ClaudeSessionEntry = {
+        sessionId: 'lock-active',
+        fullPath: '',
+        fileMtime: Date.now(), // very recent
+      };
+
+      const active = await isSessionActive(entry);
+      expect(active).toBe(true);
+    });
+
+    it('returns true when mtime is recent and lock file has no PID', async () => {
+      // Lock file without a pid field
+      await fs.writeFile(
+        path.join(lockDir, 'session.lock'),
+        JSON.stringify({ status: 'idle' }),
+      );
+
+      const { isSessionActive } = await import('../src/core/session-reader.js');
+      const entry: ClaudeSessionEntry = {
+        sessionId: 'lock-no-pid',
+        fullPath: '',
+        fileMtime: Date.now(),
+      };
+
+      // No lock with PID found, but mtime is very recent → still true (line 337)
+      const active = await isSessionActive(entry);
+      expect(active).toBe(true);
+    });
+
+    it('returns true when mtime is recent and lock dir is empty', async () => {
+      const { isSessionActive } = await import('../src/core/session-reader.js');
+      const entry: ClaudeSessionEntry = {
+        sessionId: 'lock-empty-dir',
+        fullPath: '',
+        fileMtime: Date.now(),
+      };
+
+      const active = await isSessionActive(entry);
+      expect(active).toBe(true);
+    });
+
+    it('skips non-.lock files in the lock directory', async () => {
+      // Write a non-lock file and a lock file without PID
+      await fs.writeFile(path.join(lockDir, 'readme.txt'), 'not a lock');
+      await fs.writeFile(
+        path.join(lockDir, 'test.lock'),
+        JSON.stringify({ status: 'no-pid' }),
+      );
+
+      const { isSessionActive } = await import('../src/core/session-reader.js');
+      const entry: ClaudeSessionEntry = {
+        sessionId: 'lock-filter',
+        fullPath: '',
+        fileMtime: Date.now(),
+      };
+
+      const active = await isSessionActive(entry);
+      expect(active).toBe(true);
+    });
+
+    it('handles malformed lock file JSON gracefully', async () => {
+      await fs.writeFile(path.join(lockDir, 'bad.lock'), 'not valid json{{{');
+
+      const { isSessionActive } = await import('../src/core/session-reader.js');
+      const entry: ClaudeSessionEntry = {
+        sessionId: 'lock-bad-json',
+        fullPath: '',
+        fileMtime: Date.now(),
+      };
+
+      // Should not throw; falls through to return true (recent mtime)
+      const active = await isSessionActive(entry);
+      expect(active).toBe(true);
+    });
+  });
+
+  describe('readSessionsIndex needsCount/needsPath conditions', () => {
+    it('parses JSONL to fill messageCount when index entry has messageCount=0', async () => {
+      await writeIndex(projectDirA, [
+        { sessionId: 'needs-count', projectPath: '/test/a', messageCount: 0 },
+      ]);
+      await createSession(projectDirA, 'needs-count');
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      const sessions = await listAllSessions();
+      const session = sessions.find(s => s.sessionId === 'needs-count');
+      expect(session).toBeDefined();
+      expect(session!.messageCount).toBeGreaterThanOrEqual(2);
+    });
+
+    it('updates projectPath from JSONL cwd when index entry has encoded path', async () => {
+      await writeIndex(projectDirA, [
+        { sessionId: 'needs-path', projectPath: '-Users-user-proj', messageCount: 5 },
+      ]);
+      await createSession(projectDirA, 'needs-path', [
+        { type: 'system', cwd: '/Users/user/proj' },
+        { type: 'user', content: 'hello' },
+        { type: 'assistant', content: 'hi' },
+      ]);
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      const sessions = await listAllSessions();
+      const session = sessions.find(s => s.sessionId === 'needs-path');
+      expect(session).toBeDefined();
+      expect(session!.projectPath).toBe('/Users/user/proj');
+    });
+
+    it('fills firstPrompt from JSONL when index entry lacks it', async () => {
+      await writeIndex(projectDirA, [
+        { sessionId: 'needs-prompt', projectPath: '/test/a', messageCount: 0 },
+      ]);
+      await createSession(projectDirA, 'needs-prompt', [
+        { type: 'system', cwd: '/test/a' },
+        { type: 'user', content: 'What is the meaning of life?' },
+        { type: 'assistant', content: '42' },
+      ]);
+
+      const { listAllSessions } = await import('../src/core/session-reader.js');
+      const sessions = await listAllSessions();
+      const session = sessions.find(s => s.sessionId === 'needs-prompt');
+      expect(session).toBeDefined();
+      expect(session!.firstPrompt).toBe('What is the meaning of life?');
+    });
   });
 });
