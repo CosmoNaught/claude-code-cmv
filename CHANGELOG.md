@@ -9,7 +9,7 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 ### Changed
 
 - **Coverage thresholds raised to 95/85/95/95** — statements, branches, functions, lines. Up from 85/80/85/85.
-- **465 tests** across 34 files, up from 403. Overall coverage: 96% statements, 87% branches, 99% functions, 96% lines.
+- **465 tests** across 34 files, up from 403.
 
 ### Added
 
