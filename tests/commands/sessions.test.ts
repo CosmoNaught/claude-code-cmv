@@ -92,4 +92,61 @@ describe('sessions command', () => {
     await program.parseAsync(['node', 'cmv', 'sessions', '--json']);
     expect(console.log).toHaveBeenCalledWith(expect.stringContaining('"sess-abc-123"'));
   });
+
+  it('shows hidden count message when sessions are empty but exist', async () => {
+    mockListAllSessions.mockResolvedValue([
+      { sessionId: 'sess-1', projectPath: '/proj', messageCount: 0, modified: '2025-01-01', summary: '', _projectDir: '/proj' },
+    ]);
+    const program = new Command();
+    program.exitOverride();
+    registerSessionsCommand(program);
+    await program.parseAsync(['node', 'cmv', 'sessions']);
+    // All sessions have messageCount=0 so they're all hidden; hiddenCount > 0 path
+    expect(info).toHaveBeenCalledWith(expect.stringContaining('empty file-tracking'));
+  });
+
+  it('sorts by size with --sort size', async () => {
+    mockListAllSessions.mockResolvedValue([
+      { sessionId: 'sess-1', projectPath: '/proj', messageCount: 2, modified: '2025-01-01', summary: 'a', _projectDir: '/proj' },
+      { sessionId: 'sess-2', projectPath: '/proj', messageCount: 10, modified: '2025-01-01', summary: 'b', _projectDir: '/proj' },
+    ]);
+    const program = new Command();
+    program.exitOverride();
+    registerSessionsCommand(program);
+    await program.parseAsync(['node', 'cmv', 'sessions', '--sort', 'size']);
+    expect(console.log).toHaveBeenCalled();
+  });
+
+  it('filters by project with --project', async () => {
+    mockListSessionsByProject.mockResolvedValue([
+      { sessionId: 'sess-1', projectPath: '/my-proj', messageCount: 3, modified: '2025-01-01', summary: 'test', _projectDir: '/my-proj' },
+    ]);
+    const program = new Command();
+    program.exitOverride();
+    registerSessionsCommand(program);
+    await program.parseAsync(['node', 'cmv', 'sessions', '--project', '/my-proj']);
+    expect(mockListSessionsByProject).toHaveBeenCalledWith('/my-proj');
+  });
+
+  it('handles error from listAllSessions', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockListAllSessions.mockRejectedValueOnce(new Error('read fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerSessionsCommand(program);
+    await program.parseAsync(['node', 'cmv', 'sessions']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('includes --all flag to show empty sessions', async () => {
+    mockListAllSessions.mockResolvedValue([
+      { sessionId: 'sess-1', projectPath: '/proj', messageCount: 0, modified: '2025-01-01', summary: '', _projectDir: '/proj' },
+    ]);
+    const program = new Command();
+    program.exitOverride();
+    registerSessionsCommand(program);
+    await program.parseAsync(['node', 'cmv', 'sessions', '--all']);
+    // With --all, empty sessions are included so table output should appear
+    expect(console.log).toHaveBeenCalled();
+  });
 });

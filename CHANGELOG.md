@@ -4,6 +4,23 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [2.1.1] — 2026-03-16
+
+### Changed
+
+- **Coverage thresholds raised to 95/85/95/95** — statements, branches, functions, lines. Up from 85/80/85/85.
+- **465 tests** across 34 files, up from 403. Overall coverage: 96% statements, 87% branches, 99% functions, 96% lines.
+
+### Added
+
+- **62 new tests** closing coverage gaps in:
+  - `trimmer.ts` — unparseable JSON pass-through, orphaned tool_result filtering (both content paths).
+  - `session-reader.ts` — scanJsonlFiles fallback, IDE lock file detection, projectFilter, short prefix matching, needsCount/needsPath enrichment.
+  - Command files — error paths and edge cases for branch, trim, sessions, info, config, list, import, export, dashboard, snapshot.
+  - `paths.ts` — previously untested utility functions (getCmvAutoBackupsDir, getCmvAutoTrimLogPath, getClaudeSettingsPath, getClaudeBaseDir).
+
+---
+
 ## [2.1.0] — 2026-03-15
 
 ### Added
