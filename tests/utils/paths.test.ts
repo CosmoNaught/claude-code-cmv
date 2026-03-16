@@ -7,11 +7,15 @@ import * as fs from 'node:fs/promises';
 
 import {
   getClaudeProjectsDir,
+  getClaudeBaseDir,
   getCmvDir,
   getCmvSnapshotsDir,
   getCmvIndexPath,
   getCmvConfigPath,
   getClaudeIdeLockDir,
+  getCmvAutoBackupsDir,
+  getCmvAutoTrimLogPath,
+  getClaudeSettingsPath,
   listProjectDirs,
 } from '../../src/utils/paths.js';
 
@@ -46,6 +50,26 @@ describe('path helpers', () => {
   it('getClaudeIdeLockDir returns ide dir path', () => {
     const p = getClaudeIdeLockDir();
     expect(p).toBe(path.join(home, '.claude', 'ide'));
+  });
+
+  it('getClaudeBaseDir returns .claude dir path', () => {
+    const p = getClaudeBaseDir();
+    expect(p).toBe(path.join(home, '.claude'));
+  });
+
+  it('getCmvAutoBackupsDir returns auto-backups dir path', () => {
+    const p = getCmvAutoBackupsDir();
+    expect(p).toBe(path.join(home, '.cmv', 'auto-backups'));
+  });
+
+  it('getCmvAutoTrimLogPath returns auto-trim-log.json path', () => {
+    const p = getCmvAutoTrimLogPath();
+    expect(p).toBe(path.join(home, '.cmv', 'auto-trim-log.json'));
+  });
+
+  it('getClaudeSettingsPath returns settings.json path', () => {
+    const p = getClaudeSettingsPath();
+    expect(p).toBe(path.join(home, '.claude', 'settings.json'));
   });
 });
 

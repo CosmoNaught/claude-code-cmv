@@ -71,4 +71,42 @@ describe('config command', () => {
     );
     expect(success).toHaveBeenCalledWith(expect.stringContaining('claude_cli_path'));
   });
+
+  it('shows error for invalid config key', async () => {
+    mockReadConfig.mockResolvedValue({});
+    const program = new Command();
+    program.exitOverride();
+    registerConfigCommand(program);
+    await program.parseAsync(['node', 'cmv', 'config', 'invalid_key']);
+    expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Unknown config key'));
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
+
+  it('shows (not set) for undefined config value', async () => {
+    mockReadConfig.mockResolvedValue({});
+    const program = new Command();
+    program.exitOverride();
+    registerConfigCommand(program);
+    await program.parseAsync(['node', 'cmv', 'config', 'claude_cli_path']);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('not set'));
+  });
+
+  it('handles error from readConfig', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockReadConfig.mockRejectedValueOnce(new Error('read fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerConfigCommand(program);
+    await program.parseAsync(['node', 'cmv', 'config']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('shows empty config message when no config set', async () => {
+    mockReadConfig.mockResolvedValue({});
+    const program = new Command();
+    program.exitOverride();
+    registerConfigCommand(program);
+    await program.parseAsync(['node', 'cmv', 'config']);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('no configuration set'));
+  });
 });

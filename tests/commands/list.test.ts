@@ -112,4 +112,77 @@ describe('list command', () => {
     expect(jsonCall).toBeDefined();
     expect(jsonCall[0]).not.toContain('"snap2"');
   });
+
+  it('sorts by name with --sort name', async () => {
+    mockReadIndex.mockResolvedValue({
+      snapshots: {
+        b: { name: 'b-snap', created_at: '2025-01-01', message_count: 1, branches: [], tags: [], description: '' },
+        a: { name: 'a-snap', created_at: '2025-01-02', message_count: 2, branches: [], tags: [], description: '' },
+      },
+    });
+    const program = new Command();
+    program.exitOverride();
+    registerListCommand(program);
+    await program.parseAsync(['node', 'cmv', 'list', '--json', '--sort', 'name']);
+    const jsonCall = (console.log as any).mock.calls.find(
+      (c: any[]) => typeof c[0] === 'string' && c[0].includes('a-snap'),
+    );
+    expect(jsonCall).toBeDefined();
+    // a-snap should come before b-snap in JSON output
+    const aIdx = jsonCall[0].indexOf('a-snap');
+    const bIdx = jsonCall[0].indexOf('b-snap');
+    expect(aIdx).toBeLessThan(bIdx);
+  });
+
+  it('sorts by branches with --sort branches', async () => {
+    mockReadIndex.mockResolvedValue({
+      snapshots: {
+        few: { name: 'few', created_at: '2025-01-01', message_count: 1, branches: [], tags: [], description: '' },
+        many: { name: 'many', created_at: '2025-01-02', message_count: 2, branches: [{ name: 'b1', created_at: '2025-01-01', forked_session_id: 'f1' }, { name: 'b2', created_at: '2025-01-01', forked_session_id: 'f2' }], tags: [], description: '' },
+      },
+    });
+    const program = new Command();
+    program.exitOverride();
+    registerListCommand(program);
+    await program.parseAsync(['node', 'cmv', 'list', '--json', '--sort', 'branches']);
+    const jsonCall = (console.log as any).mock.calls.find(
+      (c: any[]) => typeof c[0] === 'string' && c[0].includes('many'),
+    );
+    expect(jsonCall).toBeDefined();
+    // 'many' (2 branches) should come before 'few' (0 branches)
+    const manyIdx = jsonCall[0].indexOf('many');
+    const fewIdx = jsonCall[0].indexOf('few');
+    expect(manyIdx).toBeLessThan(fewIdx);
+  });
+
+  it('handles error from readIndex', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockReadIndex.mockRejectedValueOnce(new Error('read fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerListCommand(program);
+    await program.parseAsync(['node', 'cmv', 'list']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('sorts by date by default', async () => {
+    mockReadIndex.mockResolvedValue({
+      snapshots: {
+        old: { name: 'old', created_at: '2025-01-01', message_count: 1, branches: [], tags: [], description: '' },
+        recent: { name: 'recent', created_at: '2025-06-01', message_count: 2, branches: [], tags: [], description: '' },
+      },
+    });
+    const program = new Command();
+    program.exitOverride();
+    registerListCommand(program);
+    await program.parseAsync(['node', 'cmv', 'list', '--json']);
+    const jsonCall = (console.log as any).mock.calls.find(
+      (c: any[]) => typeof c[0] === 'string' && c[0].includes('recent'),
+    );
+    expect(jsonCall).toBeDefined();
+    // 'recent' should come before 'old' (newest first)
+    const recentIdx = jsonCall[0].indexOf('recent');
+    const oldIdx = jsonCall[0].indexOf('"old"');
+    expect(recentIdx).toBeLessThan(oldIdx);
+  });
 });

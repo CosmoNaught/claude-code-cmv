@@ -372,6 +372,121 @@ describe('trimmer', () => {
     });
   });
 
+  describe('unparseable JSON pass-through', () => {
+    it('preserves lines that are not valid JSON', async () => {
+      const src = path.join(tmpDir, 'src.jsonl');
+      // Write a mix of valid JSON and invalid lines directly
+      const lines = [
+        JSON.stringify({ type: 'user', content: 'hello' }),
+        'this is not valid JSON {{{',
+        JSON.stringify({ type: 'assistant', content: [{ type: 'text', text: 'hi' }] }),
+      ];
+      await fs.writeFile(src, lines.join('\n') + '\n');
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest);
+      const raw = await fs.readFile(dest, 'utf-8');
+      const outputLines = raw.trim().split('\n').filter(Boolean);
+
+      expect(outputLines).toHaveLength(3);
+      // The invalid line should be preserved as-is
+      expect(outputLines[1]).toBe('this is not valid JSON {{{');
+    });
+  });
+
+  describe('orphaned tool_result filtering', () => {
+    it('filters tool_result blocks referencing skipped tool_use IDs from parsed.content', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        // Pre-compaction: assistant with tool_use blocks
+        { type: 'assistant', content: [
+          { type: 'tool_use', id: 'tu_orphan1', name: 'Read', input: { file_path: '/a.ts' } },
+          { type: 'tool_use', id: 'tu_orphan2', name: 'Glob', input: { pattern: '*.ts' } },
+        ] },
+        // Pre-compaction: tool_result for one of them
+        { type: 'user', content: [
+          { type: 'tool_result', tool_use_id: 'tu_orphan1', content: 'result1' },
+        ] },
+        // Compaction boundary
+        { type: 'summary', summary: 'compacted' },
+        // Post-compaction: a line with orphaned tool_result referencing skipped IDs
+        { type: 'user', content: [
+          { type: 'tool_result', tool_use_id: 'tu_orphan2', content: 'orphaned result' },
+          { type: 'text', text: 'keep this' },
+        ] },
+        { type: 'assistant', content: [{ type: 'text', text: 'response' }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      // Should have summary + user + assistant = 3 lines
+      expect(output).toHaveLength(3);
+      // The user line's content should have the orphaned tool_result filtered out
+      const userContent = output[1].content;
+      expect(userContent).toHaveLength(1);
+      expect(userContent[0].type).toBe('text');
+      expect(userContent[0].text).toBe('keep this');
+    });
+
+    it('filters tool_result blocks referencing skipped tool_use IDs from parsed.message.content', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        // Pre-compaction: assistant with tool_use in message.content
+        { type: 'message', message: { content: [
+          { type: 'tool_use', id: 'tu_msg_orphan', name: 'Bash', input: { command: 'ls' } },
+        ] } },
+        // Compaction boundary
+        { type: 'summary', summary: 'compacted' },
+        // Post-compaction: line with orphaned tool_result in message.content
+        { type: 'message', message: { content: [
+          { type: 'tool_result', tool_use_id: 'tu_msg_orphan', content: 'orphan msg' },
+          { type: 'text', text: 'msg kept' },
+        ] } },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      expect(output).toHaveLength(2); // summary + message
+      const msg = output[1];
+      // message.content should have orphaned tool_result removed
+      expect(msg.message.content).toHaveLength(1);
+      expect(msg.message.content[0].text).toBe('msg kept');
+    });
+
+    it('keeps tool_result blocks that do not reference skipped IDs', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        // Pre-compaction: assistant with tool_use
+        { type: 'assistant', content: [
+          { type: 'tool_use', id: 'tu_skip', name: 'Read', input: { file_path: '/a.ts' } },
+        ] },
+        // Compaction boundary
+        { type: 'summary', summary: 'compacted' },
+        // Post-compaction: assistant with a new tool_use
+        { type: 'assistant', content: [
+          { type: 'tool_use', id: 'tu_keep', name: 'Read', input: { file_path: '/b.ts' } },
+        ] },
+        // Post-compaction: tool_result referencing the kept tool_use
+        { type: 'user', content: [
+          { type: 'tool_result', tool_use_id: 'tu_keep', content: 'valid result' },
+        ] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      // summary + assistant + user = 3
+      expect(output).toHaveLength(3);
+      // The tool_result for tu_keep should be preserved
+      const userContent = output[2].content;
+      expect(userContent).toHaveLength(1);
+      expect(userContent[0].tool_use_id).toBe('tu_keep');
+      expect(userContent[0].content).toBe('valid result');
+    });
+  });
+
   describe('conversation preservation', () => {
     it('preserves all user and assistant text verbatim', async () => {
       const src = await writeJsonl('src.jsonl', [
