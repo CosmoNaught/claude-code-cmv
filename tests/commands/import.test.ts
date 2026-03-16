@@ -61,4 +61,29 @@ describe('import command', () => {
       force: true,
     });
   });
+
+  it('displays warnings from import result', async () => {
+    const { warn } = await import('../../src/utils/display.js');
+    mockImportSnapshot.mockResolvedValueOnce({
+      name: 'imported-snap', snapshotId: 'snap-456',
+      warnings: ['Warning: session conflict', 'Warning: old format'],
+    });
+    const program = new Command();
+    program.exitOverride();
+    registerImportCommand(program);
+    await program.parseAsync(['node', 'cmv', 'import', '/path/to/file.cmv']);
+    expect(warn).toHaveBeenCalledTimes(2);
+    expect(warn).toHaveBeenCalledWith('Warning: session conflict');
+    expect(warn).toHaveBeenCalledWith('Warning: old format');
+  });
+
+  it('handles error from importSnapshot', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockImportSnapshot.mockRejectedValueOnce(new Error('import fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerImportCommand(program);
+    await program.parseAsync(['node', 'cmv', 'import', '/path/to/file.cmv']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
 });

@@ -30,4 +30,14 @@ describe('dashboard command', () => {
     await program.parseAsync(['node', 'cmv', 'dashboard']);
     expect(mockLaunchDashboard).toHaveBeenCalled();
   });
+
+  it('handles error from launchDashboard', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockLaunchDashboard.mockRejectedValueOnce(new Error('tui fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerDashboardCommand(program);
+    await program.parseAsync(['node', 'cmv', 'dashboard']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
 });

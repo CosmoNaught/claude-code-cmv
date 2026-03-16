@@ -76,4 +76,91 @@ describe('info command', () => {
     await program.parseAsync(['node', 'cmv', 'info', 'nonexistent']);
     expect(error).toHaveBeenCalledWith(expect.stringContaining('not found'));
   });
+
+  it('shows size in MB when totalSize > 1MB', async () => {
+    mockGetSnapshot.mockResolvedValue({
+      id: 'snap-123', name: 'big-snap', created_at: '2025-01-01',
+      source_session_id: 'sess-1', source_project_path: '/proj',
+      message_count: 10, description: 'desc', tags: [],
+      parent_snapshot: null, branches: [],
+    });
+    mockReadIndex.mockResolvedValue({ snapshots: {} });
+    mockGetSnapshotSize.mockResolvedValue(2 * 1024 * 1024);
+    const program = new Command();
+    program.exitOverride();
+    registerInfoCommand(program);
+    await program.parseAsync(['node', 'cmv', 'info', 'big-snap']);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('MB'));
+  });
+
+  it('shows parent lineage chain', async () => {
+    mockGetSnapshot.mockResolvedValue({
+      id: 'snap-child', name: 'child', created_at: '2025-01-01',
+      source_session_id: 'sess-1', source_project_path: '/proj',
+      message_count: 5, description: '', tags: [],
+      parent_snapshot: 'parent-snap', branches: [],
+    });
+    mockReadIndex.mockResolvedValue({
+      snapshots: {
+        'parent-snap': {
+          id: 'snap-parent', name: 'parent-snap', created_at: '2025-01-01',
+          source_session_id: 'sess-0', parent_snapshot: null, branches: [], tags: [],
+        },
+      },
+    });
+    mockGetSnapshotSize.mockResolvedValue(512);
+    const program = new Command();
+    program.exitOverride();
+    registerInfoCommand(program);
+    await program.parseAsync(['node', 'cmv', 'info', 'child']);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('parent-snap'));
+  });
+
+  it('shows branches when present', async () => {
+    mockGetSnapshot.mockResolvedValue({
+      id: 'snap-123', name: 'branched-snap', created_at: '2025-01-01',
+      source_session_id: 'sess-1', source_project_path: '/proj',
+      message_count: 10, description: '', tags: ['tag1'],
+      parent_snapshot: null,
+      branches: [
+        { name: 'branch-a', created_at: '2025-01-02', forked_session_id: 'fork-aaa-bbb' },
+      ],
+    });
+    mockReadIndex.mockResolvedValue({ snapshots: {} });
+    mockGetSnapshotSize.mockResolvedValue(0);
+    const program = new Command();
+    program.exitOverride();
+    registerInfoCommand(program);
+    await program.parseAsync(['node', 'cmv', 'info', 'branched-snap']);
+    expect(console.log).toHaveBeenCalledWith(expect.stringContaining('branch-a'));
+  });
+
+  it('handles error from getSnapshot', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockGetSnapshot.mockRejectedValueOnce(new Error('read fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerInfoCommand(program);
+    await program.parseAsync(['node', 'cmv', 'info', 'bad']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('shows zero size when totalSize is 0', async () => {
+    mockGetSnapshot.mockResolvedValue({
+      id: 'snap-123', name: 'empty-snap', created_at: '2025-01-01',
+      source_session_id: 'sess-1', source_project_path: null,
+      message_count: null, description: '', tags: [],
+      parent_snapshot: null, branches: [],
+    });
+    mockReadIndex.mockResolvedValue({ snapshots: {} });
+    mockGetSnapshotSize.mockResolvedValue(0);
+    const program = new Command();
+    program.exitOverride();
+    registerInfoCommand(program);
+    await program.parseAsync(['node', 'cmv', 'info', 'empty-snap']);
+    // totalSize is 0, so the JSONL Size line should NOT be printed
+    const calls = (console.log as any).mock.calls.map((c: any[]) => c[0]);
+    const sizeCall = calls.find((c: string) => typeof c === 'string' && c.includes('JSONL Size'));
+    expect(sizeCall).toBeUndefined();
+  });
 });

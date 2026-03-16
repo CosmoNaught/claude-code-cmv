@@ -68,4 +68,54 @@ describe('snapshot command', () => {
     expect(error).toHaveBeenCalledWith('Must provide --session <id> or --latest');
     expect(process.exit).toHaveBeenCalledWith(1);
   });
+
+  it('handles error from createSnapshot', async () => {
+    const { handleError } = await import('../../src/utils/errors.js');
+    mockCreateSnapshot.mockRejectedValueOnce(new Error('snap fail'));
+    const program = new Command();
+    program.exitOverride();
+    registerSnapshotCommand(program);
+    await program.parseAsync(['node', 'cmv', 'snapshot', 'my-snap', '--latest']);
+    expect(handleError).toHaveBeenCalledWith(expect.any(Error));
+  });
+
+  it('prints warnings from snapshot result', async () => {
+    const { warn } = await import('../../src/utils/display.js');
+    mockCreateSnapshot.mockResolvedValueOnce({
+      snapshot: { id: 'snap-123', name: 'test', message_count: 10, source_project_path: '/proj' },
+      warnings: ['Warning: large session'],
+    });
+    const program = new Command();
+    program.exitOverride();
+    registerSnapshotCommand(program);
+    await program.parseAsync(['node', 'cmv', 'snapshot', 'my-snap', '--latest']);
+    expect(warn).toHaveBeenCalledWith('Warning: large session');
+  });
+
+  it('does not print message count when absent', async () => {
+    mockCreateSnapshot.mockResolvedValueOnce({
+      snapshot: { id: 'snap-123', name: 'test', message_count: null, source_project_path: null },
+      warnings: [],
+    });
+    const program = new Command();
+    program.exitOverride();
+    registerSnapshotCommand(program);
+    await program.parseAsync(['node', 'cmv', 'snapshot', 'my-snap', '--latest']);
+    const calls = (console.log as any).mock.calls.map((c: any[]) => c[0]);
+    const msgCall = calls.find((c: string) => typeof c === 'string' && c.includes('Messages:'));
+    expect(msgCall).toBeUndefined();
+  });
+
+  it('passes tags and description options', async () => {
+    const program = new Command();
+    program.exitOverride();
+    registerSnapshotCommand(program);
+    await program.parseAsync(['node', 'cmv', 'snapshot', 'my-snap', '--latest', '--tags', 'a, b', '--description', 'test desc']);
+    expect(mockCreateSnapshot).toHaveBeenCalledWith(
+      expect.objectContaining({
+        tags: ['a', 'b'],
+        description: 'test desc',
+      }),
+    );
+  });
 });
