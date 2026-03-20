@@ -6,9 +6,7 @@
  * Runs silently — failures are swallowed so npm install never breaks.
  */
 import * as fs from 'node:fs/promises';
-import { getClaudeSettingsPath } from './utils/paths.js';
-
-const CMV_COMMAND_PREFIX = 'cmv auto-trim';
+import { getClaudeSettingsPath, resolveCmvBinary } from './utils/paths.js';
 
 interface ClaudeSettings {
   hooks?: Record<string, Array<{
@@ -22,13 +20,13 @@ interface ClaudeSettings {
   [key: string]: unknown;
 }
 
-function buildHookConfig() {
+function buildHookConfig(cmvBin: string) {
   return {
     PreCompact: [{
       matcher: '',
       hooks: [{
         type: 'command',
-        command: 'cmv auto-trim',
+        command: `${cmvBin} auto-trim`,
         timeout: 30,
       }],
     }],
@@ -36,15 +34,18 @@ function buildHookConfig() {
       matcher: '',
       hooks: [{
         type: 'command',
-        command: 'cmv auto-trim --check-size',
+        command: `${cmvBin} auto-trim --check-size`,
         timeout: 10,
       }],
     }],
   };
 }
 
+/**
+ * Matches both bare `cmv auto-trim` (old installs) and absolute-path variants.
+ */
 function isCmvHookEntry(entry: { hooks: Array<{ command: string }> }): boolean {
-  return entry.hooks.some(h => h.command.startsWith(CMV_COMMAND_PREFIX));
+  return entry.hooks.some(h => /(?:^|[\\/])cmv(?:\.cmd|\.ps1)?\s+auto-trim/.test(h.command));
 }
 
 async function main() {
@@ -60,14 +61,10 @@ async function main() {
 
   if (!settings.hooks) settings.hooks = {};
 
-  // Check if already installed
-  const alreadyInstalled =
-    settings.hooks.PreCompact?.some(e => isCmvHookEntry(e)) &&
-    settings.hooks.PostToolUse?.some(e => isCmvHookEntry(e));
+  const cmvBin = await resolveCmvBinary();
 
-  if (alreadyInstalled) return;
-
-  const newHooks = buildHookConfig();
+  // Always replace hooks to ensure the path is up-to-date
+  const newHooks = buildHookConfig(cmvBin);
 
   for (const [event, entries] of Object.entries(newHooks)) {
     if (!settings.hooks[event]) {
@@ -78,7 +75,7 @@ async function main() {
   }
 
   await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');
-  console.log('CMV: auto-trim hooks installed into Claude Code settings.');
+  console.log(`CMV: auto-trim hooks installed (binary: ${cmvBin}).`);
 }
 
 export { main, buildHookConfig, isCmvHookEntry };
