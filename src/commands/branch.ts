@@ -36,9 +36,10 @@ export function registerBranchCommand(program: Command): void {
     .option('-n, --name <name>', 'Name for the branch')
     .option('--no-trim', 'Skip trimming (copies raw context)')
     .option('-t, --threshold <chars>', 'Stub threshold when trimming (default: 500)')
+    .option('--keep-last <n>', 'Leave the last N non-empty jsonl entries fully unmodified when trimming (default: 20, 0 to disable)')
     .option('--skip-launch', "Don't launch Claude Code, just create the session file")
     .option('--dry-run', 'Show what would happen without doing it')
-    .action(async (snapshotName: string, opts: { name?: string; trim: boolean; threshold?: string; skipLaunch?: boolean; dryRun?: boolean }) => {
+    .action(async (snapshotName: string, opts: { name?: string; trim: boolean; threshold?: string; keepLast?: string; skipLaunch?: boolean; dryRun?: boolean }) => {
       try {
         const result = await createBranch({
           snapshotName,
@@ -47,6 +48,7 @@ export function registerBranchCommand(program: Command): void {
           dryRun: opts.dryRun,
           trim: opts.trim,
           trimThreshold: opts.threshold ? parseInt(opts.threshold, 10) : undefined,
+          trimKeepLast: opts.keepLast !== undefined ? parseInt(opts.keepLast, 10) : undefined,
         });
 
         if (opts.dryRun) {

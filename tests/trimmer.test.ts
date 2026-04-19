@@ -72,7 +72,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.toolResultsStubbed).toBe(1);
@@ -87,7 +87,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.toolResultsStubbed).toBe(0);
@@ -101,7 +101,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.toolResultsStubbed).toBe(1);
@@ -121,7 +121,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.imagesStripped).toBe(1);
@@ -140,7 +140,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.signaturesStripped).toBe(1);
@@ -160,7 +160,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.toolUseInputsStubbed).toBe(1);
@@ -179,7 +179,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(metrics.toolUseInputsStubbed).toBe(1);
@@ -190,6 +190,31 @@ describe('trimmer', () => {
     });
 
     it('preserves identification fields in broad fallback', async () => {
+      // Use a non-preserved string field (extra) to force a stubbing pass so
+      // the metric increments and we can assert preserved fields come through
+      // untouched.
+      const bigExtra = 'z'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{
+          type: 'tool_use', id: 't1', name: 'CustomTool',
+          input: { description: 'do stuff', extra: bigExtra }
+        }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolUseInputsStubbed).toBe(1);
+      const input = output[0].content[0].input;
+      expect(input.description).toBe('do stuff');
+      expect(input.extra).toContain('[Trimmed input');
+    });
+
+    it('preserves Task/Agent prompt field even when over threshold', async () => {
+      // The Agent/Task tool input's `prompt` field carries the dispatched
+      // subagent's instructions verbatim. Stubbing it would hand the subagent
+      // "[Trimmed input: ~N chars]" instead of a real task.
       const bigPrompt = 'z'.repeat(600);
       const src = await writeJsonl('src.jsonl', [
         { type: 'assistant', content: [{
@@ -199,13 +224,14 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
-      expect(metrics.toolUseInputsStubbed).toBe(1);
+      // No non-preserved string field is large enough to stub — metric stays 0.
+      expect(metrics.toolUseInputsStubbed).toBe(0);
       const input = output[0].content[0].input;
       expect(input.description).toBe('do stuff');
-      expect(input.prompt).toContain('[Trimmed input');
+      expect(input.prompt).toBe(bigPrompt);
     });
 
     it('does not stub small tool_use inputs', async () => {
@@ -286,7 +312,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      await trimJsonl(src, dest);
+      await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(output[0].message.usage).toBeUndefined();
@@ -334,11 +360,11 @@ describe('trimmer', () => {
       const dest = path.join(tmpDir, 'dest.jsonl');
 
       // Default threshold (500) should not stub
-      const m1 = await trimJsonl(src, dest);
+      const m1 = await trimJsonl(src, dest, { keepLast: 0 });
       expect(m1.toolResultsStubbed).toBe(0);
 
       // Threshold 200 should stub
-      const m2 = await trimJsonl(src, dest, { threshold: 200 });
+      const m2 = await trimJsonl(src, dest, { threshold: 200, keepLast: 0 });
       expect(m2.toolResultsStubbed).toBe(1);
     });
 
@@ -350,7 +376,7 @@ describe('trimmer', () => {
       const dest = path.join(tmpDir, 'dest.jsonl');
 
       // threshold=10 should be clamped to 50, so 60 chars gets stubbed
-      const metrics = await trimJsonl(src, dest, { threshold: 10 });
+      const metrics = await trimJsonl(src, dest, { threshold: 10, keepLast: 0 });
       expect(metrics.toolResultsStubbed).toBe(1);
     });
   });
@@ -364,7 +390,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      const metrics = await trimJsonl(src, dest);
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
 
       expect(metrics.originalBytes).toBeGreaterThan(0);
       expect(metrics.trimmedBytes).toBeGreaterThan(0);
@@ -417,7 +443,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      await trimJsonl(src, dest);
+      await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       // Should have summary + user + assistant = 3 lines
@@ -445,7 +471,7 @@ describe('trimmer', () => {
       ]);
       const dest = path.join(tmpDir, 'dest.jsonl');
 
-      await trimJsonl(src, dest);
+      await trimJsonl(src, dest, { keepLast: 0 });
       const output = await readJsonl(dest);
 
       expect(output).toHaveLength(2); // summary + message
@@ -504,6 +530,206 @@ describe('trimmer', () => {
       expect(output[1].content[0].text).toBe('The auth module uses JWT with refresh tokens.');
       expect(output[2].content).toBe('what about the API?');
       expect(output[3].content[0].text).toBe('The API uses Express with middleware.');
+    });
+  });
+
+  describe('keepLast option', () => {
+    it('leaves entries within the last N fully unmodified even when over threshold', async () => {
+      const bigResult = 'x'.repeat(600);
+      const bigWriteContent = 'y'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        // Older entries — should be stubbed
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't1', content: bigResult }] },
+        { type: 'assistant', content: [{
+          type: 'tool_use', id: 't2', name: 'Write',
+          input: { file_path: '/a/b.ts', content: bigWriteContent }
+        }] },
+        // Trailing entries — within keepLast=2 window, should be untouched
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't3', content: bigResult }] },
+        { type: 'assistant', content: [{
+          type: 'tool_use', id: 't4', name: 'Write',
+          input: { file_path: '/c/d.ts', content: bigWriteContent }
+        }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest, { keepLast: 2 });
+      const output = await readJsonl(dest);
+
+      // First two were outside keepLast window — content stubbed.
+      expect(output[0].content[0].content).toContain('[Trimmed tool result');
+      expect(output[1].content[0].input.content).toContain('[Trimmed input');
+      // Last two were inside keepLast window — untouched.
+      expect(output[2].content[0].content).toBe(bigResult);
+      expect(output[3].content[0].input.content).toBe(bigWriteContent);
+    });
+
+    it('skips thinking removal and image stripping for entries in keepLast window', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        // Older entry — content processing applies.
+        { type: 'assistant', content: [
+          { type: 'thinking', thinking: 'old reasoning', signature: 'sig-old' },
+          { type: 'text', text: 'old response' },
+        ] },
+        // Trailing entry — within keepLast=1, should be untouched.
+        { type: 'assistant', content: [
+          { type: 'thinking', thinking: 'recent reasoning', signature: 'sig-new' },
+          { type: 'tool_result', tool_use_id: 't1', content: [
+            { type: 'image', source: { type: 'base64', data: 'AAAA'.repeat(400) } },
+            { type: 'text', text: 'recent result' },
+          ] },
+        ] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { keepLast: 1 });
+      const output = await readJsonl(dest);
+
+      // Older entry: thinking stripped.
+      expect(metrics.signaturesStripped).toBe(1);
+      expect(output[0].content.some((b: any) => b.type === 'thinking')).toBe(false);
+
+      // Recent entry: thinking block kept, image kept.
+      const recent = output[1].content;
+      expect(recent.some((b: any) => b.type === 'thinking')).toBe(true);
+      const toolResult = recent.find((b: any) => b.type === 'tool_result');
+      expect(toolResult.content.some((c: any) => c.type === 'image')).toBe(true);
+      // Metric does not reflect the preserved image.
+      expect(metrics.imagesStripped).toBe(0);
+    });
+
+    it('preserves usage metadata on entries within the keepLast window', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', message: { content: [{ type: 'text', text: 'old' }], usage: { input_tokens: 10 } } },
+        { type: 'assistant', message: { content: [{ type: 'text', text: 'recent' }], usage: { input_tokens: 99 } } },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest, { keepLast: 1 });
+      const output = await readJsonl(dest);
+
+      // Older entry: usage stripped.
+      expect(output[0].message.usage).toBeUndefined();
+      // Recent entry: usage kept.
+      expect(output[1].message.usage).toEqual({ input_tokens: 99 });
+    });
+
+    it('keepLast=0 disables the feature (fully stubs like before)', async () => {
+      const bigContent = 'x'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't1', content: bigContent }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { keepLast: 0 });
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolResultsStubbed).toBe(1);
+      expect(output[0].content[0].content).toContain('[Trimmed tool result');
+    });
+
+    it('keepLast larger than entry count leaves everything untouched', async () => {
+      const bigContent = 'x'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't1', content: bigContent }] },
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't2', content: bigContent }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { keepLast: 100 });
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolResultsStubbed).toBe(0);
+      expect(output[0].content[0].content).toBe(bigContent);
+      expect(output[1].content[0].content).toBe(bigContent);
+    });
+
+    it('structural skipping still applies to entries in the keepLast window', async () => {
+      // file-history-snapshot and queue-operation entries should be removed
+      // regardless of recency — they are dead weight.
+      const bigContent = 'x'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'user', content: 'old' },
+        { type: 'file-history-snapshot', data: { files: ['a.ts'] } },
+        { type: 'queue-operation', op: 'flush' },
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't1', content: bigContent }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { keepLast: 10 });
+      const output = await readJsonl(dest);
+
+      expect(metrics.fileHistoryRemoved).toBe(1);
+      expect(metrics.queueOperationsRemoved).toBe(1);
+      // Remaining entries kept, content preserved (inside keepLast window).
+      expect(output).toHaveLength(2);
+      expect(output[1].content[0].content).toBe(bigContent);
+    });
+
+    it('still strips orphaned tool_result blocks in the keepLast window', async () => {
+      // A tool_result whose matching tool_use was skipped by pre-compaction
+      // leaves the file structurally invalid for API replay. This must be
+      // stripped regardless of recency, even when the orphan lands inside
+      // the keepLast window.
+      const src = await writeJsonl('src.jsonl', [
+        // Pre-compaction: tool_use that will be skipped.
+        { type: 'assistant', content: [
+          { type: 'tool_use', id: 'tu_orphan', name: 'Read', input: { file_path: '/a.ts' } },
+        ] },
+        // Compaction boundary.
+        { type: 'summary', summary: 'compacted' },
+        // Post-compaction: a recent entry (inside keepLast window) with
+        // an orphaned tool_result referencing the pre-compaction tool_use.
+        { type: 'user', content: [
+          { type: 'tool_result', tool_use_id: 'tu_orphan', content: 'orphan result' },
+          { type: 'text', text: 'real user text' },
+        ] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      // keepLast=10 puts the post-compaction user entry inside the window.
+      await trimJsonl(src, dest, { keepLast: 10 });
+      const output = await readJsonl(dest);
+
+      // summary + user = 2
+      expect(output).toHaveLength(2);
+      // The orphaned tool_result was stripped even though the entry was
+      // inside the keepLast window.
+      const userContent = output[1].content;
+      expect(userContent).toHaveLength(1);
+      expect(userContent[0].type).toBe('text');
+      expect(userContent[0].text).toBe('real user text');
+    });
+
+    it('counts tool_use requests for entries in the keepLast window', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [
+          { type: 'tool_use', id: 't1', name: 'Read', input: { file_path: '/a.ts' } },
+          { type: 'tool_use', id: 't2', name: 'Read', input: { file_path: '/b.ts' } },
+        ] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { keepLast: 10 });
+
+      expect(metrics.toolUseRequests).toBe(2);
+    });
+
+    it('default keepLast preserves recent entries in a typical small session', async () => {
+      // Small synthetic session: with the default keepLast (20), everything
+      // ends up in the window and nothing is stubbed. This documents the
+      // default behaviour.
+      const bigContent = 'x'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{ type: 'tool_result', tool_use_id: 't1', content: bigContent }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolResultsStubbed).toBe(0);
+      expect(output[0].content[0].content).toBe(bigContent);
     });
   });
 });
