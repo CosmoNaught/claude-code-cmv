@@ -20,7 +20,8 @@ export function registerTrimCommand(program: Command): void {
     .option('-n, --name <name>', 'Name for the snapshot')
     .option('--skip-launch', "Don't launch Claude Code after trimming")
     .option('-t, --threshold <chars>', 'Stub threshold in characters (default: 500)')
-    .action(async (opts: { session?: string; latest?: boolean; name?: string; skipLaunch?: boolean; threshold?: string }) => {
+    .option('--keep-last <n>', 'Leave the last N non-empty jsonl entries fully unmodified (default: 20, 0 to disable)')
+    .action(async (opts: { session?: string; latest?: boolean; name?: string; skipLaunch?: boolean; threshold?: string; keepLast?: string }) => {
       try {
         if (!opts.session && !opts.latest) {
           console.error('Must provide --session <id> or --latest');
@@ -49,6 +50,7 @@ export function registerTrimCommand(program: Command): void {
           trim: true,
           noLaunch: opts.skipLaunch,
           trimThreshold: opts.threshold ? parseInt(opts.threshold, 10) : undefined,
+          trimKeepLast: opts.keepLast !== undefined ? parseInt(opts.keepLast, 10) : undefined,
         });
 
         success(`Trimmed branch "${result.branchName}" created.`);

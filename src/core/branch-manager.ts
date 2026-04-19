@@ -16,6 +16,8 @@ export interface BranchParams {
   dryRun?: boolean;
   trim?: boolean;
   trimThreshold?: number;
+  /** Number of trailing entries to leave untouched when trimming. */
+  trimKeepLast?: number;
   orientationMessage?: string;
 }
 
@@ -115,6 +117,7 @@ export async function createBranch(params: BranchParams): Promise<BranchResult> 
     if (params.trim) {
       trimMetrics = await trimJsonl(snapshotJsonlPath, destJsonlPath, {
         threshold: params.trimThreshold,
+        keepLast: params.trimKeepLast,
       });
     } else {
       await fs.copyFile(snapshotJsonlPath, destJsonlPath);

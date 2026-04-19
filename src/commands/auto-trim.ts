@@ -80,7 +80,8 @@ export function registerAutoTrimCommand(program: Command): void {
     .command('auto-trim')
     .description('Internal command called by Claude Code hooks')
     .option('--check-size', 'Only trim if file exceeds size threshold (PostToolUse mode)')
-    .action(async (opts: { checkSize?: boolean }) => {
+    .option('--keep-last <n>', 'Leave the last N non-empty jsonl entries fully unmodified (overrides autoTrim.keepLast config)')
+    .action(async (opts: { checkSize?: boolean; keepLast?: string }) => {
       try {
         const stdinRaw = await readStdinWithTimeout(STDIN_TIMEOUT);
         const input: HookInput = JSON.parse(stdinRaw);
@@ -115,8 +116,10 @@ export function registerAutoTrimCommand(program: Command): void {
 
         // Trim in-place via temp file
         const tmpPath = transcriptPath + '.cmv-trim-tmp';
+        const keepLastOverride = opts.keepLast !== undefined ? parseInt(opts.keepLast, 10) : undefined;
         const metrics = await trimJsonl(transcriptPath, tmpPath, {
           threshold: config.threshold ?? DEFAULT_TRIM_THRESHOLD,
+          keepLast: keepLastOverride ?? config.keepLast,
         });
 
         // Atomic replace

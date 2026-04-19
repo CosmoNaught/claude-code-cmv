@@ -6,9 +6,22 @@ import * as fs from 'node:fs/promises';
 import type { TrimMetrics } from '../types/index.js';
 
 const DEFAULT_STUB_THRESHOLD = 500;
+const DEFAULT_KEEP_LAST = 20;
 
 export interface TrimOptions {
   threshold?: number;
+  /**
+   * Number of trailing non-empty, non-skipped entries to leave fully untouched:
+   * no tool_result stubbing, no tool_use input stubbing, no image stripping,
+   * no thinking removal, no usage-metadata deletion.
+   *
+   * Structural skipping (pre-compaction, file-history-snapshot,
+   * queue-operation, orphaned tool_result references) still applies — those
+   * entries are dead weight regardless of recency.
+   *
+   * Defaults to DEFAULT_KEEP_LAST. Pass 0 to disable.
+   */
+  keepLast?: number;
 }
 
 /** Tool names known to carry large file-content payloads. */
@@ -180,6 +193,7 @@ export async function trimJsonl(
   options: TrimOptions = {}
 ): Promise<TrimMetrics> {
   const STUB_THRESHOLD = Math.max(options.threshold ?? DEFAULT_STUB_THRESHOLD, 50);
+  const KEEP_LAST = Math.max(options.keepLast ?? DEFAULT_KEEP_LAST, 0);
 
   const metrics: TrimMetrics = {
     originalBytes: 0,
@@ -252,11 +266,50 @@ export async function trimJsonl(
     preStream.destroy();
   }
 
+  // ── Pass 2.5: Count entries that will survive structural skipping ──
+  // An "emitted" entry here matches the surviving-entry rules in Pass 3:
+  // non-empty line, not before the compaction boundary, not
+  // file-history-snapshot, not queue-operation. Unparseable lines are
+  // written through verbatim, so they count too.
+  //
+  // The count lets Pass 3 leave the last KEEP_LAST emitted entries fully
+  // untouched (no stubbing, no image strip, no thinking removal, no usage
+  // metadata deletion).
+  let totalEmittedEntries = 0;
+  if (KEEP_LAST > 0) {
+    const countStream = createReadStream(sourcePath, { encoding: 'utf-8' });
+    const countRl = readline.createInterface({ input: countStream, crlfDelay: Infinity });
+    let countLineNum = 0;
+    for await (const line of countRl) {
+      if (!line.trim()) { countLineNum++; continue; }
+      if (lastCompactionLine >= 0 && countLineNum < lastCompactionLine) {
+        countLineNum++;
+        continue;
+      }
+      // Cheap string check: only JSON.parse if the line might be a skip type.
+      let skipped = false;
+      if (line.includes('file-history-snapshot') || line.includes('queue-operation')) {
+        try {
+          const p = JSON.parse(line);
+          if (p.type === 'file-history-snapshot' || p.type === 'queue-operation') {
+            skipped = true;
+          }
+        } catch { /* not valid JSON — counts as emitted (written verbatim) */ }
+      }
+      if (!skipped) totalEmittedEntries++;
+      countLineNum++;
+    }
+    countRl.close();
+    countStream.destroy();
+  }
+  const keepFromEmitIndex = KEEP_LAST > 0 ? totalEmittedEntries - KEEP_LAST : Number.POSITIVE_INFINITY;
+
   // ── Pass 3: Trim, skipping lines before last compaction boundary ──
   const fileStream = createReadStream(sourcePath, { encoding: 'utf-8' });
   const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
   const writer = createWriteStream(destPath, { encoding: 'utf-8' });
   let currentLine = 0;
+  let emitIndex = 0; // index among entries that pass structural skipping
 
   for await (const line of rl) {
     if (!line.trim()) { currentLine++; continue; }
@@ -273,6 +326,7 @@ export async function trimJsonl(
       parsed = JSON.parse(line);
     } catch {
       writer.write(line + '\n');
+      emitIndex++;
       currentLine++;
       continue;
     }
@@ -300,44 +354,59 @@ export async function trimJsonl(
       metrics.assistantResponses++;
     }
 
-    // Process content arrays (images, tool results, tool_use inputs, thinking)
-    if (Array.isArray(parsed.message?.content)) {
-      parsed.message.content = processContentArray(parsed.message.content, STUB_THRESHOLD, metrics);
-    }
-    if (Array.isArray(parsed.content)) {
-      parsed.content = processContentArray(parsed.content, STUB_THRESHOLD, metrics);
-    }
+    const inKeepLastWindow = emitIndex >= keepFromEmitIndex;
 
-    // Strip orphaned tool_result blocks that reference tool_use IDs from
-    // skipped pre-compaction content. The API requires every tool_result to
-    // have a matching tool_use in the preceding assistant message.
-    if (skippedToolUseIds.size > 0) {
-      for (const key of ['message.content', 'content'] as const) {
-        const content = key === 'message.content' ? parsed.message?.content : parsed.content;
+    if (!inKeepLastWindow) {
+      // Process content arrays (images, tool results, tool_use inputs, thinking)
+      if (Array.isArray(parsed.message?.content)) {
+        parsed.message.content = processContentArray(parsed.message.content, STUB_THRESHOLD, metrics);
+      }
+      if (Array.isArray(parsed.content)) {
+        parsed.content = processContentArray(parsed.content, STUB_THRESHOLD, metrics);
+      }
+
+      // Strip orphaned tool_result blocks that reference tool_use IDs from
+      // skipped pre-compaction content. The API requires every tool_result to
+      // have a matching tool_use in the preceding assistant message.
+      if (skippedToolUseIds.size > 0) {
+        for (const key of ['message.content', 'content'] as const) {
+          const content = key === 'message.content' ? parsed.message?.content : parsed.content;
+          if (Array.isArray(content)) {
+            const filtered = content.filter((block: any) => {
+              if (block.type === 'tool_result' && block.tool_use_id && skippedToolUseIds.has(block.tool_use_id)) {
+                return false;
+              }
+              return true;
+            });
+            if (filtered.length !== content.length) {
+              if (key === 'message.content') {
+                parsed.message.content = filtered;
+              } else {
+                parsed.content = filtered;
+              }
+            }
+          }
+        }
+      }
+
+      // Strip API usage data — it reflects the original pre-trim context size
+      // and would cause the analyzer to report stale (too-high) token counts.
+      if (parsed.message?.usage) delete parsed.message.usage;
+      if (parsed.usage) delete parsed.usage;
+    } else {
+      // Entry falls within the last KEEP_LAST emitted entries: still count
+      // tool_use requests for metrics, but leave the entry fully unmodified.
+      for (const content of [parsed.message?.content, parsed.content]) {
         if (Array.isArray(content)) {
-          const filtered = content.filter((block: any) => {
-            if (block.type === 'tool_result' && block.tool_use_id && skippedToolUseIds.has(block.tool_use_id)) {
-              return false;
-            }
-            return true;
-          });
-          if (filtered.length !== content.length) {
-            if (key === 'message.content') {
-              parsed.message.content = filtered;
-            } else {
-              parsed.content = filtered;
-            }
+          for (const block of content) {
+            if (block?.type === 'tool_use') metrics.toolUseRequests++;
           }
         }
       }
     }
 
-    // Strip API usage data — it reflects the original pre-trim context size
-    // and would cause the analyzer to report stale (too-high) token counts.
-    if (parsed.message?.usage) delete parsed.message.usage;
-    if (parsed.usage) delete parsed.usage;
-
     writer.write(JSON.stringify(parsed) + '\n');
+    emitIndex++;
     currentLine++;
   }
 

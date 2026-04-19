@@ -79,6 +79,12 @@ export interface AutoTrimConfig {
   threshold?: number;
   sizeThresholdBytes?: number;
   maxBackups?: number;
+  /**
+   * Number of trailing non-empty, non-skipped jsonl entries to leave fully
+   * untouched when trimming (no stubbing, no image strip, no thinking
+   * removal, no usage metadata deletion). See TrimOptions.keepLast.
+   */
+  keepLast?: number;
 }
 
 export interface AutoTrimLogEntry {
