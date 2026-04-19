@@ -34,6 +34,12 @@ const PRESERVED_INPUT_FIELDS = new Set([
   'edit_mode',
   'cell_type',
   'cell_id',
+  // Agent/Task dispatch prompt — subagents receive this verbatim as their
+  // instructions. Stubbing it means dispatched agents get
+  // "[Trimmed input: ~N chars]" instead of the real task, which is
+  // catastrophic for subagent behaviour. It is frequently >500 chars so it
+  // trips the broad-fallback without explicit preservation.
+  'prompt',
 ]);
 
 /**

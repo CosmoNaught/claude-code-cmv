@@ -190,6 +190,31 @@ describe('trimmer', () => {
     });
 
     it('preserves identification fields in broad fallback', async () => {
+      // Use a non-preserved string field (extra) to force a stubbing pass so
+      // the metric increments and we can assert preserved fields come through
+      // untouched.
+      const bigExtra = 'z'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{
+          type: 'tool_use', id: 't1', name: 'CustomTool',
+          input: { description: 'do stuff', extra: bigExtra }
+        }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolUseInputsStubbed).toBe(1);
+      const input = output[0].content[0].input;
+      expect(input.description).toBe('do stuff');
+      expect(input.extra).toContain('[Trimmed input');
+    });
+
+    it('preserves Task/Agent prompt field even when over threshold', async () => {
+      // The Agent/Task tool input's `prompt` field carries the dispatched
+      // subagent's instructions verbatim. Stubbing it would hand the subagent
+      // "[Trimmed input: ~N chars]" instead of a real task.
       const bigPrompt = 'z'.repeat(600);
       const src = await writeJsonl('src.jsonl', [
         { type: 'assistant', content: [{
@@ -202,10 +227,11 @@ describe('trimmer', () => {
       const metrics = await trimJsonl(src, dest);
       const output = await readJsonl(dest);
 
-      expect(metrics.toolUseInputsStubbed).toBe(1);
+      // No non-preserved string field is large enough to stub — metric stays 0.
+      expect(metrics.toolUseInputsStubbed).toBe(0);
       const input = output[0].content[0].input;
       expect(input.description).toBe('do stuff');
-      expect(input.prompt).toContain('[Trimmed input');
+      expect(input.prompt).toBe(bigPrompt);
     });
 
     it('does not stub small tool_use inputs', async () => {
