@@ -365,41 +365,45 @@ export async function trimJsonl(
         parsed.content = processContentArray(parsed.content, STUB_THRESHOLD, metrics);
       }
 
-      // Strip orphaned tool_result blocks that reference tool_use IDs from
-      // skipped pre-compaction content. The API requires every tool_result to
-      // have a matching tool_use in the preceding assistant message.
-      if (skippedToolUseIds.size > 0) {
-        for (const key of ['message.content', 'content'] as const) {
-          const content = key === 'message.content' ? parsed.message?.content : parsed.content;
-          if (Array.isArray(content)) {
-            const filtered = content.filter((block: any) => {
-              if (block.type === 'tool_result' && block.tool_use_id && skippedToolUseIds.has(block.tool_use_id)) {
-                return false;
-              }
-              return true;
-            });
-            if (filtered.length !== content.length) {
-              if (key === 'message.content') {
-                parsed.message.content = filtered;
-              } else {
-                parsed.content = filtered;
-              }
-            }
-          }
-        }
-      }
-
       // Strip API usage data — it reflects the original pre-trim context size
       // and would cause the analyzer to report stale (too-high) token counts.
       if (parsed.message?.usage) delete parsed.message.usage;
       if (parsed.usage) delete parsed.usage;
     } else {
       // Entry falls within the last KEEP_LAST emitted entries: still count
-      // tool_use requests for metrics, but leave the entry fully unmodified.
+      // tool_use requests for metrics, but leave the entry's content and
+      // usage metadata fully unmodified.
       for (const content of [parsed.message?.content, parsed.content]) {
         if (Array.isArray(content)) {
           for (const block of content) {
             if (block?.type === 'tool_use') metrics.toolUseRequests++;
+          }
+        }
+      }
+    }
+
+    // Strip orphaned tool_result blocks that reference tool_use IDs from
+    // skipped pre-compaction content. The API requires every tool_result to
+    // have a matching tool_use in the preceding assistant message. This is a
+    // structural fix required for the output to be replayable, so it applies
+    // to entries in the keepLast window too — an orphan there would leave the
+    // file invalid regardless of how recent the entry is.
+    if (skippedToolUseIds.size > 0) {
+      for (const key of ['message.content', 'content'] as const) {
+        const content = key === 'message.content' ? parsed.message?.content : parsed.content;
+        if (Array.isArray(content)) {
+          const filtered = content.filter((block: any) => {
+            if (block.type === 'tool_result' && block.tool_use_id && skippedToolUseIds.has(block.tool_use_id)) {
+              return false;
+            }
+            return true;
+          });
+          if (filtered.length !== content.length) {
+            if (key === 'message.content') {
+              parsed.message.content = filtered;
+            } else {
+              parsed.content = filtered;
+            }
           }
         }
       }

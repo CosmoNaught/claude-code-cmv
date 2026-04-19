@@ -666,6 +666,41 @@ describe('trimmer', () => {
       expect(output[1].content[0].content).toBe(bigContent);
     });
 
+    it('still strips orphaned tool_result blocks in the keepLast window', async () => {
+      // A tool_result whose matching tool_use was skipped by pre-compaction
+      // leaves the file structurally invalid for API replay. This must be
+      // stripped regardless of recency, even when the orphan lands inside
+      // the keepLast window.
+      const src = await writeJsonl('src.jsonl', [
+        // Pre-compaction: tool_use that will be skipped.
+        { type: 'assistant', content: [
+          { type: 'tool_use', id: 'tu_orphan', name: 'Read', input: { file_path: '/a.ts' } },
+        ] },
+        // Compaction boundary.
+        { type: 'summary', summary: 'compacted' },
+        // Post-compaction: a recent entry (inside keepLast window) with
+        // an orphaned tool_result referencing the pre-compaction tool_use.
+        { type: 'user', content: [
+          { type: 'tool_result', tool_use_id: 'tu_orphan', content: 'orphan result' },
+          { type: 'text', text: 'real user text' },
+        ] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      // keepLast=10 puts the post-compaction user entry inside the window.
+      await trimJsonl(src, dest, { keepLast: 10 });
+      const output = await readJsonl(dest);
+
+      // summary + user = 2
+      expect(output).toHaveLength(2);
+      // The orphaned tool_result was stripped even though the entry was
+      // inside the keepLast window.
+      const userContent = output[1].content;
+      expect(userContent).toHaveLength(1);
+      expect(userContent[0].type).toBe('text');
+      expect(userContent[0].text).toBe('real user text');
+    });
+
     it('counts tool_use requests for entries in the keepLast window', async () => {
       const src = await writeJsonl('src.jsonl', [
         { type: 'assistant', content: [
