@@ -9,6 +9,13 @@ const DEFAULT_STUB_THRESHOLD = 500;
 
 export interface TrimOptions {
   threshold?: number;
+  /**
+   * Stub Write/Edit payloads (content/old_string/new_string/new_source).
+   * Default false: these fields are the file content the model may re-apply
+   * on resume, so stubbing them silently corrupts files. Opt in only under
+   * extreme size pressure.
+   */
+  stubWriteInputs?: boolean;
 }
 
 /** Tool names known to carry large file-content payloads. */
@@ -45,7 +52,8 @@ const PRESERVED_INPUT_FIELDS = new Set([
 function stubToolUseInput(
   block: any,
   threshold: number,
-  metrics: TrimMetrics
+  metrics: TrimMetrics,
+  stubWriteInputs: boolean
 ): void {
   if (!block.input || typeof block.input !== 'object') return;
 
@@ -53,6 +61,11 @@ function stubToolUseInput(
 
   // Known write tools — targeted field stubbing
   if (WRITE_TOOLS.has(toolName)) {
+    // These fields ARE the file payload the model may re-apply on resume.
+    // Stubbing corrupts files silently. Off by default; returning here also
+    // keeps write payloads out of the broad fallback below.
+    if (!stubWriteInputs) return;
+
     let stubbed = false;
 
     if (typeof block.input.content === 'string' && block.input.content.length > threshold) {
@@ -104,7 +117,8 @@ function stubToolUseInput(
 function processContentArray(
   content: any[],
   threshold: number,
-  metrics: TrimMetrics
+  metrics: TrimMetrics,
+  stubWriteInputs: boolean
 ): any[] {
   for (const block of content) {
     // Strip image blocks from tool results — base64 data is waste on a new branch
@@ -140,7 +154,7 @@ function processContentArray(
     // Stub large tool_use inputs + count requests
     if (block.type === 'tool_use') {
       metrics.toolUseRequests++;
-      stubToolUseInput(block, threshold, metrics);
+      stubToolUseInput(block, threshold, metrics, stubWriteInputs);
     }
   }
 
@@ -174,6 +188,7 @@ export async function trimJsonl(
   options: TrimOptions = {}
 ): Promise<TrimMetrics> {
   const STUB_THRESHOLD = Math.max(options.threshold ?? DEFAULT_STUB_THRESHOLD, 50);
+  const stubWriteInputs = options.stubWriteInputs ?? false;
 
   const metrics: TrimMetrics = {
     originalBytes: 0,
@@ -296,10 +311,10 @@ export async function trimJsonl(
 
     // Process content arrays (images, tool results, tool_use inputs, thinking)
     if (Array.isArray(parsed.message?.content)) {
-      parsed.message.content = processContentArray(parsed.message.content, STUB_THRESHOLD, metrics);
+      parsed.message.content = processContentArray(parsed.message.content, STUB_THRESHOLD, metrics, stubWriteInputs);
     }
     if (Array.isArray(parsed.content)) {
-      parsed.content = processContentArray(parsed.content, STUB_THRESHOLD, metrics);
+      parsed.content = processContentArray(parsed.content, STUB_THRESHOLD, metrics, stubWriteInputs);
     }
 
     // Strip orphaned tool_result blocks that reference tool_use IDs from

@@ -79,6 +79,8 @@ export interface AutoTrimConfig {
   threshold?: number;
   sizeThresholdBytes?: number;
   maxBackups?: number;
+  /** Stub Write/Edit payloads during auto-trim. Default false (safe). */
+  stubWriteInputs?: boolean;
 }
 
 export interface AutoTrimLogEntry {

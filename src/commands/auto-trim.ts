@@ -117,6 +117,7 @@ export function registerAutoTrimCommand(program: Command): void {
         const tmpPath = transcriptPath + '.cmv-trim-tmp';
         const metrics = await trimJsonl(transcriptPath, tmpPath, {
           threshold: config.threshold ?? DEFAULT_TRIM_THRESHOLD,
+          stubWriteInputs: config.stubWriteInputs ?? false,
         });
 
         // Atomic replace
