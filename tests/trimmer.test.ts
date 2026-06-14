@@ -150,7 +150,7 @@ describe('trimmer', () => {
   });
 
   describe('tool_use input stubbing', () => {
-    it('stubs Write tool content field', async () => {
+    it('preserves Write tool content by default', async () => {
       const bigContent = 'x'.repeat(600);
       const src = await writeJsonl('src.jsonl', [
         { type: 'assistant', content: [{
@@ -163,13 +163,13 @@ describe('trimmer', () => {
       const metrics = await trimJsonl(src, dest);
       const output = await readJsonl(dest);
 
-      expect(metrics.toolUseInputsStubbed).toBe(1);
+      expect(metrics.toolUseInputsStubbed).toBe(0);
       const input = output[0].content[0].input;
       expect(input.file_path).toBe('/a/b.ts');
-      expect(input.content).toContain('[Trimmed input');
+      expect(input.content).toBe(bigContent);
     });
 
-    it('stubs Edit tool old_string and new_string', async () => {
+    it('preserves Edit tool old_string and new_string by default', async () => {
       const big = 'y'.repeat(600);
       const src = await writeJsonl('src.jsonl', [
         { type: 'assistant', content: [{
@@ -182,11 +182,28 @@ describe('trimmer', () => {
       const metrics = await trimJsonl(src, dest);
       const output = await readJsonl(dest);
 
-      expect(metrics.toolUseInputsStubbed).toBe(1);
+      expect(metrics.toolUseInputsStubbed).toBe(0);
       const input = output[0].content[0].input;
       expect(input.file_path).toBe('/a/b.ts');
-      expect(input.old_string).toContain('[Trimmed input');
-      expect(input.new_string).toContain('[Trimmed input');
+      expect(input.old_string).toBe(big);
+      expect(input.new_string).toBe(big);
+    });
+
+    it('stubs Write input when stubWriteInputs is enabled', async () => {
+      const big = 'x'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{
+          type: 'tool_use', id: 't1', name: 'Write',
+          input: { file_path: '/a/b.ts', content: big }
+        }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest, { stubWriteInputs: true });
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolUseInputsStubbed).toBe(1);
+      expect(output[0].content[0].input.content).toContain('[Trimmed input');
     });
 
     it('preserves identification fields in broad fallback', async () => {

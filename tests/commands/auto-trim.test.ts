@@ -177,7 +177,7 @@ describe('auto-trim command', () => {
     expect(trimJsonl).toHaveBeenCalledWith(
       transcriptPath,
       transcriptPath + '.cmv-trim-tmp',
-      { threshold: 500 },
+      { threshold: 500, stubWriteInputs: false },
     );
     expect(mockRename).toHaveBeenCalledWith(
       transcriptPath + '.cmv-trim-tmp',
@@ -331,7 +331,7 @@ describe('auto-trim command', () => {
     expect(trimJsonl).toHaveBeenCalledWith(
       transcriptPath,
       transcriptPath + '.cmv-trim-tmp',
-      { threshold: 300 },
+      { threshold: 300, stubWriteInputs: false },
     );
   });
 
@@ -553,7 +553,7 @@ describe('auto-trim command', () => {
     expect(trimJsonl).toHaveBeenCalledWith(
       transcriptPath,
       transcriptPath + '.cmv-trim-tmp',
-      { threshold: 500 },
+      { threshold: 500, stubWriteInputs: false },
     );
     expect(rotateBackups).toHaveBeenCalledWith('sess-abc', 5);
   });
