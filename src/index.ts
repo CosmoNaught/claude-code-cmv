@@ -3,6 +3,7 @@
 // SPDX-License-Identifier: Apache-2.0
 
 import { Command } from 'commander';
+import { getCmvVersion } from './utils/paths.js';
 import { registerSnapshotCommand } from './commands/snapshot.js';
 import { registerBranchCommand } from './commands/branch.js';
 import { registerSessionsCommand } from './commands/sessions.js';
@@ -25,7 +26,7 @@ const program = new Command();
 program
   .name('cmv')
   .description('Contextual Memory Virtualisation — git-like snapshots and branching for Claude Code sessions')
-  .version('2.0.0');
+  .version(getCmvVersion());
 
 // Register all commands
 registerSnapshotCommand(program);

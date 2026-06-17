@@ -12,6 +12,10 @@ const DEFAULT_SIZE_THRESHOLD = 600_000; // ~600KB, roughly 70% of 200k token con
 const DEFAULT_TRIM_THRESHOLD = 500;
 const DEFAULT_MAX_BACKUPS = 5;
 const STDIN_TIMEOUT = 5000;
+// Once a session is trimmed and saturated, skip re-trimming until the file has
+// grown this much past the last trimmed size. Avoids a full backup + rewrite on
+// every tool call for ~0% gain on large, already-trimmed sessions.
+const DEFAULT_RETRIM_GROWTH = 65_536; // ~64KB
 
 interface HookInput {
   session_id?: string;
@@ -75,6 +79,21 @@ async function logTrim(entry: AutoTrimLogEntry): Promise<void> {
   await fs.writeFile(logPath, JSON.stringify(entries, null, 2), 'utf-8');
 }
 
+/**
+ * The trimmed size from this session's most recent trim, or null if none.
+ * Used to skip re-trimming a saturated file that has barely grown since.
+ */
+async function getLastTrimmedBytes(sessionId: string): Promise<number | null> {
+  try {
+    const raw = await fs.readFile(getCmvAutoTrimLogPath(), 'utf-8');
+    const entries: AutoTrimLogEntry[] = JSON.parse(raw);
+    const last = entries.find(e => e.sessionId === sessionId);
+    return last ? last.trimmedBytes : null;
+  } catch {
+    return null;
+  }
+}
+
 export function registerAutoTrimCommand(program: Command): void {
   program
     .command('auto-trim')
@@ -107,6 +126,14 @@ export function registerAutoTrimCommand(program: Command): void {
           if (stat.size < sizeThreshold) {
             process.exit(0); // Under threshold, skip trim (~1ms)
           }
+          // Skip re-trim churn: if this session was already trimmed and the file
+          // has barely grown since, re-trimming would back up and rewrite the
+          // whole file for ~0% gain. Only re-trim once it grows past the margin.
+          const lastTrimmed = await getLastTrimmedBytes(input.session_id);
+          const growthMargin = config.reTrimGrowthBytes ?? DEFAULT_RETRIM_GROWTH;
+          if (lastTrimmed !== null && stat.size - lastTrimmed < growthMargin) {
+            process.exit(0);
+          }
         }
 
         // Save backup before trimming
@@ -117,6 +144,7 @@ export function registerAutoTrimCommand(program: Command): void {
         const tmpPath = transcriptPath + '.cmv-trim-tmp';
         const metrics = await trimJsonl(transcriptPath, tmpPath, {
           threshold: config.threshold ?? DEFAULT_TRIM_THRESHOLD,
+          stubWriteInputs: config.stubWriteInputs ?? false,
         });
 
         // Atomic replace
