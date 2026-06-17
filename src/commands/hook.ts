@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import * as fs from 'node:fs/promises';
-import { getClaudeSettingsPath, getCmvAutoTrimLogPath } from '../utils/paths.js';
+import { getClaudeSettingsPath, getCmvAutoTrimLogPath, resolveCmvBinary } from '../utils/paths.js';
 import { listBackups, restoreBackup } from '../core/auto-backup.js';
 import { success, info, dim } from '../utils/display.js';
 import { handleError } from '../utils/errors.js';
@@ -20,15 +20,13 @@ interface ClaudeSettings {
   [key: string]: unknown;
 }
 
-const CMV_COMMAND_PREFIX = 'cmv auto-trim';
-
-function buildHookConfig(): Record<string, Array<{ matcher: string; hooks: Array<{ type: string; command: string; timeout: number }> }>> {
+function buildHookConfig(cmvBin: string): Record<string, Array<{ matcher: string; hooks: Array<{ type: string; command: string; timeout: number }> }>> {
   return {
     PreCompact: [{
       matcher: '',
       hooks: [{
         type: 'command',
-        command: 'cmv auto-trim',
+        command: `${cmvBin} auto-trim`,
         timeout: 30,
       }],
     }],
@@ -36,7 +34,7 @@ function buildHookConfig(): Record<string, Array<{ matcher: string; hooks: Array
       matcher: '',
       hooks: [{
         type: 'command',
-        command: 'cmv auto-trim --check-size',
+        command: `${cmvBin} auto-trim --check-size`,
         timeout: 10,
       }],
     }],
@@ -58,8 +56,11 @@ async function writeSettings(settings: ClaudeSettings): Promise<void> {
   await fs.writeFile(settingsPath, JSON.stringify(settings, null, 2), 'utf-8');
 }
 
+/**
+ * Matches both bare `cmv auto-trim` (old installs) and absolute-path variants.
+ */
 function isCmvHookEntry(entry: { matcher: string; hooks: Array<{ command: string }> }): boolean {
-  return entry.hooks.some(h => h.command.startsWith(CMV_COMMAND_PREFIX));
+  return entry.hooks.some(h => /(?:^|[\\/])cmv(?:\.cmd|\.ps1)?\s+auto-trim/.test(h.command));
 }
 
 function formatSize(bytes: number): string {
@@ -80,7 +81,8 @@ export function registerHookCommand(program: Command): void {
         const settings = await readSettings();
         if (!settings.hooks) settings.hooks = {};
 
-        const newHooks = buildHookConfig();
+        const cmvBin = await resolveCmvBinary();
+        const newHooks = buildHookConfig(cmvBin);
 
         for (const [event, entries] of Object.entries(newHooks)) {
           if (!settings.hooks[event]) {
