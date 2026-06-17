@@ -81,6 +81,8 @@ export interface AutoTrimConfig {
   maxBackups?: number;
   /** Stub Write/Edit payloads during auto-trim. Default false (safe). */
   stubWriteInputs?: boolean;
+  /** Skip PostToolUse re-trim until the file grows this many bytes past the last trim. Default ~64KB. */
+  reTrimGrowthBytes?: number;
 }
 
 export interface AutoTrimLogEntry {
