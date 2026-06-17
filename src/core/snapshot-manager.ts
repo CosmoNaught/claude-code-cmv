@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import { getCmvSnapshotsDir } from '../utils/paths.js';
+import { getCmvSnapshotsDir, getCmvVersion } from '../utils/paths.js';
 import { generateSnapshotId } from '../utils/id.js';
 import {
   findSession,
@@ -18,8 +18,6 @@ import {
   getSnapshot,
 } from './metadata-store.js';
 import type { CmvSnapshot, CmvSnapshotMeta } from '../types/index.js';
-
-const CMV_VERSION = '1.0.0';
 
 export interface CreateSnapshotParams {
   name: string;
@@ -137,7 +135,7 @@ export async function createSnapshot(params: CreateSnapshotParams): Promise<Crea
 
   // Write meta.json (for portability)
   const meta: CmvSnapshotMeta = {
-    cmv_version: CMV_VERSION,
+    cmv_version: getCmvVersion(),
     snapshot_id: snapshotId,
     name: params.name,
     description: params.description || '',
