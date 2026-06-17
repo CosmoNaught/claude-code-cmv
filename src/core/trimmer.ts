@@ -32,6 +32,7 @@ const PRESERVED_INPUT_FIELDS = new Set([
   'notebook_path',
   'command',
   'description',
+  'prompt',
   'pattern',
   'path',
   'url',

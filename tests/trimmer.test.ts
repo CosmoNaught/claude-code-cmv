@@ -206,7 +206,7 @@ describe('trimmer', () => {
       expect(output[0].content[0].input.content).toContain('[Trimmed input');
     });
 
-    it('preserves identification fields in broad fallback', async () => {
+    it('preserves description and prompt (Agent instructions) in broad fallback', async () => {
       const bigPrompt = 'z'.repeat(600);
       const src = await writeJsonl('src.jsonl', [
         { type: 'assistant', content: [{
@@ -219,10 +219,29 @@ describe('trimmer', () => {
       const metrics = await trimJsonl(src, dest);
       const output = await readJsonl(dest);
 
-      expect(metrics.toolUseInputsStubbed).toBe(1);
+      expect(metrics.toolUseInputsStubbed).toBe(0);
       const input = output[0].content[0].input;
       expect(input.description).toBe('do stuff');
-      expect(input.prompt).toContain('[Trimmed input');
+      expect(input.prompt).toBe(bigPrompt);
+    });
+
+    it('stubs large non-preserved fields in broad fallback', async () => {
+      const blob = 'q'.repeat(600);
+      const src = await writeJsonl('src.jsonl', [
+        { type: 'assistant', content: [{
+          type: 'tool_use', id: 't1', name: 'SomeTool',
+          input: { description: 'keep me', payload: blob }
+        }] },
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      expect(metrics.toolUseInputsStubbed).toBe(1);
+      const input = output[0].content[0].input;
+      expect(input.description).toBe('keep me');
+      expect(input.payload).toContain('[Trimmed input');
     });
 
     it('does not stub small tool_use inputs', async () => {
