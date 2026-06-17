@@ -3,6 +3,26 @@
 import * as os from 'node:os';
 import * as path from 'node:path';
 import * as fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
+
+let cachedCmvVersion: string | null = null;
+
+/**
+ * Read the CMV version from package.json so it never drifts from the release.
+ * paths.js lives at <pkg>/dist/utils/, so package.json is two levels up.
+ */
+export function getCmvVersion(): string {
+  if (cachedCmvVersion !== null) return cachedCmvVersion;
+  try {
+    const pkg = JSON.parse(
+      readFileSync(new URL('../../package.json', import.meta.url), 'utf-8'),
+    );
+    cachedCmvVersion = (pkg.version as string) ?? '0.0.0';
+  } catch {
+    cachedCmvVersion = '0.0.0';
+  }
+  return cachedCmvVersion;
+}
 
 /**
  * Get the Claude Code projects directory: ~/.claude/projects/
