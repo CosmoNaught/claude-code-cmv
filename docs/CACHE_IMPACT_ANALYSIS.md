@@ -226,6 +226,6 @@ The raw per-session benchmark data is saved to `data/benchmark_results.json` and
 - Pricing data: [Anthropic Prompt Caching Documentation](https://docs.anthropic.com/en/docs/build-with-claude/prompt-caching)
 - Analysis code: [`docs/assets/benchmark_analysis.py`](assets/benchmark_analysis.py)
 - Benchmark data: [`data/benchmark_results.json`](../data/benchmark_results.json)
-- CMV: [github.com/CosmoNaught/cmv](https://github.com/CosmoNaught/claude-code-cmv)
+- CMV: [github.com/IngressionLabs/contextual-memory-virtualisation](https://github.com/IngressionLabs/contextual-memory-virtualisation)
 
 *Updated February 2026 (v2.0 ground-truth analysis). 76 sessions analyzed with real trimmer. All analysis run against real Claude Code sessions on the author's machine.*

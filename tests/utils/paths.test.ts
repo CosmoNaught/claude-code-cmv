@@ -132,6 +132,8 @@ describe('isCmvAutoTrimCommand', () => {
     expect(isCmvAutoTrimCommand('C:\\Users\\u\\AppData\\Roaming\\npm\\cmv.cmd auto-trim')).toBe(true);
     expect(isCmvAutoTrimCommand('/home/u/.claude-plugins/cmv/dist/index.js auto-trim --check-size')).toBe(true);
     expect(isCmvAutoTrimCommand('"/usr/bin/node" "/home/u/my repos/claude-code-cmv/dist/index.js" auto-trim')).toBe(true);
+    // Clone of the renamed repo: no "cmv" anywhere in the path
+    expect(isCmvAutoTrimCommand('"/usr/bin/node" "/home/u/contextual-memory-virtualisation/dist/index.js" auto-trim --check-size')).toBe(true);
     expect(isCmvAutoTrimCommand('"C:\\Program Files\\nodejs\\node.exe" "C:\\src\\cmv\\dist\\index.js" auto-trim --check-size')).toBe(true);
   });
 
@@ -139,7 +141,7 @@ describe('isCmvAutoTrimCommand', () => {
     expect(isCmvAutoTrimCommand('other-tool')).toBe(false);
     expect(isCmvAutoTrimCommand('mycmv auto-trim')).toBe(false);
     expect(isCmvAutoTrimCommand('cmv snapshot foo')).toBe(false);
-    expect(isCmvAutoTrimCommand('"/usr/bin/node" "/opt/other/dist/index.js" auto-trim')).toBe(false);
+    expect(isCmvAutoTrimCommand('"/usr/bin/node" "/opt/tool/dist/index.js" auto-trimmer')).toBe(false);
   });
 });
 
