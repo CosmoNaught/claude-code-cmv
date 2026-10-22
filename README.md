@@ -7,9 +7,9 @@
 [![API Docs](https://img.shields.io/badge/docs-API-blue)](https://ingressionlabs.github.io/contextual-memory-virtualisation/)
 [![GitHub stars](https://img.shields.io/github/stars/IngressionLabs/contextual-memory-virtualisation)](https://github.com/IngressionLabs/contextual-memory-virtualisation/stargazers)
 
-# Claude Code Contextual Memory Virtualisation (CMV)
+# Contextual Memory Virtualisation (CMV)
 
-Like virtual memory lets an OS use more RAM than it physically has, CMV lets Claude Code use more context than fits in one session — by snapshotting, branching, and trimming the understanding your sessions build up. For the full design rationale and evaluation, see the [paper](https://arxiv.org/abs/2602.22402).
+Like virtual memory lets an OS use more RAM than it physically has, CMV lets an AI coding agent use more context than fits in one session — by snapshotting, branching, and trimming the understanding your sessions build up. The approach is agent-agnostic; this implementation demonstrates it with agentic coding sessions in Claude Code. For the full design rationale and evaluation, see the [paper](https://arxiv.org/abs/2602.22402).
 
 ![CMV demo](assets/demo.gif)
 
