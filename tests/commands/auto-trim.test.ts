@@ -177,7 +177,7 @@ describe('auto-trim command', () => {
     expect(trimJsonl).toHaveBeenCalledWith(
       transcriptPath,
       transcriptPath + '.cmv-trim-tmp',
-      { threshold: 500 },
+      { threshold: 500, stubWriteInputs: false },
     );
     expect(mockRename).toHaveBeenCalledWith(
       transcriptPath + '.cmv-trim-tmp',
@@ -285,6 +285,34 @@ describe('auto-trim command', () => {
     expect(saveBackup).toHaveBeenCalled();
   });
 
+  it('skips re-trim (no backup or trim) when file barely grew since last trim', async () => {
+    mockStdinWith(JSON.stringify({
+      session_id: 'sess-saturated',
+      transcript_path: '/fake/sessions/session.jsonl',
+    }));
+    mockStat.mockResolvedValue({ size: 1_000_000 }); // over the 600KB threshold
+    // Prior trim left this session at 990_000 bytes; only ~10KB of growth since,
+    // under the 64KB re-trim margin, so the guard should skip before any work.
+    mockReadFile.mockImplementation((p: any) =>
+      typeof p === 'string' && p.includes('auto-trim-log')
+        ? Promise.resolve(JSON.stringify([
+            { sessionId: 'sess-saturated', trimmedBytes: 990_000, originalBytes: 1_000_000,
+              reductionPercent: 1, trigger: 'PostToolUse', timestamp: 't', backupPath: 'b' },
+          ]))
+        : Promise.reject(new Error('not found')),
+    );
+    // The shared process.exit mock is a no-op; make the guard's exit actually halt.
+    (process.exit as any).mockImplementationOnce(() => { throw new Error('__exit__'); });
+
+    const program = new Command();
+    program.exitOverride();
+    registerAutoTrimCommand(program);
+    await program.parseAsync(['node', 'cmv', 'auto-trim', '--check-size']).catch(() => {});
+
+    expect(saveBackup).not.toHaveBeenCalled();
+    expect(trimJsonl).not.toHaveBeenCalled();
+  });
+
   it('uses sizeThresholdBytes from config when provided', async () => {
     // File at 150KB is below custom 200KB threshold; size guard fires process.exit(0).
     // With the no-op exit, execution continues — we verify stat was called (the size
@@ -331,7 +359,7 @@ describe('auto-trim command', () => {
     expect(trimJsonl).toHaveBeenCalledWith(
       transcriptPath,
       transcriptPath + '.cmv-trim-tmp',
-      { threshold: 300 },
+      { threshold: 300, stubWriteInputs: false },
     );
   });
 
@@ -553,7 +581,7 @@ describe('auto-trim command', () => {
     expect(trimJsonl).toHaveBeenCalledWith(
       transcriptPath,
       transcriptPath + '.cmv-trim-tmp',
-      { threshold: 500 },
+      { threshold: 500, stubWriteInputs: false },
     );
     expect(rotateBackups).toHaveBeenCalledWith('sess-abc', 5);
   });
