@@ -6,7 +6,7 @@
  * Runs silently — failures are swallowed so npm install never breaks.
  */
 import * as fs from 'node:fs/promises';
-import { getClaudeSettingsPath, resolveCmvBinary } from './utils/paths.js';
+import { getClaudeSettingsPath, resolveCmvBinary, isCmvAutoTrimCommand } from './utils/paths.js';
 
 interface ClaudeSettings {
   hooks?: Record<string, Array<{
@@ -42,10 +42,10 @@ function buildHookConfig(cmvBin: string) {
 }
 
 /**
- * Matches both bare `cmv auto-trim` (old installs) and absolute-path variants.
+ * Matches bare `cmv auto-trim` (old installs) and absolute-path variants.
  */
 function isCmvHookEntry(entry: { hooks: Array<{ command: string }> }): boolean {
-  return entry.hooks.some(h => /(?:^|[\\/])cmv(?:\.cmd|\.ps1)?\s+auto-trim/.test(h.command));
+  return entry.hooks.some(h => isCmvAutoTrimCommand(h.command));
 }
 
 async function main() {

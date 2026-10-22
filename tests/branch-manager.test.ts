@@ -266,9 +266,42 @@ describe('createBranch', () => {
     expect(content).toContain('Focus on the auth module.');
     const lines = content.trim().split('\n');
     const lastLine = JSON.parse(lines[lines.length - 1]);
-    expect(lastLine.type).toBe('human');
+    expect(lastLine.type).toBe('user');
     expect(lastLine.message.role).toBe('user');
+    expect(lastLine.uuid).toEqual(expect.any(String));
+    expect(lastLine.sessionId).toBe('test-uuid-1234-5678-9abc-def012345678');
     expect(lastLine.message.content).toBe('Focus on the auth module.');
+  });
+
+  it('stamps the new session ID, records real counts, and chains the orientation row (#10)', async () => {
+    const snap = makeMockSnapshot();
+    mockedGetSnapshot.mockResolvedValue(snap as never);
+    const rows = [
+      { type: 'user', uuid: 'u1', parentUuid: null, sessionId: 'orig-session', cwd: '/test/project', gitBranch: 'main', message: { role: 'user', content: 'q' } },
+      { type: 'assistant', uuid: 'a1', parentUuid: 'u1', sessionId: 'orig-session', message: { role: 'assistant', content: [{ type: 'text', text: 'a' }] } },
+      { type: 'file-history-snapshot', messageId: 'a1', snapshot: {} },
+    ];
+    await setupFilesystem({ jsonlContent: rows.map(r => JSON.stringify(r)).join('\n') + '\n' });
+
+    await createBranch({
+      snapshotName: 'my-snap',
+      branchName: 'stamped',
+      noLaunch: true,
+      orientationMessage: 'Go.',
+    });
+
+    const projectDir = path.join(tmpDirRef.value, 'projects', 'test--project');
+    const out = (await fs.readFile(path.join(projectDir, 'test-uuid-1234-5678-9abc-def012345678.jsonl'), 'utf-8'))
+      .trim().split('\n').map(l => JSON.parse(l));
+    expect(out.filter(r => r.sessionId).every(r => r.sessionId === 'test-uuid-1234-5678-9abc-def012345678')).toBe(true);
+    const orientation = out[out.length - 1];
+    expect(orientation.parentUuid).toBe('a1');
+    expect(orientation.cwd).toBe('/test/project');
+
+    const index = JSON.parse(await fs.readFile(path.join(projectDir, 'sessions-index.json'), 'utf-8'));
+    const entry = index.entries.find((e: any) => e.sessionId === 'test-uuid-1234-5678-9abc-def012345678');
+    expect(entry.messageCount).toBe(3);
+    expect(entry.gitBranch).toBe('main');
   });
 
   it('throws when project dir not found', async () => {

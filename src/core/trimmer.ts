@@ -16,6 +16,37 @@ export interface TrimOptions {
    * extreme size pressure.
    */
   stubWriteInputs?: boolean;
+  /**
+   * Rewrite every row's `sessionId` to this value. A branch is a new session,
+   * and Claude Code's own --fork-session stamps copied rows the same way.
+   */
+  sessionId?: string;
+}
+
+/**
+ * True for a record that marks a compaction boundary. Modern Claude Code
+ * writes `system/compact_boundary`; very old versions started the compacted
+ * file with a bare `summary`. A `summary` carrying `leafUuid` is a session
+ * title record, which can appear anywhere and must not hide what precedes it.
+ */
+function isCompactionBoundary(p: any): boolean {
+  if (p.type === 'system' && p.subtype === 'compact_boundary') return true;
+  return p.type === 'summary' && !p.leafUuid;
+}
+
+/**
+ * True if a boundary keeps messages from before it live (partial compaction).
+ * Those messages are still in the resume chain, so nothing before the
+ * boundary may be skipped.
+ */
+function boundaryPreservesEarlierMessages(p: any): boolean {
+  const meta = p.compactMetadata;
+  return !!(meta && (meta.preservedSegment || meta.preservedMessages));
+}
+
+/** Conversation rows that make up the parentUuid chain Claude Code resumes from. */
+function isChainMessage(p: any): boolean {
+  return (p.type === 'user' || p.type === 'assistant') && typeof p.uuid === 'string';
 }
 
 /** Tool names known to carry large file-content payloads. */
@@ -173,7 +204,8 @@ function processContentArray(
  * Trim a JSONL session file: strip bloat, keep conversation.
  *
  * Rules:
- *   1. Pre-compaction content → skip entirely (dead weight)
+ *   1. Pre-compaction content → skip entirely (dead weight), unless the
+ *      boundary preserves earlier messages
  *   2. file-history-snapshot entries → skip entirely
  *   3. queue-operation entries → skip entirely
  *   4. Image blocks in tool results → strip always
@@ -182,6 +214,10 @@ function processContentArray(
  *   7. thinking blocks → remove entirely (signature is required by API)
  *   8. API usage metadata → strip
  *   9. Everything else → preserved verbatim
+ *
+ * Rows left with no content (e.g. a thinking-only assistant row) are dropped
+ * and their children re-linked to the nearest kept ancestor, so the
+ * parentUuid chain Claude Code walks on resume stays unbroken.
  */
 export async function trimJsonl(
   sourcePath: string,
@@ -212,17 +248,23 @@ export async function trimJsonl(
   // ── Pass 1: Find the last compaction boundary line number ──
   // Cheap string check avoids JSON.parse on most lines.
   let lastCompactionLine = -1;
+  let preserveBeforeBoundary = false;
+  // Last row carrying a uuid: a running Claude Code appends its next row as a
+  // child of it (auto-trim rewrites live sessions), so it is never dropped.
+  let lastUuidLine = -1;
   {
     const scanStream = createReadStream(sourcePath, { encoding: 'utf-8' });
     const scanRl = readline.createInterface({ input: scanStream, crlfDelay: Infinity });
     let lineNum = 0;
     for await (const line of scanRl) {
       if (!line.trim()) { lineNum++; continue; }
+      if (line.includes('"uuid"')) lastUuidLine = lineNum;
       if (line.includes('"summary"') || line.includes('"compact_boundary"')) {
         try {
           const p = JSON.parse(line);
-          if (p.type === 'summary' || (p.type === 'system' && p.subtype === 'compact_boundary')) {
+          if (isCompactionBoundary(p)) {
             lastCompactionLine = lineNum;
+            preserveBeforeBoundary = boundaryPreservesEarlierMessages(p);
           }
         } catch { /* not valid JSON */ }
       }
@@ -231,6 +273,7 @@ export async function trimJsonl(
     scanRl.close();
     scanStream.destroy();
   }
+  if (preserveBeforeBoundary) lastCompactionLine = -1;
 
   // ── Pass 2: Collect tool_use IDs from skipped pre-compaction content ──
   // When we skip lines before the compaction boundary, we need to know which
@@ -267,6 +310,8 @@ export async function trimJsonl(
   const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
   const writer = createWriteStream(destPath, { encoding: 'utf-8' });
   let currentLine = 0;
+  // uuid of each dropped chain row → its parentUuid, for re-linking children
+  const droppedParents = new Map<string, string | null>();
 
   for await (const line of rl) {
     if (!line.trim()) { currentLine++; continue; }
@@ -340,6 +385,38 @@ export async function trimJsonl(
           }
         }
       }
+    }
+
+    // A chain row with nothing left to say (thinking-only assistant row,
+    // tool_result-only user row whose tool_use was skipped) is dropped;
+    // children are re-linked below.
+    const finalContent = parsed.message?.content ?? parsed.content;
+    if (isChainMessage(parsed) && Array.isArray(finalContent) && finalContent.length === 0) {
+      if (currentLine === lastUuidLine) {
+        // Keep the leaf intact rather than leave it empty or orphan the next append
+        writer.write(line + '\n');
+        currentLine++;
+        continue;
+      }
+      droppedParents.set(parsed.uuid, parsed.parentUuid ?? null);
+      metrics.emptyMessagesDropped = (metrics.emptyMessagesDropped ?? 0) + 1;
+      currentLine++;
+      continue;
+    }
+
+    // Re-link to the nearest kept ancestor when the parent was dropped
+    if (typeof parsed.parentUuid === 'string' && droppedParents.has(parsed.parentUuid)) {
+      let parent: string | null = parsed.parentUuid;
+      const seen = new Set<string>();
+      while (parent !== null && droppedParents.has(parent) && !seen.has(parent)) {
+        seen.add(parent);
+        parent = droppedParents.get(parent)!;
+      }
+      parsed.parentUuid = parent;
+    }
+
+    if (options.sessionId && typeof parsed.sessionId === 'string') {
+      parsed.sessionId = options.sessionId;
     }
 
     // Strip API usage data — it reflects the original pre-trim context size

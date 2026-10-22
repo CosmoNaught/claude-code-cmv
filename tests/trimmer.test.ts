@@ -542,4 +542,130 @@ describe('trimmer', () => {
       expect(output[3].content[0].text).toBe('The API uses Express with middleware.');
     });
   });
+
+  describe('resume chain integrity (#10)', () => {
+    /** Realistic Claude Code rows: one JSONL line per content block, linked by parentUuid. */
+    const row = (type: string, uuid: string, parentUuid: string | null, content: any[], extra: any = {}) => ({
+      type, uuid, parentUuid, sessionId: 'old-session', isSidechain: false,
+      message: { role: type, content }, ...extra,
+    });
+
+    it('drops thinking-only rows and re-links their children', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        row('user', 'u1', null, [{ type: 'text', text: 'question' }]),
+        row('assistant', 'a1', 'u1', [{ type: 'thinking', thinking: 'hmm', signature: 'sig' }]),
+        row('assistant', 'a2', 'a1', [{ type: 'thinking', thinking: 'more', signature: 'sig' }]),
+        row('assistant', 'a3', 'a2', [{ type: 'text', text: 'answer' }]),
+        row('user', 'u2', 'a3', [{ type: 'text', text: 'next' }]),
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+
+      expect(metrics.emptyMessagesDropped).toBe(2);
+      expect(output.map((r: any) => r.uuid)).toEqual(['u1', 'a3', 'u2']);
+      expect(output[1].parentUuid).toBe('u1');
+      expect(output[2].parentUuid).toBe('a3');
+      // No row is left with empty content
+      expect(output.every((r: any) => r.message.content.length > 0)).toBe(true);
+    });
+
+    it('walking parentUuid from the last row reaches the first message', async () => {
+      const lines: any[] = [row('user', 'u0', null, [{ type: 'text', text: 'start' }])];
+      let prev = 'u0';
+      for (let i = 0; i < 20; i++) {
+        lines.push(row('assistant', `t${i}`, prev, [{ type: 'thinking', thinking: 'x', signature: 's' }]));
+        lines.push(row('assistant', `a${i}`, `t${i}`, [{ type: 'tool_use', id: `tu${i}`, name: 'Read', input: { file_path: '/f' } }]));
+        lines.push(row('user', `r${i}`, `a${i}`, [{ type: 'tool_result', tool_use_id: `tu${i}`, content: 'x'.repeat(2000) }]));
+        lines.push({ type: 'file-history-snapshot', messageId: `r${i}`, snapshot: {} });
+        prev = `r${i}`;
+      }
+      const src = await writeJsonl('src.jsonl', lines);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+      const byUuid = new Map(output.filter((r: any) => r.uuid).map((r: any) => [r.uuid, r]));
+
+      let node: any = output[output.length - 1];
+      let steps = 0;
+      while (node.parentUuid) {
+        node = byUuid.get(node.parentUuid);
+        expect(node).toBeDefined();
+        steps++;
+      }
+      expect(node.uuid).toBe('u0');
+      expect(steps).toBe(40); // 20 tool_use + 20 tool_result rows, thinking rows gone
+    });
+
+    it('never drops the final row, which a running session appends to', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        row('user', 'u1', null, [{ type: 'text', text: 'q' }]),
+        row('assistant', 'a1', 'u1', [{ type: 'thinking', thinking: 'still thinking', signature: 's' }]),
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+      expect(output.map((r: any) => r.uuid)).toEqual(['u1', 'a1']);
+      expect(output[1].message.content[0].type).toBe('thinking');
+    });
+
+    it('rewrites sessionId when asked', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        row('user', 'u1', null, [{ type: 'text', text: 'q' }]),
+        row('assistant', 'a1', 'u1', [{ type: 'text', text: 'a' }]),
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      await trimJsonl(src, dest, { sessionId: 'new-session' });
+      const output = await readJsonl(dest);
+      expect(output.every((r: any) => r.sessionId === 'new-session')).toBe(true);
+    });
+
+    it('does not treat a session-title summary as a compaction boundary', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        row('user', 'u1', null, [{ type: 'text', text: 'q' }]),
+        row('assistant', 'a1', 'u1', [{ type: 'text', text: 'a' }]),
+        { type: 'summary', summary: 'Fixing the build', leafUuid: 'a1' },
+        row('user', 'u2', 'a1', [{ type: 'text', text: 'q2' }]),
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+      expect(metrics.preCompactionLinesSkipped).toBe(0);
+      expect(output).toHaveLength(4);
+    });
+
+    it('keeps everything before a boundary that preserves earlier messages', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        row('user', 'u1', null, [{ type: 'text', text: 'kept by partial compaction' }]),
+        row('assistant', 'a1', 'u1', [{ type: 'text', text: 'a' }]),
+        { type: 'system', subtype: 'compact_boundary', uuid: 'b1', parentUuid: null,
+          compactMetadata: { preservedSegment: { headUuid: 'u1', tailUuid: 'a1', anchorUuid: 'b1' } } },
+        row('user', 'u2', 'b1', [{ type: 'text', text: 'after' }]),
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      const output = await readJsonl(dest);
+      expect(metrics.preCompactionLinesSkipped).toBe(0);
+      expect(output.map((r: any) => r.uuid)).toEqual(['u1', 'a1', 'b1', 'u2']);
+    });
+
+    it('still skips content before a plain compact_boundary', async () => {
+      const src = await writeJsonl('src.jsonl', [
+        row('user', 'u1', null, [{ type: 'text', text: 'old' }]),
+        { type: 'system', subtype: 'compact_boundary', uuid: 'b1', parentUuid: null, logicalParentUuid: 'u1' },
+        row('user', 'u2', 'b1', [{ type: 'text', text: 'new' }]),
+      ]);
+      const dest = path.join(tmpDir, 'dest.jsonl');
+
+      const metrics = await trimJsonl(src, dest);
+      expect(metrics.preCompactionLinesSkipped).toBe(1);
+      expect((await readJsonl(dest)).map((r: any) => r.uuid)).toEqual(['b1', 'u2']);
+    });
+  });
 });
