@@ -115,21 +115,34 @@ export async function createBranch(params: BranchParams): Promise<BranchResult> 
     if (params.trim) {
       trimMetrics = await trimJsonl(snapshotJsonlPath, destJsonlPath, {
         threshold: params.trimThreshold,
+        sessionId: newSessionId,
       });
     } else {
-      await fs.copyFile(snapshotJsonlPath, destJsonlPath);
+      await copySessionFile(snapshotJsonlPath, destJsonlPath, newSessionId);
     }
   } catch (err) {
     throw new Error(`Failed to ${params.trim ? 'trim' : 'copy'} session file: ${(err as Error).message}`);
   }
 
-  // Append orientation message if provided (used by multi-branch)
+  // Append orientation message if provided (used by multi-branch).
+  // It must be a real chain row (uuid + parentUuid) or Claude Code can't
+  // attach it to the conversation it resumes.
+  let sessionInfo = await inspectSessionFile(destJsonlPath);
   if (params.orientationMessage) {
     const orientationLine = JSON.stringify({
-      type: 'human',
+      parentUuid: sessionInfo.lastUuid,
+      isSidechain: false,
+      userType: 'external',
+      cwd: sessionInfo.cwd ?? cwd,
+      sessionId: newSessionId,
+      ...(sessionInfo.gitBranch ? { gitBranch: sessionInfo.gitBranch } : {}),
+      type: 'user',
       message: { role: 'user', content: params.orientationMessage },
+      uuid: generateUUID(),
+      timestamp: new Date().toISOString(),
     }) + '\n';
     await fs.appendFile(destJsonlPath, orientationLine);
+    sessionInfo = { ...sessionInfo, messageCount: sessionInfo.messageCount + 1 };
   }
 
   // Update sessions-index.json in the project directory
@@ -139,7 +152,8 @@ export async function createBranch(params: BranchParams): Promise<BranchResult> 
     newSessionId,
     destJsonlPath,
     decodedProjectPath,
-    branchName
+    branchName,
+    sessionInfo
   );
 
   // Record the branch in CMV's index
@@ -340,7 +354,8 @@ async function updateSessionsIndex(
   sessionId: string,
   jsonlPath: string,
   projectPath: string,
-  branchName: string
+  branchName: string,
+  sessionInfo: SessionFileInfo
 ): Promise<void> {
   const indexPath = path.join(projectDir, 'sessions-index.json');
 
@@ -383,15 +398,100 @@ async function updateSessionsIndex(
     fullPath: jsonlPath,
     fileMtime: Math.round(stat.mtimeMs),
     firstPrompt: branchName,
-    messageCount: 0,
+    messageCount: sessionInfo.messageCount,
     created: now,
     modified: now,
-    gitBranch: '',
+    gitBranch: sessionInfo.gitBranch ?? '',
     projectPath,
     isSidechain: false,
   });
 
   await fs.writeFile(indexPath, JSON.stringify(index, null, 2), 'utf-8');
+}
+
+/**
+ * Copy a session JSONL, stamping every row with the branch's session ID
+ * (as Claude Code's own --fork-session does).
+ */
+async function copySessionFile(src: string, dest: string, sessionId: string): Promise<void> {
+  const { createReadStream, createWriteStream } = await import('node:fs');
+  const readline = await import('node:readline');
+  const input = createReadStream(src, { encoding: 'utf-8' });
+  const rl = readline.createInterface({ input, crlfDelay: Infinity });
+  const out = createWriteStream(dest, { encoding: 'utf-8' });
+  try {
+    for await (const line of rl) {
+      if (!line.trim()) continue;
+      let outLine = line;
+      if (line.includes('"sessionId"')) {
+        try {
+          const parsed = JSON.parse(line);
+          if (typeof parsed.sessionId === 'string') {
+            parsed.sessionId = sessionId;
+            outLine = JSON.stringify(parsed);
+          }
+        } catch {
+          // Pass unparseable lines through untouched
+        }
+      }
+      if (!out.write(outLine + '\n')) {
+        await new Promise<void>(resolve => out.once('drain', resolve));
+      }
+    }
+  } finally {
+    rl.close();
+    input.destroy();
+    await new Promise<void>((resolve, reject) => {
+      out.end(() => resolve());
+      out.on('error', reject);
+    });
+  }
+}
+
+interface SessionFileInfo {
+  messageCount: number;
+  lastUuid: string | null;
+  cwd?: string;
+  gitBranch?: string;
+}
+
+/**
+ * Summarise a session JSONL: conversation message count, the last
+ * main-chain row's uuid (the leaf new rows attach to), and cwd/gitBranch.
+ */
+async function inspectSessionFile(jsonlPath: string): Promise<SessionFileInfo> {
+  const info: SessionFileInfo = { messageCount: 0, lastUuid: null };
+  try {
+    const { createReadStream } = await import('node:fs');
+    const readline = await import('node:readline');
+    const input = createReadStream(jsonlPath, { encoding: 'utf-8' });
+    const rl = readline.createInterface({ input, crlfDelay: Infinity });
+    try {
+      for await (const line of rl) {
+        if (!line.trim()) continue;
+        try {
+          const parsed = JSON.parse(line);
+          if (parsed.type === 'user' || parsed.type === 'assistant' || parsed.type === 'human') {
+            info.messageCount++;
+          }
+          if (typeof parsed.uuid === 'string' && !parsed.isSidechain &&
+              (parsed.type === 'user' || parsed.type === 'assistant' || parsed.type === 'system')) {
+            info.lastUuid = parsed.uuid;
+          }
+          if (typeof parsed.cwd === 'string') info.cwd = parsed.cwd;
+          if (typeof parsed.gitBranch === 'string' && parsed.gitBranch) info.gitBranch = parsed.gitBranch;
+        } catch {
+          // Skip unparseable lines
+        }
+      }
+    } finally {
+      rl.close();
+      input.destroy();
+    }
+  } catch {
+    // Unreadable file: report nothing rather than fail the branch
+  }
+  return info;
 }
 
 /**

@@ -46,6 +46,9 @@ import {
   getRunningSessionIds,
   spawnClaudeInteractive,
   spawnClaudeInNewWindow,
+  parseRunningSessionIds,
+  detectCurrentTerminal,
+  expandTerminalTemplate,
 } from '../../src/utils/process.js';
 import { exec, execFileSync, spawn } from 'node:child_process';
 import { openSync, closeSync, accessSync } from 'node:fs';
@@ -341,6 +344,15 @@ describe('spawnClaudeInteractive', () => {
 describe('spawnClaudeInNewWindow', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(execFileSync).mockImplementation(() => { throw new Error('not found'); });
+    vi.mocked(spawn).mockReturnValue({ on: vi.fn(), unref: vi.fn() } as any);
+    // Don't let the terminal running the tests influence detection
+    for (const v of ['TERM_PROGRAM', 'GHOSTTY_RESOURCES_DIR', 'KITTY_WINDOW_ID', 'ALACRITTY_WINDOW_ID',
+      'ALACRITTY_SOCKET', 'PTYXIS_VERSION', 'KONSOLE_VERSION']) vi.stubEnv(v, '');
+  });
+
+  afterEach(() => {
+    vi.unstubAllEnvs();
   });
 
   it('does not throw on default platform', () => {
@@ -391,30 +403,18 @@ describe('spawnClaudeInNewWindow', () => {
     expect(callOpts.cwd).toBe('/valid/cwd');
   });
 
-  it('on darwin calls exec with osascript command', () => {
-    Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
-
-    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000');
-
-    // darwin exec() is called with only the command string (no opts arg)
-    const calls = vi.mocked(exec).mock.calls;
-    expect(calls.length).toBeGreaterThan(0);
-    const firstCallCmd = calls[0][0] as string;
-    expect(firstCallCmd).toContain('osascript');
-    expect(firstCallCmd).toContain('Terminal');
-    expect(firstCallCmd).toContain('--resume');
-  });
-
-  it('on darwin includes cd part when cwd is valid', () => {
+  it('on darwin defaults to Terminal.app via osascript, cd-ing into the project', () => {
     Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
     vi.mocked(accessSync).mockImplementationOnce(() => undefined); // valid cwd
 
     spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, '/my/project');
 
-    const callArg = vi.mocked(exec).mock.calls[0][0] as string;
-    expect(callArg).toContain('cd');
-    expect(callArg).toContain('my');
-    expect(callArg).toContain('project');
+    const [bin, args] = vi.mocked(spawn).mock.calls[0] as [string, string[]];
+    expect(bin).toBe('osascript');
+    const script = args.join('\n');
+    expect(script).toContain('Terminal');
+    expect(script).toContain("cd '/my/project' && exec");
+    expect(script).toContain("--resume 'abc12345-0000-0000-0000-000000000000'");
   });
 
   it('on darwin omits cd part when cwd is invalid', () => {
@@ -423,104 +423,158 @@ describe('spawnClaudeInNewWindow', () => {
 
     spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, '/bad/cwd');
 
-    const callArg = vi.mocked(exec).mock.calls[0][0] as string;
-    // No cd command should appear since effectiveCwd became undefined
-    expect(callArg).not.toContain("cd '");
+    const args = vi.mocked(spawn).mock.calls[0][1] as string[];
+    expect(args.join('\n')).not.toContain('cd ');
   });
 
-  it('on linux calls execFileSync(which) then exec when a terminal is found', () => {
+  it('on darwin uses iTerm when configured', () => {
+    Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, undefined, 't', 'iterm');
+
+    const [bin, args] = vi.mocked(spawn).mock.calls[0] as [string, string[]];
+    expect(bin).toBe('osascript');
+    expect(args.join('\n')).toContain('iTerm');
+  });
+
+  it('on darwin opens Ghostty via `open -na` when configured (#13)', () => {
+    Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
+    vi.mocked(accessSync).mockImplementationOnce(() => undefined);
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, '/my/project', 'T', 'ghostty');
+
+    const [bin, args] = vi.mocked(spawn).mock.calls[0] as [string, string[]];
+    expect(bin).toBe('open');
+    expect(args.slice(0, 3)).toEqual(['-na', 'Ghostty', '--args']);
+    expect(args).toContain('-e');
+    const script = args[args.length - 1]!;
+    expect(args.slice(-3, -1)).toEqual(['sh', '-c']);
+    expect(script).toContain("cd '/my/project' && exec");
+  });
+
+  it('on darwin auto-detects the terminal cmv is running in', () => {
+    Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
+    vi.stubEnv('TERM_PROGRAM', 'WezTerm');
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000');
+
+    const [bin, args] = vi.mocked(spawn).mock.calls[0] as [string, string[]];
+    expect(bin).toBe('open');
+    expect(args[1]).toBe('WezTerm');
+  });
+
+  it('runs a custom terminal template with shell-quoted placeholders', () => {
+    Object.defineProperty(process, 'platform', { value: 'darwin', configurable: true });
+    vi.mocked(accessSync).mockImplementationOnce(() => undefined);
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, "/it's here", 'T',
+      'open -na Ghostty --args --working-directory={cwd} -e {cmd}');
+
+    const cmd = vi.mocked(exec).mock.calls[0][0] as string;
+    expect(cmd).toContain("--working-directory='/it'\\''s here'");
+    expect(cmd).toMatch(/-e sh -c '.*exec .*--resume/);
+  });
+
+  it('on linux launches the first installed terminal with a cd-ing shell (#4)', () => {
     Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
-    // getClaudeCliPath() is called first inside spawnClaudeInNewWindow:
-    //   - call 1: execFileSync('claude', ['--version']) → throws (default mock)
-    //   - call 2: execFileSync(candidate, ['--version']) → throws (all candidates fail)
-    //   - ...all candidate checks throw...
-    // Then linux terminal loop starts:
-    //   - execFileSync('which', ['x-terminal-emulator']) → succeeds
+    vi.mocked(accessSync).mockImplementationOnce(() => undefined);
+    vi.mocked(execFileSync).mockImplementation((cmd: any, args: any) => {
+      if (cmd === 'which' && args[0] === 'gnome-terminal') return '';
+      throw new Error('not found');
+    });
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, '/work/my project', 'T');
+
+    expect(execFileSync).toHaveBeenCalledWith('which', ['x-terminal-emulator'], { stdio: 'ignore' });
+    const [bin, args, opts] = vi.mocked(spawn).mock.calls[0] as [string, string[], any];
+    expect(bin).toBe('gnome-terminal');
+    // gnome-terminal ignores the caller's cwd, so the window must cd itself
+    expect(args).toEqual(['--title=T', '--', 'sh', '-c',
+      "cd '/work/my project' && exec 'claude' --resume 'abc12345-0000-0000-0000-000000000000'"]);
+    expect(opts).toEqual(expect.objectContaining({ detached: true, cwd: '/work/my project' }));
+  });
+
+  it('on linux prefers the configured terminal', () => {
+    Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
     vi.mocked(execFileSync).mockImplementation((cmd: any) => {
-      // Only succeed on 'which' calls
       if (cmd === 'which') return '';
       throw new Error('not found');
     });
 
-    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000');
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, undefined, 'T', 'ptyxis');
 
-    expect(execFileSync).toHaveBeenCalledWith('which', ['x-terminal-emulator'], { stdio: 'ignore' });
-    // exec should be called with a string containing x-terminal-emulator
-    const execCalls = vi.mocked(exec).mock.calls;
-    expect(execCalls.length).toBeGreaterThan(0);
-    const termCmd = execCalls[0][0] as string;
-    expect(termCmd).toContain('x-terminal-emulator');
-    // spawn should NOT have been called (we found a terminal)
-    expect(spawn).not.toHaveBeenCalled();
+    const [bin, args] = vi.mocked(spawn).mock.calls[0] as [string, string[]];
+    expect(bin).toBe('ptyxis');
+    expect(args.slice(0, 4)).toEqual(['--new-window', '--', 'sh', '-c']);
   });
 
-  it('on linux tries multiple terminals and falls back to spawn when all fail', () => {
+  it('every linux preset launches its own binary running the cd-ing shell script', () => {
     Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
-    // All execFileSync calls fail (both getClaudeCliPath candidates and all which checks)
-    vi.mocked(execFileSync).mockImplementation(() => { throw new Error('not found'); });
+    vi.mocked(execFileSync).mockImplementation((cmd: any) => {
+      if (cmd === 'which') return '';
+      throw new Error('not found');
+    });
+    const presets = ['x-terminal-emulator', 'kitty', 'ptyxis', 'gnome-terminal', 'alacritty', 'wezterm',
+      'foot', 'ghostty', 'konsole', 'xfce4-terminal', 'xterm'];
 
-    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000');
-
-    // exec should NOT have been called (no terminal found)
-    expect(exec).not.toHaveBeenCalled();
-    // spawn should be called as the fallback
-    expect(spawn).toHaveBeenCalledWith(
-      expect.any(String),
-      ['--resume', 'abc12345-0000-0000-0000-000000000000'],
-      expect.objectContaining({ detached: true, stdio: 'ignore' }),
-    );
+    for (const name of presets) {
+      vi.mocked(spawn).mockClear();
+      vi.mocked(accessSync).mockImplementationOnce(() => undefined);
+      spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, '/proj', 'T', name);
+      const [bin, args] = vi.mocked(spawn).mock.calls[0] as [string, string[]];
+      expect(bin).toBe(name);
+      expect(args.slice(-3)).toEqual(['sh', '-c',
+        "cd '/proj' && exec 'claude' --resume 'abc12345-0000-0000-0000-000000000000'"]);
+    }
   });
 
-  it('on linux spawn fallback calls .unref()', () => {
+  it('on linux falls back to a detached claude when no terminal is installed', () => {
     Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
     vi.mocked(execFileSync).mockImplementation(() => { throw new Error('not found'); });
+    vi.mocked(accessSync).mockImplementationOnce(() => undefined);
     const unrefMock = vi.fn();
-    vi.mocked(spawn).mockReturnValue({
-      on: vi.fn(),
-      unref: unrefMock,
-    } as any);
-
-    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000');
-
-    expect(unrefMock).toHaveBeenCalled();
-  });
-
-  it('on linux spawn fallback includes cwd when valid', () => {
-    Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
-    vi.mocked(execFileSync).mockImplementation(() => { throw new Error('not found'); });
-    vi.mocked(accessSync).mockImplementationOnce(() => undefined); // valid cwd
+    vi.mocked(spawn).mockReturnValue({ on: vi.fn(), unref: unrefMock } as any);
 
     spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, '/work/dir');
 
+    expect(exec).not.toHaveBeenCalled();
     expect(spawn).toHaveBeenCalledWith(
-      expect.any(String),
-      expect.any(Array),
-      expect.objectContaining({ cwd: '/work/dir' }),
+      'claude',
+      ['--resume', 'abc12345-0000-0000-0000-000000000000'],
+      expect.objectContaining({ detached: true, stdio: 'ignore', cwd: '/work/dir' }),
     );
+    expect(unrefMock).toHaveBeenCalled();
   });
 
-  it('on linux uses second terminal in the list when first which fails', () => {
+  it('on win32 runs a custom terminal template', () => {
+    Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+    vi.mocked(accessSync).mockImplementationOnce(() => undefined);
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, 'C:\\proj', 'T',
+      'wt -d {cwd} --title {title} {cmd} # {session} {claude}');
+
+    const [cmd, opts] = vi.mocked(exec).mock.calls[0] as [string, any];
+    expect(cmd).toBe('wt -d "C:\\proj" --title "T" "claude" --resume abc12345-0000-0000-0000-000000000000 # abc12345-0000-0000-0000-000000000000 "claude"');
+    expect(opts.cwd).toBe('C:\\proj');
+  });
+
+  it('swallows async spawn errors from a vanished terminal', () => {
     Object.defineProperty(process, 'platform', { value: 'linux', configurable: true });
-    // getClaudeCliPath() calls all fail (claude + candidates), then:
-    //   which x-terminal-emulator → fails, which kitty → succeeds
-    let whichCallCount = 0;
-    vi.mocked(execFileSync).mockImplementation((cmd: any, args: any) => {
-      if (cmd === 'which') {
-        whichCallCount++;
-        if (whichCallCount === 1) throw new Error('not found'); // x-terminal-emulator
-        return ''; // kitty found
-      }
-      throw new Error('not found'); // all getClaudeCliPath candidates
-    });
+    const handlers: Record<string, Function> = {};
+    vi.mocked(spawn).mockReturnValue({ on: vi.fn((e: string, cb: Function) => { handlers[e] = cb; }), unref: vi.fn() } as any);
 
     spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000');
 
-    expect(execFileSync).toHaveBeenCalledWith('which', ['x-terminal-emulator'], { stdio: 'ignore' });
-    expect(execFileSync).toHaveBeenCalledWith('which', ['kitty'], { stdio: 'ignore' });
-    const execCalls = vi.mocked(exec).mock.calls;
-    expect(execCalls.length).toBeGreaterThan(0);
-    expect(execCalls[0][0] as string).toContain('kitty');
-    expect(spawn).not.toHaveBeenCalled();
+    expect(() => handlers.error!(new Error('ENOENT'))).not.toThrow();
+  });
+
+  it('on win32 sets the new window directory with start /D', () => {
+    Object.defineProperty(process, 'platform', { value: 'win32', configurable: true });
+    vi.mocked(accessSync).mockImplementationOnce(() => undefined);
+
+    spawnClaudeInNewWindow('abc12345-0000-0000-0000-000000000000', undefined, 'C:\\proj');
+
+    expect(vi.mocked(exec).mock.calls[0][0] as string).toContain('/D "C:\\proj"');
   });
 
   it('uses default title (first 8 chars of session id) when no title provided', () => {
@@ -530,5 +584,45 @@ describe('spawnClaudeInNewWindow', () => {
 
     const callArg = vi.mocked(exec).mock.calls[0][0] as string;
     expect(callArg).toContain('"claude abc12345"');
+  });
+});
+
+describe('parseRunningSessionIds', () => {
+  const id = 'abc12345-0000-0000-0000-000000000000';
+
+  it('counts claude processes in every form they appear', () => {
+    expect(parseRunningSessionIds(`claude --resume ${id}`).has(id)).toBe(true);
+    expect(parseRunningSessionIds(`/home/u/.local/bin/claude --resume ${id}`).has(id)).toBe(true);
+    expect(parseRunningSessionIds(`node /usr/lib/node_modules/@anthropic-ai/claude-code/cli.js --resume ${id}`).has(id)).toBe(true);
+    expect(parseRunningSessionIds(`"C:\\Users\\u\\.local\\bin\\claude.exe" --resume ${id}  `).has(id)).toBe(true);
+  });
+
+  it('ignores terminals and shells that merely mention the session (#13 busy softlock)', () => {
+    const listing = [
+      `/Applications/Ghostty.app/Contents/MacOS/ghostty --title=x -e sh -c cd '/p' && exec 'claude' --resume '${id}'`,
+      `kitty -T t sh -c exec 'claude' --resume '${id}'`,
+      `cmd /k "claude" --resume ${id}`,
+    ].join('\n');
+    expect(parseRunningSessionIds(listing).size).toBe(0);
+  });
+});
+
+describe('detectCurrentTerminal', () => {
+  it('maps terminal environment markers to presets', () => {
+    expect(detectCurrentTerminal({ TERM_PROGRAM: 'ghostty' })).toBe('ghostty');
+    expect(detectCurrentTerminal({ TERM_PROGRAM: 'iTerm.app' })).toBe('iterm');
+    expect(detectCurrentTerminal({ TERM_PROGRAM: 'Apple_Terminal' })).toBe('terminal');
+    expect(detectCurrentTerminal({ KITTY_WINDOW_ID: '1' })).toBe('kitty');
+    expect(detectCurrentTerminal({ PTYXIS_VERSION: '47' })).toBe('ptyxis');
+    expect(detectCurrentTerminal({ TERM_PROGRAM: 'vscode' })).toBeUndefined();
+  });
+});
+
+describe('expandTerminalTemplate', () => {
+  it('substitutes every placeholder', () => {
+    const out = expandTerminalTemplate('x {title} {cwd} {session} {claude} {cmd}', {
+      script: 'exec claude', cwd: '/p', title: 'T', sessionId: 'S', claude: '/bin/claude',
+    });
+    expect(out).toBe("x 'T' '/p' 'S' '/bin/claude' sh -c 'exec claude'");
   });
 });

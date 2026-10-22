@@ -224,7 +224,27 @@ cmv hook restore <id>     # restore a session from auto-backup
 cmv hook restore --list   # list available backups
 ```
 
-Run `cmv config --help` for settings. `cmv completions --install` for shell tab-completion.
+Hooks invoke CMV through the absolute path of your `node` binary, so they work even though Claude Code runs hooks in a non-interactive shell (no `.bashrc`, no nvm). After moving or reinstalling CMV, run `cmv hook install` again to refresh the path.
+
+Write/Edit payloads are never stubbed by default — they are the file content Claude may re-apply on resume. Opt in under extreme size pressure with `"stubWriteInputs": true` in the `autoTrim` section of `~/.cmv/config.json`.
+
+### `cmv config`
+
+```bash
+cmv config                                   # show all settings
+cmv config claude_cli_path /path/to/claude   # use a specific claude binary
+cmv config terminal ghostty                  # terminal for new windows
+```
+
+**Terminal for new windows.** By default CMV opens sessions in the terminal you're running it from (Ghostty, iTerm2, WezTerm, kitty, Alacritty, ptyxis, Konsole), falling back to Terminal.app on macOS or the first installed emulator on Linux. To pin one, set `terminal` to a preset — `terminal`, `iterm`, `ghostty`, `kitty`, `wezterm`, `alacritty`, `ptyxis`, `gnome-terminal`, `konsole`, `xfce4-terminal`, `foot`, `xterm`, `x-terminal-emulator` — or to any command containing `{cmd}`:
+
+```bash
+cmv config terminal 'open -na Ghostty --args --working-directory={cwd} -e {cmd}'
+```
+
+Placeholders: `{cmd}` (the full cd + `claude --resume` command), `{cwd}`, `{title}`, `{session}`, `{claude}`. Each is shell-quoted for you.
+
+`cmv completions --install` for shell tab-completion.
 
 ## FAQ
 
@@ -324,6 +344,8 @@ CMV doesn't replace any of these — it fills a gap none of them cover. Use them
 - **`cmv` not found:** Reopen your terminal. Windows: check `%APPDATA%\npm` is on PATH. Linux: `sudo npm link` or use nvm.
 - **No sessions:** Use Claude Code at least once. CMV reads from `~/.claude/projects/`.
 - **Branch won't launch:** Check `claude --version` works. Or: `cmv config claude_cli_path /path/to/claude`
+- **New window opens in the wrong terminal or folder:** `cmv config terminal <name>` (see [`cmv config`](#cmv-config)).
+- **`PostToolUse hook error` on every tool call:** re-run `cmv hook install` so the hook uses an absolute path.
 - **"Session appears active":** Exit the Claude session before snapshotting.
 - **Debug:** `CMV_DEBUG=1 cmv <command>` for stack traces.
 

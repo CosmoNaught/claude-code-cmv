@@ -72,6 +72,8 @@ export interface CmvSnapshotMeta {
 export interface CmvConfig {
   claude_cli_path?: string;
   default_project?: string;
+  /** Terminal for new windows: a preset name or a template containing {cmd}. */
+  terminal?: string;
   autoTrim?: AutoTrimConfig;
 }
 
@@ -169,6 +171,8 @@ export interface TrimMetrics {
   userMessages: number;
   assistantResponses: number;
   toolUseRequests: number;
+  /** Chain rows dropped because trimming left them with no content. */
+  emptyMessagesDropped?: number;
 }
 
 export interface SessionAnalysis {

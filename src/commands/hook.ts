@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: Apache-2.0
 import { Command } from 'commander';
 import * as fs from 'node:fs/promises';
-import { getClaudeSettingsPath, getCmvAutoTrimLogPath, resolveCmvBinary } from '../utils/paths.js';
+import { getClaudeSettingsPath, getCmvAutoTrimLogPath, resolveCmvBinary, isCmvAutoTrimCommand } from '../utils/paths.js';
 import { listBackups, restoreBackup } from '../core/auto-backup.js';
 import { success, info, dim } from '../utils/display.js';
 import { handleError } from '../utils/errors.js';
@@ -57,10 +57,10 @@ async function writeSettings(settings: ClaudeSettings): Promise<void> {
 }
 
 /**
- * Matches both bare `cmv auto-trim` (old installs) and absolute-path variants.
+ * Matches bare `cmv auto-trim` (old installs) and absolute-path variants.
  */
 function isCmvHookEntry(entry: { matcher: string; hooks: Array<{ command: string }> }): boolean {
-  return entry.hooks.some(h => /(?:^|[\\/])cmv(?:\.cmd|\.ps1)?\s+auto-trim/.test(h.command));
+  return entry.hooks.some(h => isCmvAutoTrimCommand(h.command));
 }
 
 function formatSize(bytes: number): string {

@@ -23,7 +23,8 @@ vi.mock('../../src/utils/display.js', () => ({
   formatTable: () => 'table',
 }));
 
-vi.mock('../../src/utils/paths.js', () => ({
+vi.mock('../../src/utils/paths.js', async (importOriginal) => ({
+  isCmvAutoTrimCommand: (await importOriginal<typeof import('../../src/utils/paths.js')>()).isCmvAutoTrimCommand,
   getClaudeSettingsPath: () => '/fake/settings.json',
   getCmvAutoTrimLogPath: () => '/fake/auto-trim.log',
   getClaudeProjectsDir: () => '/fake/projects',
