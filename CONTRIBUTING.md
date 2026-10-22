@@ -7,8 +7,8 @@ Thank you for your interest in contributing to CMV (Contextual Memory Virtualisa
 **Requirements:** Node.js 18+
 
 ```bash
-git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd claude-code-cmv
+git clone https://github.com/IngressionLabs/contextual-memory-virtualisation.git
+cd contextual-memory-virtualisation
 npm install
 npm run build
 ```
@@ -67,7 +67,7 @@ npm run test:coverage # With coverage report
 
 ## Reporting Issues
 
-Use [GitHub Issues](https://github.com/CosmoNaught/claude-code-cmv/issues) for bug reports and feature requests. Templates are provided.
+Use [GitHub Issues](https://github.com/IngressionLabs/contextual-memory-virtualisation/issues) for bug reports and feature requests. Templates are provided.
 
 ## License
 

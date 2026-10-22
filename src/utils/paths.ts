@@ -184,9 +184,10 @@ export async function resolveCmvBinary(): Promise<string> {
 /**
  * True if a hook command invokes `cmv auto-trim`, in any of the forms we have
  * ever installed: bare `cmv auto-trim`, an absolute path to the cmv binary,
- * or `"<node>" "<.../cmv/dist/index.js>" auto-trim`.
+ * or `"<node>" "<install dir>/dist/index.js" auto-trim`.
  */
 export function isCmvAutoTrimCommand(command: string): boolean {
   return /(?:^|[\\/"\s])cmv(?:\.cmd|\.ps1|\.exe)?"?\s+auto-trim/.test(command)
-    || /cmv[^"]*[\\/]dist[\\/]index\.js"?\s+auto-trim/.test(command);
+    // Any folder name: clones of the repo are not necessarily called "cmv"
+    || /[\\/]dist[\\/]index\.js"?\s+auto-trim(?:\s|$)/.test(command);
 }

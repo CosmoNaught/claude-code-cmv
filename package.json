@@ -1,6 +1,6 @@
 {
   "name": "cmv",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "Contextual Memory Virtualisation — git-like snapshot and branching for Claude Code sessions",
   "type": "module",
   "bin": {
@@ -34,9 +34,9 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CosmoNaught/claude-code-cmv.git"
+    "url": "https://github.com/IngressionLabs/contextual-memory-virtualisation.git"
   },
-  "homepage": "https://github.com/CosmoNaught/claude-code-cmv",
+  "homepage": "https://github.com/IngressionLabs/contextual-memory-virtualisation",
   "engines": {
     "node": ">=18.0.0"
   },
