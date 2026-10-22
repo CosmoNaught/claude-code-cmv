@@ -1,7 +1,7 @@
 {
   "name": "cmv",
   "version": "2.2.1",
-  "description": "Contextual Memory Virtualisation — git-like snapshot and branching for Claude Code sessions",
+  "description": "Contextual Memory Virtualisation — git-like snapshots, branching and trimming for AI coding agent sessions (demonstrated with Claude Code)",
   "type": "module",
   "bin": {
     "cmv": "./dist/index.js"
