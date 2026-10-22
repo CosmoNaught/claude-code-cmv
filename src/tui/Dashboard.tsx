@@ -20,7 +20,7 @@ import { deleteSnapshot } from '../core/snapshot-manager.js';
 import { deleteSession } from '../core/session-reader.js';
 import { exportSnapshot } from '../core/exporter.js';
 import { importSnapshot } from '../core/importer.js';
-import { initialize } from '../core/metadata-store.js';
+import { initialize, readConfig } from '../core/metadata-store.js';
 import type { TreeNode, ClaudeSessionEntry } from '../types/index.js';
 import { spawnClaudeInNewWindow, getRunningSessionIds } from '../utils/process.js';
 import * as path from 'node:path';
@@ -42,6 +42,13 @@ type FocusPane = 'projects' | 'tree';
 interface StatusMessage {
   text: string;
   type: 'success' | 'error' | 'info';
+}
+
+/** Open a session in a new terminal window, honouring the user's CMV config. */
+function openInNewWindow(sessionId: string, cwd: string | undefined, title: string): void {
+  readConfig()
+    .then(config => spawnClaudeInNewWindow(sessionId, config.claude_cli_path, cwd, title, config.terminal))
+    .catch(() => spawnClaudeInNewWindow(sessionId, undefined, cwd, title));
 }
 
 export function Dashboard({ onExit }: DashboardProps) {
@@ -314,7 +321,7 @@ export function Dashboard({ onExit }: DashboardProps) {
       const parentSnap = findParentSnapshotName(nav.selectedNode) || '?';
       const projectName = selectedProject?.path.split(/[\\/]/).pop() || '';
       const title = `${projectName}/${parentSnap}/${nav.selectedNode.name}`;
-      spawnClaudeInNewWindow(sid, undefined, selectedProject?.path, title);
+      openInNewWindow(sid, selectedProject?.path, title);
       setStatus({ text: `Opened "${nav.selectedNode.name}" in new window`, type: 'info' });
       return;
     }
@@ -328,7 +335,7 @@ export function Dashboard({ onExit }: DashboardProps) {
       }
       const projectName = selectedProject?.path.split(/[\\/]/).pop() || '';
       const title = `${projectName}/${sid.substring(0, 10)}`;
-      spawnClaudeInNewWindow(sid, undefined, selectedProject?.path, title);
+      openInNewWindow(sid, selectedProject?.path, title);
       setStatus({ text: `Opened session ${sid.substring(0, 8)}… in new window`, type: 'info' });
       return;
     }
@@ -369,7 +376,7 @@ export function Dashboard({ onExit }: DashboardProps) {
       });
       const projectName = selectedProject?.path.split(/[\\/]/).pop() || '';
       const title = `${projectName}/${nav.selectedNode.name}/${branchName}`;
-      spawnClaudeInNewWindow(result.forkedSessionId, undefined, selectedProject?.path, title);
+      openInNewWindow(result.forkedSessionId, selectedProject?.path, title);
       setStatus({ text: `Branch "${branchName}" opened in new window`, type: 'success' });
       refresh();
     } catch (err) {

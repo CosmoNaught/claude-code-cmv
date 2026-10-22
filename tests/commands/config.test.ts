@@ -82,6 +82,28 @@ describe('config command', () => {
     expect(process.exit).toHaveBeenCalledWith(1);
   });
 
+  it('accepts a terminal preset or a {cmd} template, rejects anything else', async () => {
+    for (const value of ['ghostty', 'iTerm', "open -na Ghostty --args -e {cmd}"]) {
+      vi.clearAllMocks();
+      mockReadConfig.mockResolvedValue({});
+      const program = new Command();
+      program.exitOverride();
+      registerConfigCommand(program);
+      await program.parseAsync(['node', 'cmv', 'config', 'terminal', value]);
+      expect(process.exit).not.toHaveBeenCalled();
+      expect(mockWriteConfig).toHaveBeenCalledWith(expect.objectContaining({ terminal: value }));
+    }
+
+    vi.clearAllMocks();
+    mockReadConfig.mockResolvedValue({});
+    const program = new Command();
+    program.exitOverride();
+    registerConfigCommand(program);
+    await program.parseAsync(['node', 'cmv', 'config', 'terminal', 'notaterminal']);
+    expect(console.error).toHaveBeenCalledWith(expect.stringContaining('Unknown terminal'));
+    expect(process.exit).toHaveBeenCalledWith(1);
+  });
+
   it('shows (not set) for undefined config value', async () => {
     mockReadConfig.mockResolvedValue({});
     const program = new Command();

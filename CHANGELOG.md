@@ -4,6 +4,32 @@ All notable changes to CMV are documented here. Follows [Semantic Versioning](ht
 
 ---
 
+## [2.2.0] — 2026-10-22
+
+### Fixed
+
+- **Trimmed sessions resume with their full history** ([#10](https://github.com/CosmoNaught/claude-code-cmv/issues/10)). Trimming could break the `parentUuid` chain Claude Code walks on resume, so a branch could resume nearly empty:
+  - Session-title `summary` records (which carry `leafUuid` and can appear anywhere) were treated as compaction boundaries, discarding everything before them. Only `compact_boundary` and legacy leaf-less `summary` records count now.
+  - Compaction boundaries that preserve earlier messages (`compactMetadata.preservedSegment` / `preservedMessages`) no longer have those messages skipped.
+  - Rows left with no content after trimming (thinking-only assistant rows, tool_result-only rows) are dropped and their children re-linked to the nearest kept ancestor. The final row is never dropped, so a running session can keep appending safely.
+  - Branch files are stamped with the new session ID on every row, as Claude Code's own `--fork-session` does.
+  - `sessions-index.json` entries record the real message count and git branch instead of `0` / empty.
+  - The multi-branch orientation message is written as a proper chained `user` row instead of a bare `human` line.
+- **Write/Edit inputs are no longer stubbed on trim** ([#11](https://github.com/CosmoNaught/claude-code-cmv/issues/11), [#12](https://github.com/CosmoNaught/claude-code-cmv/pull/12) by @VolanticSystems). Stubbing them could silently corrupt files when replayed. Opt back in with `autoTrim.stubWriteInputs`. Agent/Task `prompt` fields are preserved too.
+- **Auto-trim no longer rewrites an already-trimmed session on every tool call** ([#12](https://github.com/CosmoNaught/claude-code-cmv/pull/12)). It waits until the file grows past `autoTrim.reTrimGrowthBytes` (default ~64KB).
+- **`cmv --version` and snapshot metadata report the real version**, read from package.json ([#12](https://github.com/CosmoNaught/claude-code-cmv/pull/12)).
+- **Hooks work in non-interactive shells** ([#7](https://github.com/CosmoNaught/claude-code-cmv/pull/7) by @VolanticSystems). Hook commands now call CMV as `"<node>" "<cmv>/dist/index.js"`, so they need neither PATH (nvm, `~/.npm-global`) nor the executable bit, and work on Windows and in paths with spaces. Re-running install replaces old hook entries in every format.
+- **New windows open in the snapshotted project folder** ([#4](https://github.com/CosmoNaught/claude-code-cmv/issues/4)). gnome-terminal, ptyxis and Konsole ignore the caller's working directory, so windows opened in `$HOME`. Every window now `cd`s into the project itself; Windows uses `start /D`.
+- **Closed sessions no longer stay "busy"** ([#13](https://github.com/CosmoNaught/claude-code-cmv/issues/13)). Only processes that are `claude` itself count as running, not terminals whose arguments mention the session.
+
+### Added
+
+- **Choose your terminal** ([#13](https://github.com/CosmoNaught/claude-code-cmv/issues/13)). `cmv config terminal <preset>` with presets for Terminal.app, iTerm2, Ghostty, kitty, WezTerm, Alacritty (macOS and Linux), plus ptyxis, gnome-terminal, Konsole, xfce4-terminal, foot, xterm. Or set a custom command containing `{cmd}`. Without a setting, CMV opens new windows in the terminal it's running in.
+- **ptyxis support** (Fedora 41+ default terminal).
+- **Dashboard honours `claude_cli_path`** when opening new windows.
+
+---
+
 ## [2.1.1] — 2026-03-16
 
 ### Changed

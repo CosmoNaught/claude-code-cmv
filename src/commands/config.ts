@@ -4,9 +4,10 @@ import { Command } from 'commander';
 import { readConfig, writeConfig, initialize } from '../core/metadata-store.js';
 import { success, info, dim } from '../utils/display.js';
 import { handleError } from '../utils/errors.js';
+import { TERMINAL_PRESET_NAMES } from '../utils/process.js';
 import type { CmvConfig } from '../types/index.js';
 
-const VALID_KEYS: (keyof CmvConfig)[] = ['claude_cli_path', 'default_project'];
+const VALID_KEYS: (keyof CmvConfig)[] = ['claude_cli_path', 'default_project', 'terminal'];
 
 export function registerConfigCommand(program: Command): void {
   program
@@ -45,6 +46,14 @@ export function registerConfigCommand(program: Command): void {
             console.log(dim('(not set)'));
           }
           return;
+        }
+
+        if (key === 'terminal' && !value.includes('{cmd}') && !TERMINAL_PRESET_NAMES.includes(value.toLowerCase())) {
+          console.error(
+            `Unknown terminal "${value}". Use one of: ${TERMINAL_PRESET_NAMES.join(', ')}\n` +
+            `or a custom command containing {cmd}, e.g. 'open -na Ghostty --args -e {cmd}'`
+          );
+          process.exit(1);
         }
 
         // Set value
