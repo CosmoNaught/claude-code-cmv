@@ -17,6 +17,9 @@ import {
   getCmvAutoTrimLogPath,
   getClaudeSettingsPath,
   listProjectDirs,
+  resolveCmvBinary,
+  isCmvAutoTrimCommand,
+  getCmvVersion,
 } from '../../src/utils/paths.js';
 
 const home = os.homedir();
@@ -105,5 +108,44 @@ describe('listProjectDirs', () => {
     const result = await listProjectDirs();
     // It either returns real dirs or [] — both are valid arrays
     expect(Array.isArray(result)).toBe(true);
+  });
+});
+
+describe('resolveCmvBinary', () => {
+  it('invokes the package entry point via the absolute node binary', async () => {
+    const cmd = await resolveCmvBinary();
+    // Repo has dist/index.js after build; otherwise falls back to PATH or bare cmv
+    if (cmd !== 'cmv' && cmd.includes('index.js')) {
+      expect(cmd.startsWith(`"${process.execPath}" "`)).toBe(true);
+      expect(cmd).toMatch(/[\\/]dist[\\/]index\.js"$/);
+    }
+    // Whatever form it takes, our own matcher must recognise the installed hook
+    expect(isCmvAutoTrimCommand(`${cmd} auto-trim --check-size`)).toBe(true);
+  });
+});
+
+describe('isCmvAutoTrimCommand', () => {
+  it('matches every form of cmv hook we have installed', () => {
+    expect(isCmvAutoTrimCommand('cmv auto-trim')).toBe(true);
+    expect(isCmvAutoTrimCommand('cmv auto-trim --check-size')).toBe(true);
+    expect(isCmvAutoTrimCommand('/home/u/.npm-global/bin/cmv auto-trim')).toBe(true);
+    expect(isCmvAutoTrimCommand('C:\\Users\\u\\AppData\\Roaming\\npm\\cmv.cmd auto-trim')).toBe(true);
+    expect(isCmvAutoTrimCommand('/home/u/.claude-plugins/cmv/dist/index.js auto-trim --check-size')).toBe(true);
+    expect(isCmvAutoTrimCommand('"/usr/bin/node" "/home/u/my repos/claude-code-cmv/dist/index.js" auto-trim')).toBe(true);
+    expect(isCmvAutoTrimCommand('"C:\\Program Files\\nodejs\\node.exe" "C:\\src\\cmv\\dist\\index.js" auto-trim --check-size')).toBe(true);
+  });
+
+  it('does not match unrelated hooks', () => {
+    expect(isCmvAutoTrimCommand('other-tool')).toBe(false);
+    expect(isCmvAutoTrimCommand('mycmv auto-trim')).toBe(false);
+    expect(isCmvAutoTrimCommand('cmv snapshot foo')).toBe(false);
+    expect(isCmvAutoTrimCommand('"/usr/bin/node" "/opt/other/dist/index.js" auto-trim')).toBe(false);
+  });
+});
+
+describe('getCmvVersion', () => {
+  it('matches package.json', async () => {
+    const pkg = JSON.parse(await fs.readFile(path.join(__dirname, '../../package.json'), 'utf-8'));
+    expect(getCmvVersion()).toBe(pkg.version);
   });
 });

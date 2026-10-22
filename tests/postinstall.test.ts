@@ -5,7 +5,8 @@ import * as os from 'node:os';
 
 const tmpDirRef = { value: '' };
 
-vi.mock('../src/utils/paths.js', () => ({
+vi.mock('../src/utils/paths.js', async (importOriginal) => ({
+  isCmvAutoTrimCommand: (await importOriginal<typeof import('../src/utils/paths.js')>()).isCmvAutoTrimCommand,
   getClaudeSettingsPath: () => path.join(tmpDirRef.value, 'settings.json'),
   resolveCmvBinary: () => Promise.resolve('cmv'),
 }));
