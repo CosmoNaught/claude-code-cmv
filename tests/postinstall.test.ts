@@ -7,6 +7,7 @@ const tmpDirRef = { value: '' };
 
 vi.mock('../src/utils/paths.js', () => ({
   getClaudeSettingsPath: () => path.join(tmpDirRef.value, 'settings.json'),
+  resolveCmvBinary: () => Promise.resolve('cmv'),
 }));
 
 // Import after mock
@@ -26,7 +27,7 @@ afterEach(async () => {
 describe('postinstall', () => {
   describe('buildHookConfig', () => {
     it('returns PreCompact and PostToolUse entries', () => {
-      const config = buildHookConfig();
+      const config = buildHookConfig('cmv');
       expect(config).toHaveProperty('PreCompact');
       expect(config).toHaveProperty('PostToolUse');
       expect(config.PreCompact[0].hooks[0].command).toBe('cmv auto-trim');

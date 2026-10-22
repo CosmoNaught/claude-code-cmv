@@ -27,6 +27,7 @@ vi.mock('../../src/utils/paths.js', () => ({
   getClaudeSettingsPath: () => '/fake/settings.json',
   getCmvAutoTrimLogPath: () => '/fake/auto-trim.log',
   getClaudeProjectsDir: () => '/fake/projects',
+  resolveCmvBinary: () => Promise.resolve('cmv'),
 }));
 
 const mockListBackups = vi.fn().mockResolvedValue([]);
