@@ -1,11 +1,11 @@
-[![GitHub release](https://img.shields.io/github/v/release/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/releases)
-[![CI](https://github.com/CosmoNaught/claude-code-cmv/actions/workflows/ci.yml/badge.svg)](https://github.com/CosmoNaught/claude-code-cmv/actions/workflows/ci.yml)
-[![codecov](https://codecov.io/gh/CosmoNaught/claude-code-cmv/badge.svg)](https://codecov.io/gh/CosmoNaught/claude-code-cmv)
-[![License](https://img.shields.io/github/license/CosmoNaught/claude-code-cmv)](LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/IngressionLabs/contextual-memory-virtualisation)](https://github.com/IngressionLabs/contextual-memory-virtualisation/releases)
+[![CI](https://github.com/IngressionLabs/contextual-memory-virtualisation/actions/workflows/ci.yml/badge.svg)](https://github.com/IngressionLabs/contextual-memory-virtualisation/actions/workflows/ci.yml)
+[![codecov](https://codecov.io/gh/IngressionLabs/contextual-memory-virtualisation/badge.svg)](https://codecov.io/gh/IngressionLabs/contextual-memory-virtualisation)
+[![License](https://img.shields.io/github/license/IngressionLabs/contextual-memory-virtualisation)](LICENSE)
 [![Node](https://img.shields.io/badge/node-18%2B-brightgreen)](https://nodejs.org)
 [![arXiv](https://img.shields.io/badge/arXiv-2602.22402-b31b1b.svg)](https://arxiv.org/abs/2602.22402)
-[![API Docs](https://img.shields.io/badge/docs-API-blue)](https://cosmonaught.github.io/claude-code-cmv/)
-[![GitHub stars](https://img.shields.io/github/stars/CosmoNaught/claude-code-cmv)](https://github.com/CosmoNaught/claude-code-cmv/stargazers)
+[![API Docs](https://img.shields.io/badge/docs-API-blue)](https://ingressionlabs.github.io/contextual-memory-virtualisation/)
+[![GitHub stars](https://img.shields.io/github/stars/IngressionLabs/contextual-memory-virtualisation)](https://github.com/IngressionLabs/contextual-memory-virtualisation/stargazers)
 
 # Claude Code Contextual Memory Virtualisation (CMV)
 
@@ -61,8 +61,8 @@ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.1/install.sh | bash
 nvm install --lts
 
 # CMV
-git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd claude-code-cmv
+git clone https://github.com/IngressionLabs/contextual-memory-virtualisation.git
+cd contextual-memory-virtualisation
 npm install && npm run build
 npm link
 ```
@@ -76,8 +76,8 @@ npm link
 winget install OpenJS.NodeJS.LTS
 
 # CMV (reopen terminal after installing Node)
-git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd claude-code-cmv
+git clone https://github.com/IngressionLabs/contextual-memory-virtualisation.git
+cd contextual-memory-virtualisation
 npm install && npm run build
 npm link
 ```
@@ -91,8 +91,8 @@ npm link
 brew install node
 
 # CMV
-git clone https://github.com/CosmoNaught/claude-code-cmv.git
-cd claude-code-cmv
+git clone https://github.com/IngressionLabs/contextual-memory-virtualisation.git
+cd contextual-memory-virtualisation
 npm install && npm run build
 npm link
 ```
@@ -354,8 +354,8 @@ CMV doesn't replace any of these — it fills a gap none of them cover. Use them
 Contributions are welcome. Fork the repo on GitHub, then:
 
 ```bash
-git clone https://github.com/<your-username>/claude-code-cmv.git
-cd claude-code-cmv
+git clone https://github.com/<your-username>/contextual-memory-virtualisation.git
+cd contextual-memory-virtualisation
 npm install
 npm run build
 npm link        # makes `cmv` available globally from your local build

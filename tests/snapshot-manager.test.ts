@@ -7,7 +7,7 @@ const tmpDirRef = { value: '' };
 
 vi.mock('../src/utils/paths.js', () => ({
   getCmvSnapshotsDir: () => path.join(tmpDirRef.value, 'snapshots'),
-  getCmvVersion: () => '2.2.0',
+  getCmvVersion: () => '2.2.1',
 }));
 
 vi.mock('../src/utils/id.js', () => ({
